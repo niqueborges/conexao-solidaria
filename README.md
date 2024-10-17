@@ -1,63 +1,84 @@
-# Avaliação Sprints 9 e 10 - Projeto Final - Programa de Bolsas Compass UOL / AWS - turma junho/2024
+# Conexão Solidária
 
-Avaliação final do programa de bolsas Compass UOL para formação em machine learning para AWS.
+## Tema do Projeto
+
+**Conexão Solidária** é um chat interativo que facilita a comunicação entre doadores e Instituições, fornecendo uma plataforma simples para listagem e cadastro de Instituições. O projeto utiliza a moderação de imagens e textos para garantir a qualidade do conteúdo. A ideia é criar um ambiente seguro e organizado para conectar essas duas partes, promovendo ações solidárias de forma acessível e segura.
+
+## Esboço da Arquitetura
+
+O projeto utiliza diversos serviços da AWS para garantir escalabilidade, acessibilidade e facilidade de uso. Abaixo está uma visão geral dos principais componentes:
+
+### **Componentes Principais:**
+- **Amazon Lex**: Chatbot que gerencia interações via WhatsApp para doadores e Instituições.
+- **Twilio**: Integração com o WhatsApp para permitir a comunicação entre o chatbot e os usuários.
+- **Amazon Polly**: Converte respostas do Bot em aúdio.
+- **Amazon Rekognition**: Modera imagens enviadas pelas Instituições para verificar conteúdos inadequados.
+- **Amazon Bedrock**: Analisa descrições de texto fornecidas pelas Instituições para garantir linguagem apropriada.
+- **AWS Lambda**: Backend serverless que processa cadastro, listagem e moderação de conteúdo.
+- **Amazon DynamoDB**: Banco de dados NoSQL que armazena informações sobre as Instituições.
+
+### **Diagrama da Arquitetura:**
+
+![Arquitetura do Conexão Solidária](./assets/arquitetura.png)
+
+### **Estrutura de Dados no DynamoDB**
+A tabela de armazenamento para as Instituições no DynamoDB terá a seguinte estrutura:
+
+- **Tabela de Instituições**:
+  - **CNPJ** (String): Chave primária, usada para identificar a ONG.
+  - **Nome** (String): Nome da ONG.
+  - **Email** (String): Email de contato da ONG.
+  - **Telefone** (String): Telefone de contato da ONG.
+  - **CEP** (String): Localização da ONG (baseado no código postal).
+  - **Descricao** (String): Descrição da ONG, incluindo suas atividades e área de atuação.
+  - **Status de Verificação** (Boolean): Indica se a ONG foi aprovada ou contém conteúdo inadequado.
 
 ---
 
-## Execução
+## Termos de Uso
 
-Deverá ser produzido um projeto final para apresentação pública até o último dia deste Programa de Bolsas.
+Os **Termos de Uso** da plataforma **Conexão Solidária** são baseados nas leis brasileiras e seguem as normas da **Lei Geral de Proteção de Dados (LGPD)**.
 
-**Especificações**:
+### **Termos Chave:**
+1. **Responsabilidade do Usuário**: Ao utilizar a plataforma, o usuário se compromete a fornecer informações verídicas e a utilizar a plataforma de maneira ética e legal.
+2. **Moderação de Conteúdo**: Imagens e descrições enviadas serão analisadas por sistemas automatizados para garantir que não violem os termos de uso e as legislações vigentes.
+3. **Transparência**: As Instituições cadastradas devem fornecer informações corretas e detalhadas sobre suas atividades e propósitos.
+4. **Consequências Legais**: Qualquer uso indevido resultará em exclusão da plataforma e reporte às autoridades competentes, conforme o Código Penal.
 
-A equipe devevá:
+---
 
-1 - Escolher uma aplicação prática para implementação e definir a arquitetura preliminar AWS até 18/10/2024;
+## Conclusão
 
-2 - A aplicação deverá contemplar, no mínimo, as seguintes ferramentas AWS:
+O projeto será desenvolvido seguindo as boas práticas de arquitetura serverless, utilizando **AWS Lambda** e **Amazon DynamoDB** para garantir escalabilidade, e as funções de inteligência artificial do **Amazon Rekognition** e **Amazon Bedrock** para moderação de conteúdo, garantindo um ambiente seguro e confiável para os usuários.
 
-- Transcribe e/ou Polly;
-- Rekognition;
-- Bedrock;
-- Lex;
-  
-3 - O canal do chatbot Lex deverá ser de uso público e permitir o envio de som e imagem.
+---
 
-Dicas: procurem implementar uma aplicação de apelo social e, neste sentido, busquem contatos com organizações públicas (universidades, associações, etc.).
+## Estrutura do Repositório
 
-***
-
-## O que será avaliado
-
-- Praticidade de utilização;
-- Eficácia da aplicação;
-- Uso racional da arquitetura AWS;
-- Projeto em produção na AWS;
-- Códigos utilizados na implementação da arquitetura;
-- Prompt utilizado no Bedrock;
-- Se usado o modelo para treinamento/reconhecimento:
-  - Divisão dos dados para treino e teste, se utilizado treinamento;
-  - Taxa de assertividade aceitável (se o modelo está classificando corretamente);
-  - Entendimento da equipe sobre o modelo utilizado (saber explicar o que foi feito);
-  - Mostrar resposta do modelo para classificação;
-- Organização geral do código fonte:
-  - Estrutura de pastas;
-  - Divisão de responsabilidades em arquivos/pastas distintos;
-  - Otimização do código fonte (evitar duplicações de código);
-- Objetividade do README.md.
-
-***
-
-## Entrega
-
-- **O trabalho deve ser feito em grupos entre cinco e seis pessoas cada, que serão distribuídos em reunião dia 14/10/2024**;
-- Criar uma branch no repositório com o formato grupo-número (Exemplo: grupo-1);
-- **O tema do trabalho e o esboço da arquitetura deverão estar publicados no github até dia 18/10/2024**;
-- **O grupo deverá fazer uma apresentação de protótipo (prova de conceito - PoC) em ensaio preliminar entre os dias 11/11/2024 e 25/11/2024**;
-- Subir o trabalho na branch com um README.md:
-  - documentar detalhes sobre como a avaliação foi desenvolvida;
-  - dificuldades conhecidas;
-  - como utilizar o sistema;
-  - 🔨 código fonte desenvolvido (observar estruturas de pastas);
-- **Cada grupo deverá fazer uma apresentação do trabalho completo desenvolvido no dia 25/11/2024**;
-- **O prazo de entrega é até às 09h do dia 27/11/2024 no repositório do github** (https://github.com/Compass-pb-aws-2024-JUNHO/sprints-9-10-pb-aws-junho).
+```
+conexao_solidaria/
+│
+├── .serverless/
+│
+├── api/
+│   └── v1/
+│       └── handlers/
+|
+├── application/
+│   └── core/
+|
+├── infra/
+│   └── aws/
+│   └── schemas/
+|
+├── interfaces/
+├── utils/
+|
+├── serverless.yml
+|
+├── .gitignore
+├── .pre-commit-config.yaml
+├── package.json
+├── README.md
+└── requirements.txt
+```
