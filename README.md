@@ -19,7 +19,7 @@ O projeto utiliza diversos serviços da AWS para garantir escalabilidade, acessi
 
 ### **Diagrama da Arquitetura:**
 
-![Arquitetura do Conexão Solidária](./assets/arquitetura.png)
+![Arquitetura do Conexão Solidária](./assets/img/architecture.png)
 
 ### **Estrutura de Dados no DynamoDB**
 A tabela de armazenamento para as Instituições no DynamoDB terá a seguinte estrutura:
