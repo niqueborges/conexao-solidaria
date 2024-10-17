@@ -1,0 +1,14 @@
+app: description
+service: conexao-solidaria
+
+provider:
+  name: aws
+  runtime: python3.12
+
+functions:
+  hello:
+    handler: api/health.health
+    events:
+      - httpApi:
+          path: /
+          method: get
