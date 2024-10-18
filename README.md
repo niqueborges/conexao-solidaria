@@ -1,37 +1,40 @@
 # Conexão Solidária
 
-## Tema do Projeto
+## Descrição
 
 **Conexão Solidária** é um chat interativo que facilita a comunicação entre doadores e Instituições, fornecendo uma plataforma simples para listagem e cadastro de Instituições. O projeto utiliza a moderação de imagens e textos para garantir a qualidade do conteúdo. A ideia é criar um ambiente seguro e organizado para conectar essas duas partes, promovendo ações solidárias de forma acessível e segura.
 
-## Esboço da Arquitetura
+## Arquitetura base
 
 O projeto utiliza diversos serviços da AWS para garantir escalabilidade, acessibilidade e facilidade de uso. Abaixo está uma visão geral dos principais componentes:
 
-### **Componentes Principais:**
+<!-- ### **Componentes Principais:** -->
 - **Amazon Lex**: Chatbot que gerencia interações via WhatsApp para doadores e Instituições.
 - **Twilio**: Integração com o WhatsApp para permitir a comunicação entre o chatbot e os usuários.
 - **Amazon Polly**: Converte respostas do Bot em aúdio.
+- **Amazon S3**: Armazena as imagens enviadas pelas instituições.
 - **Amazon Rekognition**: Modera imagens enviadas pelas Instituições para verificar conteúdos inadequados.
 - **Amazon Bedrock**: Analisa descrições de texto fornecidas pelas Instituições para garantir linguagem apropriada.
+- **API ViaCEP**: Verifica a existência de endereços fornecidos pelas intituições.
 - **AWS Lambda**: Backend serverless que processa cadastro, listagem e moderação de conteúdo.
 - **Amazon DynamoDB**: Banco de dados NoSQL que armazena informações sobre as Instituições.
 
-### **Diagrama da Arquitetura:**
-
+### **Diagrama da Arquitetura**
 ![Arquitetura do Conexão Solidária](./assets/img/architecture.png)
 
-### **Estrutura de Dados no DynamoDB**
-A tabela de armazenamento para as Instituições no DynamoDB terá a seguinte estrutura:
+### **Banco de Dados**
+A tabela de armazenamento dos dados das Instituições no DynamoDB terá a seguinte estrutura:
+![Banco de dados](./assets/img/database.png)
 
-- **Tabela de Instituições**:
+
+<!-- - **Tabela de Instituições**:
   - **CNPJ** (String): Chave primária, usada para identificar a ONG.
   - **Nome** (String): Nome da ONG.
   - **Email** (String): Email de contato da ONG.
   - **Telefone** (String): Telefone de contato da ONG.
   - **CEP** (String): Localização da ONG (baseado no código postal).
   - **Descricao** (String): Descrição da ONG, incluindo suas atividades e área de atuação.
-  - **Status de Verificação** (Boolean): Indica se a ONG foi aprovada ou contém conteúdo inadequado.
+  - **Status de Verificação** (Boolean): Indica se a ONG foi aprovada ou contém conteúdo inadequado. -->
 
 ---
 
@@ -49,16 +52,14 @@ Os **Termos de Uso** da plataforma **Conexão Solidária** são baseados nas lei
 
 ## Conclusão
 
-O projeto será desenvolvido seguindo as boas práticas de arquitetura serverless, utilizando **AWS Lambda** e **Amazon DynamoDB** para garantir escalabilidade, e as funções de inteligência artificial do **Amazon Rekognition** e **Amazon Bedrock** para moderação de conteúdo, garantindo um ambiente seguro e confiável para os usuários.
+**Conexão Solidária** propõe uma solução simples e segura para conectar doadores e Instituições, utilizando serviços robustos da AWS para garantir escalabilidade e confiabilidade. Com a moderação automática de conteúdo e uma arquitetura serverless eficiente, o projeto visa promover ações solidárias de forma acessível, transparente e segura, criando um ambiente confiável para todos os envolvidos.
 
 ---
 
-## Estrutura do Repositório
+## Estrutura do Diretórios
 
 ```
 conexao_solidaria/
-│
-├── .serverless/
 │
 ├── api/
 │   └── v1/
@@ -72,6 +73,10 @@ conexao_solidaria/
 │   └── schemas/
 |
 ├── interfaces/
+|
+├── lex/
+|   └── backend/
+|
 ├── utils/
 |
 ├── serverless.yml
