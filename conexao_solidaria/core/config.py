@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    """Define configurações e variáveis de ambiente que serão usadas no projeto"""
+    """Defines configuration and environment variables to be used in the project"""
 
     REGION_NAME: str = ""
     TABLE_NAME: str = ""

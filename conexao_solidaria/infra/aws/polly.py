@@ -8,14 +8,14 @@ class Polly:
         self.client = boto3.client("polly", region_name=settings.REGION_NAME)
 
     def convert(self, text: str, file_name: str) -> tuple[bytes, str]:
-        """Converte texto em áudio MP3. Retorna o conteúdo e nome do arquivo."""
+        """Converts text to MP3 audio. Returns the content and file name."""
 
         response = self.client.synthesize_speech(
             Engine="neural", Text=text, OutputFormat="mp3", VoiceId="Camila"
         )
 
-        # Levanta uma exceção caso AudioStream não esteja na resposta
+        # Raises an exception if AudioStream is not in the response
         if "AudioStream" not in response:
             raise AudioStreamNotFoundException()
 
-        return response["AudioStream"].read(), f"{file_name}.pm3"
+        return response["AudioStream"].read(), f"{file_name}.mp3"

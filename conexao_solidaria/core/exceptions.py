@@ -2,16 +2,16 @@ from typing import Optional
 
 
 class BaseCustomException(Exception):
-    """Classe base para todas as exceções customizadas."""
+    """Base class for all custom exceptions."""
 
     def __init__(self, *args: object, message: Optional[str] = None) -> None:
-        self.message = "Ocorreu um Exceção."
+        self.message = "An exception occurred."
         super().__init__(message or self.message, *args)
 
 
 class AudioStreamNotFoundException(BaseCustomException):
-    """AudioStream não foi encontrado na resposta do Polly."""
+    """AudioStream was not found in Polly's response."""
 
     def __init__(self, *args: object, message: Optional[str] = None) -> None:
-        self.message = "AudioStream não foi encontrado na resposta do Polly."
+        self.message = "AudioStream was not found in Polly's response."
         super().__init__(*args, message=message or self.message)
