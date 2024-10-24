@@ -3,7 +3,7 @@ service: conexao-solidaria
 
 provider:
   name: aws
-  runtime: python3.x
+  runtime: python3.12
 
 functions:
   hello:
