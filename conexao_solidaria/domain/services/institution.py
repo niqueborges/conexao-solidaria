@@ -1,7 +1,7 @@
 from pynamodb.exceptions import DoesNotExist
 from core.exceptions import ItemAlreadyExistsException
 from infra.models.institutions import InstitutionModel
-from infra.schemas.institutions import InstitutionIn, InstitutionOut
+from infra.schemas.institutions import InstitutionIn, InstitutionOut, UpdateInstitution
 from uuid import uuid4
 
 
@@ -60,6 +60,23 @@ class InstitutionService:
         """Retrieves a specific institution by its cnpj."""
         try:
             institution = InstitutionModel.get(hash_key=cnpj)
+        except DoesNotExist:
+            return
+
+        institution_out = InstitutionOut(**institution.attribute_values)
+        return institution_out.model_dump()
+
+    @staticmethod
+    def update(cnpj: str, data: UpdateInstitution) -> InstitutionOut:
+        """Updates an existing institution record by its cnpj."""
+        try:
+            institution = InstitutionModel.get(hash_key=cnpj)
+
+            # Update field values
+            for field, value in data.model_dump(exclude_unset=True).items():
+                setattr(institution, field, value)
+            institution.save()
+
         except DoesNotExist:
             return
 
