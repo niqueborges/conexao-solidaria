@@ -33,3 +33,17 @@ def list_items(event: dict, context: LambdaContext) -> list[dict[str, Any]]:
         return build_http_response(status_code=500, body={"detail": str(exc)})
 
     return build_http_response(status_code=200, body=institutions)
+
+
+def retrieve(event: dict, context: LambdaContext) -> dict[str, Any]:
+    """Retrieves a specific record using 'cnpj' as a filter."""
+
+    # Retrieves 'cnpj' from the URL
+    cnpj = event["pathParameters"]["cnpj"]
+    institution = InstitutionService.get(cnpj=cnpj)
+
+    if not institution:
+        return build_http_response(
+            status_code=404, body={"detail": "Item does not extist."}
+        )
+    return build_http_response(status_code=200, body=institution)
