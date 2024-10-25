@@ -23,3 +23,13 @@ def create(event: dict, context: LambdaContext) -> dict[str, Any]:
         return build_http_response(status_code=409, body={"detail": exc.message})
 
     return build_http_response(status_code=201, body=institution)
+
+
+def list_items(event: dict, context: LambdaContext) -> list[dict[str, Any]]:
+    """Retrieves all Institution records from Dynamo."""
+    try:
+        institutions = InstitutionService.get_all()
+    except Exception as exc:
+        return build_http_response(status_code=500, body={"detail": str(exc)})
+
+    return build_http_response(status_code=200, body=institutions)
