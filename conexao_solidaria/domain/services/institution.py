@@ -45,3 +45,12 @@ class InstitutionService:
 
         institution_out = InstitutionOut(**institution.attribute_values)
         return institution_out.model_dump()
+
+    @staticmethod
+    def get_all() -> list[dict]:
+        """Retrieves all institution records from the database."""
+        institutions_out = list(InstitutionModel.scan())
+        return [
+            InstitutionOut(**institution.attribute_values).model_dump()
+            for institution in institutions_out
+        ]
