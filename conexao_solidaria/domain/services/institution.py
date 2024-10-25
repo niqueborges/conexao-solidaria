@@ -82,3 +82,14 @@ class InstitutionService:
 
         institution_out = InstitutionOut(**institution.attribute_values)
         return institution_out.model_dump()
+
+    @staticmethod
+    def delete(cnpj: str) -> bool:
+        """Deletes an institution by its cnpj."""
+        try:
+            institution = InstitutionModel.get(cnpj)
+        except DoesNotExist:
+            return
+
+        institution.delete()
+        return True
