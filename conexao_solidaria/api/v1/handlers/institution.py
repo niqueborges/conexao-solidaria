@@ -67,3 +67,17 @@ def update(event: dict, context: LambdaContext) -> dict[str, Any]:
             status_code=404, body={"detail": "Item does not extist. Unable to update."}
         )
     return build_http_response(status_code=200, body=institution)
+
+
+def delete(event: dict, context: LambdaContext) -> dict[str, Any]:
+    """Deletes the specific record using 'cnpj' as a filter."""
+
+    # Retrieves 'cnpj' from the URL
+    cnpj = event["pathParameters"]["cnpj"]
+    deleted = InstitutionService.delete(cnpj=cnpj)
+
+    if not deleted:
+        return build_http_response(
+            status_code=404, body={"detail": "Item does not extist. Unable to delete."}
+        )
+    return build_http_response(status_code=204, body={})
