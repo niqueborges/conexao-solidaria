@@ -44,3 +44,17 @@ class UpdateInstitution(BaseModel):
     about: Optional[str] = Field(default=None, description="")
     verified: Optional[bool] = Field(default=None, description="")
     site: Optional[str] = Field(default=None, pattern=url_pattern, description="")
+
+
+class InstitutionOut(InstitutionIn):
+    """Schema to return a single institution"""
+
+    id: str = Field()
+    token: str = Field(description="")
+    verified: bool = Field(description="")
+
+
+class InstitutionListOut(BaseModel):
+    """Schema for returning a list of institutions"""
+
+    institutions: list[InstitutionOut]
