@@ -1,6 +1,6 @@
 import boto3
-from conexao_solidaria.core.config import settings
-from conexao_solidaria.core.exceptions import AudioStreamNotFoundException
+from core.config import settings
+from core.exceptions import AudioStreamNotFoundException
 
 
 class Polly:

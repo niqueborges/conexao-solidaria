@@ -1,6 +1,6 @@
 import boto3
-from conexao_solidaria.utils.date import format_date
-from conexao_solidaria.core.config import settings
+from utils.date import format_date
+from core.config import settings
 
 
 class S3:
