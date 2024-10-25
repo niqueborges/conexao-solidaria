@@ -54,3 +54,14 @@ class InstitutionService:
             InstitutionOut(**institution.attribute_values).model_dump()
             for institution in institutions_out
         ]
+
+    @staticmethod
+    def get(cnpj: str) -> InstitutionOut:
+        """Retrieves a specific institution by its cnpj."""
+        try:
+            institution = InstitutionModel.get(hash_key=cnpj)
+        except DoesNotExist:
+            return
+
+        institution_out = InstitutionOut(**institution.attribute_values)
+        return institution_out.model_dump()
