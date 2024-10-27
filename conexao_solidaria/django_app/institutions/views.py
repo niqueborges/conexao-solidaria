@@ -38,3 +38,11 @@ class DetailInstitutionView(View):
         institution = get_endpoint_data(endpoint)
 
         return render(request, "detail_institution.html", {"institution": institution})
+
+
+class TermsOfUseView(TemplateView):
+    """
+    View responsible for rendering the terms_of_use template
+    """
+
+    template_name = "terms_of_use.html"

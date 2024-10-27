@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import HomeView, InstitutionListView, DetailInstitutionView
+from .views import DetailInstitutionView, HomeView, InstitutionListView, TermsOfUseView
 
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
@@ -8,4 +8,5 @@ urlpatterns = [
     path(
         "institutions/<str:cnpj>/", DetailInstitutionView.as_view(), name="institution"
     ),
+    path("terms-of-use/", TermsOfUseView.as_view(), name="terms_of_use"),
 ]
