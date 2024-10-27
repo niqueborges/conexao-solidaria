@@ -30,7 +30,7 @@
                     <p> Image path : {{ institution.image_path }}</p>
                     <p> About : {{ institution.about}}</p>
                     <p> Verified : {{ institution.verified}}</p>
-                    <a class="btn-detail-institution" href="">Ver Detalhes</a>
+                    <a class="btn-detail-institution" href="{% url 'institution' institution.cnpj %}">Ver Detalhes</a>
                 </div>
             {% endfor %}
         {% else %}
