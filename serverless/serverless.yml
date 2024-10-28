@@ -52,6 +52,15 @@ functions:
           method: delete
           path: /api/v1/institutions/{cnpj}
 
+  tips:
+    handler: api/v1/handlers.tips.lambda_tips
+    timeout: 60
+    events:
+      - httpApi:
+          path: api/v1/institutions/tips
+          method: post
+
+
 plugins:
   - serverless-offline
   - serverless-python-requirements
