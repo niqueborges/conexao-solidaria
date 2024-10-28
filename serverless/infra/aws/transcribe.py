@@ -2,7 +2,7 @@ import boto3
 import requests
 from botocore.exceptions import ClientError
 from requests.exceptions import RequestException
-from conexao_solidaria.core.config import settings
+from serverless.core.config import settings
 
 
 class Transcribe:
