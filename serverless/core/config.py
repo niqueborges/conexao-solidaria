@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     REGION_NAME: str = ""
     TABLE_NAME: str = ""
     BILLING_MODE: str = ""
+    MODEL_ID: str = ""
 
     model_config = SettingsConfigDict(env_file=".env")
 
