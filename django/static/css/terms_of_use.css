@@ -1,32 +1,37 @@
+/* Estilos globais e padronizados */
 .content {
     max-width: 800px;
     margin: 20px auto;
     padding: 20px;
-    background-color: #fff;
+    background-color: #111; /* Fundo preto para o contêiner */
+    color: #fff; /* Texto claro */
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
 }
 
 h2 {
     text-align: center;
-    color: black;
+    color: #00f; /* Azul para o título principal */
 }
 
 h3 {
     text-align: center;
-    color: #555;
+    color: #bbb; /* Cinza claro para subtítulos */
     margin-top: 20px;
 }
 
 p {
     line-height: 1.6;
+    color: #ddd; /* Cinza claro para o texto */
 }
 
 ul {
     padding-left: 20px;
     list-style-type: disc;
+    color: #ddd; /* Cinza claro para os itens da lista */
 }
 
 strong {
     font-weight: bold;
+    color: #00f; /* Azul para ênfase */
 }
