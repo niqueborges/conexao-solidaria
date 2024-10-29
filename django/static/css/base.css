@@ -1,25 +1,26 @@
 /* Estilos globais */
 html, body {
-    height: 100%; /* Garante que o body ocupe 100% da altura da tela */
+    height: 100%;
     margin: 0;
     padding: 0;
     font-family: 'Roboto', sans-serif;
-    background-color: #f5f5f5;
-    color: #333;
+    background-color: #000;
+    color: #fff;
 }
 
 .wrapper {
     display: flex;
-    flex-direction: column; /* Coloca os elementos em coluna */
-    min-height: 100vh; /* Garante que o wrapper ocupe pelo menos 100% da altura da tela */
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 /* Estilo do cabeçalho */
 header {
-    background-color: grey;
-    color: #fff;
+    background-color: #000;
+    color: #00aaff;
     padding: 15px 0;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-bottom: 3px solid #00aaff; /* Linha na parte inferior */
 }
 
 .header-container {
@@ -34,6 +35,7 @@ header {
 .home-title {
     font-size: 28px;
     margin: 0;
+    color: #00aaff;
 }
 
 /* Barra de navegação */
@@ -45,46 +47,60 @@ header {
     gap: 20px;
 }
 
-.nav-bar ul li {
-    display: inline;
-}
-
 .nav-bar ul li a {
     text-decoration: none;
-    color: #fff;
+    color: #00aaff;
     font-size: 18px;
     transition: color 0.3s;
 }
 
 .nav-bar ul li a:hover {
-    color: #ffcc00;
+    color: #0088cc;
 }
 
 /* Estilo do main */
 main {
-    flex-grow: 1; /* Faz o main ocupar o espaço restante */
+    flex-grow: 1;
     max-width: 1200px;
     margin: 30px auto;
     padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    background-color: #111;
     border-radius: 10px;
+}
+
+/* Cartões de ferramentas */
+.tool-card {
+    background-color: #222;
+    border: 2px solid #00aaff; /* Borda azul em volta do cartão */
+    padding: 20px;
+    border-radius: 8px;
+    margin: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: #fff;
+}
+
+.tool-card-title {
+    font-size: 20px;
+    font-weight: bold;
+    color:#00aaff; /* Título amarelo */
+    border-bottom: 2px solid #00aaff; /* Linha abaixo do título */
+    padding-bottom: 8px;
+    margin-bottom: 12px;
 }
 
 /* Estilo do rodapé */
 footer {
-    background-color: grey;
-    color: #fff;
+    background-color: #000;
+    color: #00aaff;
     text-align: center;
     padding: 20px 0;
     font-size: 14px;
+    border-top: 3px solid #00aaff; /* Linha na parte superior */
 }
 
-footer p {
-    margin: 5px 0;
-}
-
-footer a {
-    color: #ffcc00;
+footer p, footer a {
+    color: #00aaff;
     text-decoration: none;
 }
 
