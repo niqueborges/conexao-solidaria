@@ -4,6 +4,8 @@ from core.exceptions import AudioStreamNotFoundException
 
 
 class Polly:
+    """Provides a method to convert text into MP3 audio format using the Polly"""
+
     def __init__(self) -> None:
         self.client = boto3.client("polly", region_name=settings.REGION_NAME)
 
