@@ -68,21 +68,78 @@ class InstitutionIn(BaseModel):
 class UpdateInstitution(BaseModel):
     """Schema for updating an existing institution"""
 
-    cnpj: Optional[str] = Field(default=None, max_length=14, description="")
-    name: Optional[str] = Field(default=None, description="")
-    email: Optional[str] = Field(pattern=email_pattern, default=None, description="")
-    phone_number: Optional[str] = Field(default=None, max_length=11, description="")
-    region: Optional[str] = Field(default=None, description="")
-    state: Optional[str] = Field(default=None, description="")
-    cep: Optional[str] = Field(default=None, max_length=8, description="")
-    address_number: Optional[int] = Field(default=None, description="")
-    confirmation_audio: Optional[str] = Field(
-        default=None, pattern=url_pattern, description=""
+    cnpj: Optional[str] = Field(
+        default=None,
+        max_length=14,
+        description="Updated CNPJ of the institution",
+        examples=["12345678000195"],
     )
-    image: Optional[str] = Field(default=None, pattern=url_pattern, description="")
-    about: Optional[str] = Field(default=None, description="")
-    verified: Optional[bool] = Field(default=None, description="")
-    site: Optional[str] = Field(default=None, pattern=url_pattern, description="")
+    name: Optional[str] = Field(
+        default=None,
+        description="Updated name of the institution",
+        examples=["Coração Solidário"],
+    )
+    email: Optional[str] = Field(
+        pattern=email_pattern,
+        default=None,
+        description="Updated contact email of the institution",
+        examples=["coracaosolidario@gmail.com"],
+    )
+    phone_number: Optional[str] = Field(
+        default=None,
+        max_length=11,
+        description="Updated phone number of the institution with area code",
+        examples=["11987654321"],
+    )
+    region: Optional[str] = Field(
+        default=None,
+        description="Updated region of the institution",
+        examples=["Nordeste, Oeste"],
+    )
+    state: Optional[str] = Field(
+        default=None,
+        description="Updated state abbreviation of the institution",
+        examples=["MA"],
+    )
+    cep: Optional[str] = Field(
+        default=None,
+        max_length=8,
+        description="Updated postal code (CEP) of the institution's address",
+        examples=["87654321"],
+    )
+    address_number: Optional[int] = Field(
+        default=None,
+        description="Updated address number of the institution",
+        examples=[250],
+    )
+    confirmation_audio: Optional[str] = Field(
+        default=None,
+        pattern=url_pattern,
+        description="Updated URL of the confirmation audio file",
+        examples=["https://bucket.s3.us-east-1.amazonaws.com/otheraudio.mp3"],
+    )
+    image: Optional[str] = Field(
+        default=None,
+        pattern=url_pattern,
+        description="Updated URL of the institution's image",
+        examples=["https://bucket.s3.us-east-1.amazonaws.com/otherimage.jpg"],
+    )
+    about: Optional[str] = Field(
+        default=None,
+        description="Updated description of the institution",
+        examples=["Somos emepenhados em espalhar o espírito da união e..."],
+    )
+    verified: Optional[bool] = Field(
+        default=None,
+        description="Verification status of the institution",
+        examples=[False],
+    )
+    site: Optional[str] = Field(
+        default=None,
+        pattern=url_pattern,
+        description="Updated website URL of the institution",
+        examples=["https://institution.com"],
+    )
 
 
 class InstitutionOut(InstitutionIn):
