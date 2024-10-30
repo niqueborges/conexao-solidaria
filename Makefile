@@ -1,11 +1,11 @@
 deploy:
-	@cd conexao_solidaria && sls deploy
+	@cd serverless && sls deploy
 
 run:
-	@cd conexao_solidaria && sls offline
+	@cd serverless && sls offline
 
 pre-commit:
 	@pre-commit install
 
 endpoints:
-	@cd conexao_solidaria && sls info
+	@cd serverless && sls info
