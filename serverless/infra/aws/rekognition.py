@@ -1,42 +1,41 @@
 import boto3
+from core.config import settings
+from botocore.exceptions import ClientError
 
 
-class ImageModerationProcessor:
-    def __init__(self, region_name: str = "us-east-1") -> None:
-        """Initializes the Rekognition client with the specified region."""
-        self.rekognition_client = boto3.client("rekognition", region_name=region_name)
+class Rekognition:
+    def __init__(self) -> None:
+        self.client = boto3.client("rekognition", region_name=settings.REGION_NAME)
 
-    def detect_moderation_labels(
-        self, bucket_name: str, image_key: str, min_confidence: int = 75
+    def detect_inappropriate_content_labels(
+        self, bucket: str, image_key: str, min_confidence: int = 75
     ) -> dict:
-        """Detects moderation labels in an image stored in S3."""
+        """
+        Identifies labels indicating inappropriate content in an image stored in S3.
+        """
         try:
-            response = self.rekognition_client.detect_moderation_labels(
-                Image={"S3Object": {"Bucket": bucket_name, "Name": image_key}},
+            response = self.client.detect_moderation_labels(
+                Image={"S3Object": {"Bucket": bucket, "Name": image_key}},
                 MinConfidence=min_confidence,
             )
             return response.get("ModerationLabels", [])
-        except Exception as e:
-            return {"error": str(e)}
+        except ClientError as exc:
+            # Handle ClientError error from the API call
+            print(f"Error obtaining the detect moderation labels's response: {exc}")
+            raise
 
-    def process_image(self, bucket_name: str, image_key: str) -> dict:
-        """Processes an image and checks for inappropriate content."""
-        labels = self.detect_moderation_labels(bucket_name, image_key)
+    def scan_for_inappropriate_content(self, bucket: str, image_key: str) -> dict:
+        """Analyzes an image for inappropriate content based on moderation labels."""
+        labels = self.detect_inappropriate_content_labels(bucket, image_key)
 
-        """Returns only if there is inappropriate content"""
-        if labels:
-            result = {
-                "message": "The image contains inappropriate content.",
-                "labels": [],
-            }
-            for label in labels:
-                result["labels"].append(
-                    {"name": label["Name"], "confidence": label["Confidence"]}
-                )
-            return result
+        if not labels:
+            return {}
 
-        return {}
-
-
-# Instance of the ImageModerationProcessor class with the default region
-image_processor = ImageModerationProcessor(region_name="us-east-1")
+        # Returns a message and the inappropriate content labels found
+        return {
+            "message": "The image contains inappropriate content.",
+            "labels": [
+                {"name": label["Name"], "confidence": label["Confidence"]}
+                for label in labels
+            ],
+        }
