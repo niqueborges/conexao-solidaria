@@ -52,13 +52,13 @@ functions:
           method: delete
           path: /api/v1/institutions/{cnpj}
 
-  tips:
-    handler: api/v1/handlers.tips.lambda_tips
-    timeout: 60
+  # Bedrock suggestions handler
+  suggestions:
+    handler: api/v1/handlers.bedrock.suggestions
     events:
       - httpApi:
-          path: api/v1/institutions/tips
           method: post
+          path: /api/v1/institutions/suggestions
 
 
 plugins:
