@@ -145,9 +145,11 @@ class UpdateInstitution(BaseModel):
 class InstitutionOut(InstitutionIn):
     """Schema to return a single institution"""
 
-    id: str = Field()
-    token: str = Field(description="")
-    verified: bool = Field(description="")
+    id: str = Field(description="Unique identifier of the institution")
+    token: str = Field(description="Authentication token for the institution")
+    verified: bool = Field(
+        description="Indicates if the institution is verified", examples=[True]
+    )
 
 
 class InstitutionListOut(BaseModel):
