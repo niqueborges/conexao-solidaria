@@ -9,21 +9,60 @@ email_pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
 class InstitutionIn(BaseModel):
     """Schema for creating a new institution"""
 
-    cnpj: str = Field(max_length=14, description="")
-    name: str = Field(description="")
+    cnpj: str = Field(
+        max_length=14,
+        description="CNPJ of the institution",
+        examples=["12345678000195"],
+    )
+    name: str = Field(
+        description="Name of the institution", examples=["Doação Solidária"]
+    )
     email: str = Field(
         pattern=email_pattern,
-        description="",
+        description="Contact email of the institution",
+        examples=["conexaosolidaria@gmail.com"],
     )
-    phone_number: str = Field(max_length=11, description="")
-    region: str = Field(description="")
-    state: str = Field(description="")
-    cep: str = Field(max_length=8, description="")
-    address_number: int = Field(description="")
-    confirmation_audio: str = Field(pattern=url_pattern, description="")
-    image: str = Field(pattern=url_pattern, description="")
-    about: str = Field(description="")
-    site: Optional[str] = Field(default=None, pattern=url_pattern, description="")
+    phone_number: str = Field(
+        max_length=11,
+        description="Phone number of the institution with area code",
+        examples=["11987654321"],
+    )
+    region: str = Field(
+        description="Region where the institution is located", examples=["Norte, Sul"]
+    )
+    state: str = Field(
+        description="State abbreviation where the institution is located",
+        examples=["CA"],
+    )
+    cep: str = Field(
+        max_length=8,
+        description="Postal code (CEP) of the institution's address",
+        examples=["12345678"],
+    )
+    address_number: int = Field(
+        description="Number of the address where the institution is located",
+        examples=[100],
+    )
+    confirmation_audio: str = Field(
+        pattern=url_pattern,
+        description="URL of the confirmation audio file",
+        examples=["https://bucket.s3.us-east-1.amazonaws.com/audio.mp3"],
+    )
+    image: str = Field(
+        pattern=url_pattern,
+        description="URL of the institution's image",
+        examples=["https://bucket.s3.us-east-1.amazonaws.com/image.jpg"],
+    )
+    about: str = Field(
+        description="Brief description about the institution",
+        examples=["Somos emepenhados em espalhar o espírito da bondade e..."],
+    )
+    site: Optional[str] = Field(
+        default=None,
+        pattern=url_pattern,
+        description="Website URL of the institution",
+        examples=["https://institution.com"],
+    )
 
 
 class UpdateInstitution(BaseModel):
