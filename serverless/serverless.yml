@@ -9,6 +9,8 @@ package:
   individually: true
 
 functions:
+
+  # Health handler
   health:
     handler: api/v1/handlers.health.health
     events:
@@ -16,7 +18,7 @@ functions:
           path: /
           method: get
 
-  # CRUD handlers
+  # Institutions CRUD handlers
   create:
     handler: api/v1/handlers.institution.create
     events:
@@ -59,6 +61,14 @@ functions:
       - httpApi:
           method: post
           path: /api/v1/institutions/suggestions
+
+  # Rekognition scan handler
+  scan:
+    handler: api/v1/handlers.rekognition.scan
+    events:
+      - httpApi:
+          method: post
+          path: /api/v1/scan
 
 
 plugins:
