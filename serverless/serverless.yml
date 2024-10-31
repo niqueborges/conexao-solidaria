@@ -78,4 +78,4 @@ plugins:
 
 custom:
   pythonRequirements:
-    fileName: ../requirements.txt
+    fileName: requirements.txt
