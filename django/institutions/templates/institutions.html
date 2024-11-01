@@ -7,35 +7,35 @@
 {% endblock %}
 
 {% block content %}
-<main>
-    <h2>Todas as Instituições</h2>
-    <div class="conteiner-formulario">
-        <form method="GET" action="">
-            <input type="text" id="search" name="search" placeholder="Buscar instituição...">
-            <button class="botao-pesquisa" type="submit">Buscar</button>
-        </form>
-    </div>
-    <section class="conteudo-principal">
-        {% if institutions %}
-            {% for institution in institutions %}
-                <div class="container-institution">
-                    <h3>{{ institution.name }}</h3>
-                    <p> ID : {{ institution.id }}</p>
-                    <p> Token : {{ institution.token }}</p>
-                    <p> CNPJ :{{ institution.cnpj }}</p>
-                    <p> Email :{{ institution.email }}</p>
-                    <p> Telefone : {{ institution.phone_number }}</p>
-                    <p> CEP: {{ institution.cep }}</p>
-                    <p> Número : {{ institution.addres_number }}</p>
-                    <p> Image path : {{ institution.image_path }}</p>
-                    <p> About : {{ institution.about}}</p>
-                    <p> Verified : {{ institution.verified}}</p>
-                    <a class="btn-detail-institution" href="{% url 'institution' institution.cnpj %}">Ver Detalhes</a>
-                </div>
-            {% endfor %}
-        {% else %}
-            <p class="nenhum-resultado">Nenhuma instituição encontrada.</p>
-        {% endif %}
-    </section>
-</main>
+    <main>
+        <h2>Todas as Instituições</h2>
+        <div class="conteiner-formulario">
+            <form method="GET" action="">
+                <input type="text" id="search" name="search" placeholder="Buscar instituição...">
+                <button class="botao-pesquisa" type="submit">Buscar</button>
+            </form>
+        </div>
+        <section class="conteudo-principal">
+            {% if institutions %}
+                {% for institution in institutions %}
+                    <div class="container-carro">
+                        <h3>{{ institution.name }}</h3>
+                        <p> ID : {{ institution.id }}</p>
+                        <p> Token : {{ institution.token }}</p>
+                        <p> CNPJ :{{ institution.cnpj }}</p>
+                        <p> Email :{{ institution.email }}</p>
+                        <p> Telefone : {{ institution.phone_number }}</p>
+                        <p> CEP: {{ institution.cep }}</p>
+                        <p> Número : {{ institution.addres_number }}</p>
+                        <p> Image path : {{ institution.image_path }}</p>
+                        <p> About : {{ institution.about}}</p>
+                        <p> Verified : {{ institution.verified}}</p>
+
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="nenhum-resultado">Nenhuma instituição encontrada.</p>
+            {% endif %}
+        </section>
+    </main>
 {% endblock %}
