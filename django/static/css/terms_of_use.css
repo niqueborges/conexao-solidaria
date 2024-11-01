@@ -11,18 +11,18 @@
 
 h2 {
     text-align: center;
-    color: #00f; /* Azul para o título principal */
+    color: #000; /* Azul para o título principal */
 }
 
 h3 {
     text-align: center;
-    color: #bbb; /* Cinza claro para subtítulos */
+    color: #000; /* Cinza claro para subtítulos */
     margin-top: 20px;
 }
 
 p {
     line-height: 1.6;
-    color: #ddd; /* Cinza claro para o texto */
+    color: #000; /* Cinza claro para o texto */
 }
 
 ul {
@@ -33,5 +33,5 @@ ul {
 
 strong {
     font-weight: bold;
-    color: #00f; /* Azul para ênfase */
+    color: #0d2041; /* Azul para ênfase */
 }
