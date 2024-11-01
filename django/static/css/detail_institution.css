@@ -21,7 +21,7 @@ h2 {
     text-align: center;
     font-size: 28px;
     margin-bottom: 20px;
-    color: #00f; /* Título em azul */
+    color: #0d2041; /* Título em azul */
 }
 
 .conteudo-detalhes {
@@ -41,7 +41,7 @@ h2 {
 
 .container-instituicao img {
     border-radius: 8px;
-    border: 2px solid #00f; /* Borda azul */
+    border: 2px solid #0d2041; /* Borda azul */
     max-width: 100%;
     height: auto;
     margin-bottom: 15px;
@@ -60,14 +60,14 @@ h2 {
 }
 
 .container-instituicao p strong {
-    color: #00f; /* Destaque azul */
+    color: #0d2041; /* Destaque azul */
 }
 
 .btn-voltar {
     display: inline-block;
     margin-top: 20px;
     padding: 10px 20px;
-    background-color: #00f;
+    background-color: #0d2041;
     color: #fff;
     text-decoration: none;
     border-radius: 4px;
@@ -75,7 +75,7 @@ h2 {
 }
 
 .btn-voltar:hover {
-    background-color: #0047ab; /* Azul mais escuro no hover */
+    background-color: #0d2041; /* Azul mais escuro no hover */
 }
 
 .nenhum-resultado {
