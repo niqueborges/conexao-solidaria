@@ -1,126 +1,146 @@
-/* Estilos globais */
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', sans-serif;
-    background-color: #000;
-    color: #fff;
-}
-
-.wrapper {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-/* Estilo do cabeçalho */
+/* Estilos para o cabeçalho e rodapé */
 header {
-    background-color: #000;
-    color: #00aaff;
-    padding: 15px 0;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-bottom: 3px solid #00aaff; /* Linha na parte inferior */
+    background-color: #0d2041; /* Cinza escuro */
 }
 
-.header-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
+header h1 {
+    color: #f9f9f9; /* Texto branco */
 }
 
-.home-title {
-    font-size: 28px;
-    margin: 0;
-    color: #00aaff;
+header .nav-link {
+    color: #f9f9f9; /* Branco claro para os links */
 }
 
-/* Barra de navegação */
-.nav-bar ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    gap: 20px;
+header .nav-link:hover {
+    color: #0d2041; /* Azul secundário para hover */
 }
 
-.nav-bar ul li a {
-    text-decoration: none;
-    color: #00aaff;
-    font-size: 18px;
-    transition: color 0.3s;
+/* Estilo para a logo no cabeçalho */
+.header-logo {
+    width: 50px;
+    height: auto;
+    margin-right: 0.5rem;
 }
 
-.nav-bar ul li a:hover {
-    color: #0088cc;
-}
-
-/* Estilo do main */
-main {
-    flex-grow: 1;
-    max-width: 1200px;
-    margin: 30px auto;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    background-color: #111;
-    border-radius: 10px;
-}
-
-/* Cartões de ferramentas */
-.tool-card {
-    background-color: #222;
-    border: 2px solid #00aaff; /* Borda azul em volta do cartão */
-    padding: 20px;
+/* Estilos principais para seção de destaque */
+.highlight-section {
+    background-color: #ffffff; /* Fundo branco do container */
+    padding: 3rem 4rem;
     border-radius: 8px;
-    margin: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.highlight-section h1 {
+    color: #0d2041; /* Azul principal */
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+.highlight-section p {
+    color: #333;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    max-width: 600px;
+    margin-bottom: 1.5rem;
+}
+
+/* Estilo e interação do botão */
+.highlight-section .btn {
+    background-color: #0d2041; /* Azul principal */
     color: #fff;
+    font-size: 1.1rem;
+    padding: 0.8rem 1.5rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
 }
 
-.tool-card-title {
-    font-size: 20px;
-    font-weight: bold;
-    color:#00aaff; /* Título amarelo */
-    border-bottom: 2px solid #00aaff; /* Linha abaixo do título */
-    padding-bottom: 8px;
-    margin-bottom: 12px;
+.highlight-section .btn:hover {
+    background-color: #0d2041; /* Azul secundário */
 }
 
-/* Estilo do rodapé */
+.highlight-section .btn:active {
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Ajuste no tamanho da imagem */
+.highlight-section .highlight-image {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    margin-left: 2rem;
+    min-width: 250px;
+    object-fit: cover;
+}
+
+/* Footer fixado no final */
+main {
+    min-height: 60vh;
+}
+
+/* Estilos para o rodapé */
 footer {
-    background-color: #000;
-    color: #00aaff;
-    text-align: center;
+    background-color: #293863; /* Azul principal para o fundo do rodapé */
+    color: #f9f9f9; /* Branco claro para o texto */
     padding: 20px 0;
-    font-size: 14px;
-    border-top: 3px solid #00aaff; /* Linha na parte superior */
+    text-align: center;
 }
 
-footer p, footer a {
-    color: #00aaff;
+footer h1 {
+    color: #f9f9f9; /* Branco claro para título no rodapé */
+}
+
+footer p {
+    margin: 5px 0;
+    color: #f9f9f9;
+}
+
+footer .footer-link {
+    color: #f9f9f9; /* Branco claro para os links do rodapé */
     text-decoration: none;
 }
 
-footer a:hover {
-    text-decoration: underline;
+footer .footer-link:hover {
+    color: #0d2041; /* Azul secundário para hover */
 }
 
-/* Estilo responsivo */
+/* Ajustes de layout responsivo */
+@media (max-width: 1024px) {
+    .highlight-section h1 {
+        font-size: 2.8rem;
+    }
+    .highlight-section p {
+        font-size: 1.15rem;
+    }
+    .highlight-section .highlight-image {
+        width: 70%;
+    }
+}
+
 @media (max-width: 768px) {
-    .header-container {
+    .highlight-section {
         flex-direction: column;
         text-align: center;
     }
-
-    .nav-bar ul {
-        flex-direction: column;
-        gap: 10px;
+    .highlight-section h1 {
+        font-size: 2.5rem;
     }
-
-    main {
-        padding: 15px;
+    .highlight-section p {
+        font-size: 1.1rem;
+    }
+    .highlight-section .highlight-image {
+        width: 80%;
+        margin-top: 2rem;
     }
 }
