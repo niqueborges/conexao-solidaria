@@ -9,7 +9,7 @@ def get_endpoint_data(endpoint: str) -> Union[Dict, List[Dict], None]:
     """
     try:
         response = requests.get(endpoint, timeout=20)
-        return response.json()
+        return response.json().get("institutions", [])
     except requests.exceptions.RequestException as e:
         print(f"Erro ao consumir o endpoint: {e}")
         return None
