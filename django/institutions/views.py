@@ -22,7 +22,7 @@ class InstitutionListView(View):
     def get(self, request):
         endpoint = settings.GET_INSTITUTIONS
 
-        institutions = get_endpoint_data(endpoint)
+        institutions = get_endpoint_data(endpoint)[:12]
         return render(request, "institutions.html", {"institutions": institutions})
 
 
