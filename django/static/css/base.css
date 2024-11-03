@@ -1,31 +1,22 @@
-/* Estilos para o cabeçalho e rodapé */
 header {
-    background-color: #0d2041; /* Cinza escuro */
+    background-color: #13678A; 
 }
 
 header h1 {
-    color: #f9f9f9; /* Texto branco */
+    color: #f9f9f9; 
 }
 
 header .nav-link {
-    color: #f9f9f9; /* Branco claro para os links */
+    color: #f9f9f9; 
 }
 
 header .nav-link:hover {
-    color: #0d2041; /* Azul secundário para hover */
+    color: #45C4B0; 
 }
 
-/* Estilo para a logo no cabeçalho */
-.header-logo {
-    width: 50px;
-    height: auto;
-    margin-right: 0.5rem;
-}
-
-/* Estilos principais para seção de destaque */
 .highlight-section {
-    background-color: #ffffff; /* Fundo branco do container */
-    padding: 3rem 4rem;
+    background-color: #ffffff; 
+    padding: 2rem;
     border-radius: 8px;
     margin-bottom: 2rem;
     display: flex;
@@ -38,28 +29,21 @@ header .nav-link:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.highlight-section h1 {
-    color: #0d2041; /* Azul principal */
-    font-size: 3rem;
-    font-weight: 700;
-    line-height: 1.2;
-    margin-bottom: 1rem;
+.highlight-section h2 {
+    color: #13678A; 
+    font-size: 2.5rem; 
 }
 
 .highlight-section p {
     color: #333;
-    font-size: 1.25rem;
-    line-height: 1.5;
-    max-width: 600px;
-    margin-bottom: 1.5rem;
+    font-size: 1.1rem; 
 }
 
-/* Estilo e interação do botão */
 .highlight-section .btn {
-    background-color: #0d2041; /* Azul principal */
+    background-color: #0d2041; 
     color: #fff;
-    font-size: 1.1rem;
-    padding: 0.8rem 1.5rem;
+    font-size: 1rem; 
+    padding: 0.5rem 1rem; 
     font-weight: 600;
     border: none;
     border-radius: 5px;
@@ -67,38 +51,14 @@ header .nav-link:hover {
 }
 
 .highlight-section .btn:hover {
-    background-color: #0d2041; /* Azul secundário */
+    background-color: #45C4B0; 
 }
 
-.highlight-section .btn:active {
-    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Ajuste no tamanho da imagem */
-.highlight-section .highlight-image {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    margin-left: 2rem;
-    min-width: 250px;
-    object-fit: cover;
-}
-
-/* Footer fixado no final */
-main {
-    min-height: 60vh;
-}
-
-/* Estilos para o rodapé */
 footer {
-    background-color: #293863; /* Azul principal para o fundo do rodapé */
-    color: #f9f9f9; /* Branco claro para o texto */
+    background-color: #0d2041; 
+    color: #f9f9f9; 
     padding: 20px 0;
     text-align: center;
-}
-
-footer h1 {
-    color: #f9f9f9; /* Branco claro para título no rodapé */
 }
 
 footer p {
@@ -107,24 +67,17 @@ footer p {
 }
 
 footer .footer-link {
-    color: #f9f9f9; /* Branco claro para os links do rodapé */
+    color: #f9f9f9; 
     text-decoration: none;
 }
 
 footer .footer-link:hover {
-    color: #0d2041; /* Azul secundário para hover */
+    color: #45C4B0; 
 }
 
-/* Ajustes de layout responsivo */
 @media (max-width: 1024px) {
-    .highlight-section h1 {
-        font-size: 2.8rem;
-    }
-    .highlight-section p {
-        font-size: 1.15rem;
-    }
-    .highlight-section .highlight-image {
-        width: 70%;
+    .highlight-section h2 {
+        font-size: 2rem; 
     }
 }
 
@@ -132,15 +85,5 @@ footer .footer-link:hover {
     .highlight-section {
         flex-direction: column;
         text-align: center;
-    }
-    .highlight-section h1 {
-        font-size: 2.5rem;
-    }
-    .highlight-section p {
-        font-size: 1.1rem;
-    }
-    .highlight-section .highlight-image {
-        width: 80%;
-        margin-top: 2rem;
     }
 }
