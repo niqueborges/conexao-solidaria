@@ -6,8 +6,25 @@ provider:
 
 functions:
   hello:
-    handler: handler.hello
+    handler: handlers/health.hello
     events:
       - httpApi:
           path: /
           method: get
+
+  lex:
+    handler: handlers/lex.lex
+    events:
+      - httpApi:
+          path: /
+          method: post
+
+
+plugins:
+  - serverless-offline
+  - serverless-python-requirements
+  - serverless-dotenv-plugin
+
+custom:
+  pythonRequirements:
+    fileName: requirements.txt
