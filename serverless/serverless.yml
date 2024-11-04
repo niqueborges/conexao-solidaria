@@ -57,6 +57,7 @@ functions:
   # Bedrock suggestions handler
   suggestions:
     handler: api/v1/handlers.bedrock.suggestions
+    timeout: 45
     events:
       - httpApi:
           method: post
