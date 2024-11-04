@@ -79,4 +79,11 @@ plugins:
 
 custom:
   pythonRequirements:
-    fileName: requirements.txt
+      useStaticCache: false
+      useDownloadCache: false
+      pipCmdExtraArgs:
+        - "--platform manylinux2014_x86_64"
+        - "--implementation cp"
+        - "--python-version 3.9"
+        - "--only-binary=:all:"
+        - "--upgrade"
