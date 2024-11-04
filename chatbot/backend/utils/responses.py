@@ -35,3 +35,15 @@ class LexResponses:
             }
         }
         return response
+
+    @staticmethod
+    def delegate(event):
+        """
+        Sends a response to Amazon Lex to delegate the conversation.
+        """
+        return {
+            "sessionState": {
+                "dialogAction": {"type": "Delegate"},
+                "intent": event["sessionState"]["intent"],
+            }
+        }
