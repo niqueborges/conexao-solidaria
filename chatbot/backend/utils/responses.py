@@ -22,3 +22,16 @@ class LexResponses:
             },
             "messages": [{"contentType": "PlainText", "content": response_message}],
         }
+
+    @staticmethod
+    def elicit_slot(event, slot_to_elicit):
+        """
+        Sends a response to Amazon Lex to request a specific slot from the user.
+        """
+        response = {
+            "sessionState": {
+                "dialogAction": {"type": "ElicitSlot", "slotToElicit": slot_to_elicit},
+                "intent": event["sessionState"]["intent"],
+            }
+        }
+        return response
