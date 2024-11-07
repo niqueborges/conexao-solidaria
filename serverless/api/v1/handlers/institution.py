@@ -52,6 +52,20 @@ def retrieve(event: dict, context: LambdaContext) -> dict[str, Any]:
     return build_http_response(status_code=200, body=institution)
 
 
+def query(event: dict, context: LambdaContext) -> dict[str, Any]:
+    """Queries institutions by optional 'region' and/or 'state' parameters."""
+    query_params = event.get("queryStringParameters") or {}
+    region = query_params.get("region")
+    state = query_params.get("state")
+
+    try:
+        institutions = InstitutionService.query(region=region, state=state)
+    except InstitutionNotFoundException as exc:
+        return build_http_response(status_code=404, body={"detail": exc.message})
+
+    return build_http_response(status_code=200, body=institutions)
+
+
 def update(event: dict, context: LambdaContext) -> dict[str, Any]:
     """Updates the specified fields of a record in Dynamo."""
 
