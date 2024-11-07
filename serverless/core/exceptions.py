@@ -17,9 +17,17 @@ class AudioStreamNotFoundException(BaseException):
         super().__init__(*args, message=message or self.message)
 
 
-class ItemAlreadyExistsException(BaseException):
-    """Item already exists."""
+class InstitutionAlreadyExistsException(BaseException):
+    """Institution already exists."""
 
     def __init__(self, *args: object, message: Optional[str] = None) -> None:
-        self.message = "Item already exists."
+        self.message = "Institution already exists."
+        super().__init__(*args, message=message or self.message)
+
+
+class InstitutionNotFoundException(BaseException):
+    """Institution not found."""
+
+    def __init__(self, *args: object, message: Optional[str] = None) -> None:
+        self.message = "Institution not found."
         super().__init__(*args, message=message or self.message)
