@@ -1,7 +1,8 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
+from infra.schemas.base import BaseSchema
 
 
-class SuggestionIn(BaseModel):
+class SuggestionIn(BaseSchema):
     """Input model for generating suggestions based on a specified topic."""
 
     topic: str = Field(
@@ -10,7 +11,7 @@ class SuggestionIn(BaseModel):
     )
 
 
-class SuggestionOut(BaseModel):
+class SuggestionOut(BaseSchema):
     """Output model for the generated suggestion response."""
 
     suggestion: str = Field(

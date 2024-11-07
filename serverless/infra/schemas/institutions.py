@@ -1,12 +1,13 @@
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import Field
+from infra.schemas.base import BaseSchema
 
 
 url_pattern = r"^(http|https):\/\/[^\s$.?#].[^\s]*$"
 email_pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
 
 
-class InstitutionIn(BaseModel):
+class CreateInstitution(BaseSchema):
     """Schema for creating a new institution"""
 
     cnpj: str = Field(
@@ -65,7 +66,7 @@ class InstitutionIn(BaseModel):
     )
 
 
-class UpdateInstitution(BaseModel):
+class UpdateInstitution(BaseSchema):
     """Schema for updating an existing institution"""
 
     cnpj: Optional[str] = Field(
@@ -142,7 +143,7 @@ class UpdateInstitution(BaseModel):
     )
 
 
-class InstitutionOut(InstitutionIn):
+class InstitutionResponse(CreateInstitution):
     """Schema to return a single institution"""
 
     id: str = Field(description="Unique identifier of the institution")
@@ -152,7 +153,7 @@ class InstitutionOut(InstitutionIn):
     )
 
 
-class InstitutionListOut(BaseModel):
+class ListInstitutionReponse(BaseSchema):
     """Schema for returning a list of institutions"""
 
-    institutions: list[InstitutionOut]
+    institutions: list[InstitutionResponse]

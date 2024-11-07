@@ -1,7 +1,8 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
+from infra.schemas.base import BaseSchema
 
 
-class ScanIn(BaseModel):
+class ScanIn(BaseSchema):
     """Input Schema for image scanning."""
 
     bucket: str = Field(
@@ -14,7 +15,7 @@ class ScanIn(BaseModel):
     )
 
 
-class Label(BaseModel):
+class Label(BaseSchema):
     """Schema representing a label of inappropriate content detected in the image."""
 
     name: str = Field(description="Name of the label.", examples=["Explicit Nudity"])
@@ -23,7 +24,7 @@ class Label(BaseModel):
     )
 
 
-class ScanOut(BaseModel):
+class ScanOut(BaseSchema):
     """Output Schema for the result of content scanning."""
 
     message: str = Field(
