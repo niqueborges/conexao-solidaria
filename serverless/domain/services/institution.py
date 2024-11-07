@@ -10,6 +10,7 @@ from infra.schemas.institutions import (
     UpdateInstitution,
     ListInstitutionReponse,
 )
+from typing import Optional
 from uuid import uuid4
 
 
@@ -79,6 +80,29 @@ class InstitutionService:
 
         institution_out = InstitutionResponse(**institution.attribute_values)
         return institution_out.model_dump()
+
+    @staticmethod
+    def query(
+        region: Optional[str] = None, state: Optional[str] = None
+    ) -> ListInstitutionReponse:
+        """Retrieve institutions by region and/or state parameters."""
+        if state and region:
+            query = InstitutionModel.scan(
+                (InstitutionModel.state == state) & (InstitutionModel.region == region)
+            )
+        elif state:
+            query = InstitutionModel.scan(InstitutionModel.state == state)
+        elif region:
+            query = InstitutionModel.scan(InstitutionModel.region == region)
+
+        institutions = [
+            InstitutionResponse(**item.attribute_values).model_dump() for item in query
+        ]
+        if not institutions:
+            raise InstitutionNotFoundException(
+                message="No institutions found matching the specified criteria."
+            )
+        return ListInstitutionReponse(institutions=institutions).model_dump()
 
     @staticmethod
     def update(cnpj: str, data: UpdateInstitution) -> InstitutionResponse:
