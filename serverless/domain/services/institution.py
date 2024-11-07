@@ -1,7 +1,15 @@
 from pynamodb.exceptions import DoesNotExist
-from core.exceptions import ItemAlreadyExistsException
+from core.exceptions import (
+    InstitutionAlreadyExistsException,
+    InstitutionNotFoundException,
+)
 from infra.models.institutions import InstitutionModel
-from infra.schemas.institutions import InstitutionIn, InstitutionOut, UpdateInstitution
+from infra.schemas.institutions import (
+    CreateInstitution,
+    InstitutionResponse,
+    UpdateInstitution,
+    ListInstitutionReponse,
+)
 from uuid import uuid4
 
 
@@ -12,11 +20,11 @@ class InstitutionService:
     """
 
     @staticmethod
-    def create(data: InstitutionIn) -> InstitutionOut:
+    def create(data: CreateInstitution) -> InstitutionResponse:
         """Creates a new institution record."""
         try:
             InstitutionModel.get(hash_key=data.cnpj)
-            raise ItemAlreadyExistsException(
+            raise InstitutionAlreadyExistsException(
                 message=f"Institution with cnpj '{data.cnpj}' already exists."
             )
         except DoesNotExist:
@@ -43,53 +51,64 @@ class InstitutionService:
         )
         institution.save()
 
-        institution_out = InstitutionOut(**institution.attribute_values)
+        institution_out = InstitutionResponse(**institution.attribute_values)
         return institution_out.model_dump()
 
     @staticmethod
-    def get_all() -> list[dict]:
+    def get_all() -> ListInstitutionReponse:
         """Retrieves all institution records from the database."""
-        institutions_out = list(InstitutionModel.scan())
-        return [
-            InstitutionOut(**institution.attribute_values).model_dump()
-            for institution in institutions_out
+        institutions = list(InstitutionModel.scan())
+
+        if not institutions:
+            raise InstitutionNotFoundException(message="No institutions found.")
+        institutions_out = [
+            InstitutionResponse(**institution.attribute_values).model_dump()
+            for institution in institutions
         ]
+        return ListInstitutionReponse(institutions=institutions_out).model_dump()
 
     @staticmethod
-    def get(cnpj: str) -> InstitutionOut:
+    def get(cnpj: str) -> InstitutionResponse:
         """Retrieves a specific institution by its cnpj."""
         try:
             institution = InstitutionModel.get(hash_key=cnpj)
         except DoesNotExist:
-            return
+            raise InstitutionNotFoundException(
+                message=f"Institution with cnpj '{cnpj}' does not exist."
+            )
 
-        institution_out = InstitutionOut(**institution.attribute_values)
+        institution_out = InstitutionResponse(**institution.attribute_values)
         return institution_out.model_dump()
 
     @staticmethod
-    def update(cnpj: str, data: UpdateInstitution) -> InstitutionOut:
+    def update(cnpj: str, data: UpdateInstitution) -> InstitutionResponse:
         """Updates an existing institution record by its cnpj."""
         try:
             institution = InstitutionModel.get(hash_key=cnpj)
 
-            # Update field values
-            for field, value in data.model_dump(exclude_unset=True).items():
-                setattr(institution, field, value)
-            institution.save()
+            # update actions
+            updates = [
+                getattr(InstitutionModel, field).set(value)
+                for field, value in data.model_dump(exclude_unset=True).items()
+            ]
+            institution.update(actions=updates)
 
         except DoesNotExist:
-            return
-
-        institution_out = InstitutionOut(**institution.attribute_values)
+            raise InstitutionNotFoundException(
+                message=f"Institution with cnpj '{cnpj}' does not exist."
+            )
+        institution_out = InstitutionResponse(**institution.attribute_values)
         return institution_out.model_dump()
 
     @staticmethod
     def delete(cnpj: str) -> bool:
         """Deletes an institution by its cnpj."""
         try:
-            institution = InstitutionModel.get(cnpj)
+            institution = InstitutionModel.get(hash_key=cnpj)
         except DoesNotExist:
-            return
+            raise InstitutionNotFoundException(
+                message=f"Institution with cnpj '{cnpj}' does not exist."
+            )
 
         institution.delete()
         return True
