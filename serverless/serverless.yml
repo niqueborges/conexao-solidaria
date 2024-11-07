@@ -5,11 +5,7 @@ provider:
   name: aws
   runtime: python3.9
 
-package:
-  individually: true
-
 functions:
-
   # Health handler
   health:
     handler: api/v1/handlers.health.health
@@ -71,6 +67,13 @@ functions:
           method: post
           path: /api/v1/scan
 
+  # Query Institutions handler
+  query:
+    handler: api/v1/handlers.institution.query
+    events:
+      - httpApi:
+          method: get
+          path: /api/v1/institutions/query
 
 plugins:
   - serverless-offline
