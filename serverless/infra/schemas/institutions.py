@@ -40,9 +40,21 @@ class CreateInstitution(BaseSchema):
         description="Postal code (CEP) of the institution's address",
         examples=["12345678"],
     )
+    address: str = Field(
+        description="The street address, street name and number if applicable.",
+        examples=["Rua das Flores, 123", "Avenida Paulista, 1500"],
+    )
     address_number: int = Field(
         description="Number of the address where the institution is located",
         examples=[100],
+    )
+    city: str = Field(
+        description="The city where the address is located.",
+        examples=["São Paulo", "Rio de Janeiro"],
+    )
+    neighborhood: str = Field(
+        description="The neighborhood or district within the city.",
+        examples=["Centro", "Copacabana"],
     )
     confirmation_audio: str = Field(
         pattern=url_pattern,
@@ -108,10 +120,25 @@ class UpdateInstitution(BaseSchema):
         description="Updated postal code (CEP) of the institution's address",
         examples=["87654321"],
     )
+    address: str = Field(
+        default=None,
+        description="The street address, street name and number if applicable.",
+        examples=["Rua das Flores, 123", "Avenida Paulista, 1500"],
+    )
     address_number: Optional[int] = Field(
         default=None,
         description="Updated address number of the institution",
         examples=[250],
+    )
+    city: str = Field(
+        default=None,
+        description="The city where the address is located.",
+        examples=["São Paulo", "Rio de Janeiro"],
+    )
+    neighborhood: str = Field(
+        default=None,
+        description="The neighborhood or district within the city.",
+        examples=["Centro", "Copacabana"],
     )
     confirmation_audio: Optional[str] = Field(
         default=None,
