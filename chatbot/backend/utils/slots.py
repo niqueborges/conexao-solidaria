@@ -1,6 +1,8 @@
 import re
-
+import os
 from utils.responses import LexResponses
+from services.api import ApiClient
+from services.via_cep_api import ViaCepService
 
 
 def get_slot_value(slots: str, slot_name: str) -> str:
@@ -12,15 +14,28 @@ def get_slot_value(slots: str, slot_name: str) -> str:
     return None
 
 
-def validate_slot(slot_value: str, pattern: str):
+def validate_slot(slot_value: str, pattern: str) -> bool:
     """Validates the slot value based on the provided regex pattern."""
     return bool(re.match(pattern, slot_value))
+
+
+def update_multiple_slot_values(event: dict, slots_values: dict) -> None:
+    """
+    Updates multiple slot values in the event with the required format.
+    """
+    for slot_name, value in slots_values.items():
+        event["sessionState"]["intent"]["slots"][slot_name] = {
+            "shape": "Scalar",
+            "value": {"interpretedValue": value},
+        }
 
 
 def check_slot_filling(slots: dict, event: dict, validation_rules: dict) -> None:
     """
     Responsible for checking if the slots are properly filled.
     """
+
+    intent_name = event["sessionState"]["intent"]["name"]
 
     for slot_name, slot_data in slots.items():
         slot_value = (
@@ -34,5 +49,34 @@ def check_slot_filling(slots: dict, event: dict, validation_rules: dict) -> None
             is_valid = validate_slot(slot_value, pattern)
             if not is_valid:
                 return LexResponses.elicit_slot(event, slot_name)
+
+    print(event)
+    if intent_name == "RegisterIntent":
+        cep = get_slot_value(slots, "InstitutionCep")
+
+        if cep:
+            api_client = ApiClient(os.getenv("BASE_VIA_CEP"))
+            via_cep = ViaCepService(api_client)
+            address_data = via_cep.get_cep(cep)
+
+            if address_data:
+                street, neighborhood, city, state, region = via_cep.format_cep_response(
+                    address_data
+                )
+
+                slots_values_to_update = {
+                    "InstitutionState": state,
+                    "InstitutionCity": city,
+                    "InstitutionNeighborhood": neighborhood,
+                    "InstitutionAddress": street,
+                    "InstitutionRegion": region,
+                }
+                update_multiple_slot_values(event, slots_values_to_update)
+
+                print(event)
+
+                return LexResponses.delegate(event)
+            else:
+                return LexResponses.elicit_slot(event, "InstitutionCep")
 
     return LexResponses.delegate(event)

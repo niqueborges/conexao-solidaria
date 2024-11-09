@@ -36,24 +36,10 @@ class RegisterIntent:
         """
         Responsible for processing the FulfillmentCodeHook step of the RegisterIntent.
         """
+        print(f"Evento no fulfillment: {self.event}")
         slots = self.event["sessionState"]["intent"]["slots"]
-        slot_names = [slot_name for slot_name in slots.keys()]
-        slot_values = {name: get_slot_value(slots, name) for name in slot_names}
 
-        institution_data = {
-            "cnpj": slot_values["CNPJ"],
-            "name": slot_values["InstitutionName"],
-            "email": slot_values["InstitutionEmail"],
-            "phone_number": slot_values["InstitutionPhone"],
-            "region": "sudeste",
-            "state": "mg",
-            "cep": slot_values["InstitutionCep"],
-            "address_number": slot_values["InstitutionAddressNumber"],
-            "confirmation_audio": "https://www.teste.com.br",
-            "image": "https://wwww.teste.com.br",
-            "about": slot_values["InstitutionDescription"],
-            "site": slot_values["InstitutionSite"],
-        }
+        institution_data = self.generate_institution_data(slots)
 
         api_client = ApiClient(os.getenv("BASE_URL"))
         amazon_service = AmazonServices(api_client)
@@ -71,3 +57,31 @@ class RegisterIntent:
         )
         print(f"Response : {response}")
         return response
+
+    def generate_institution_data(self, slots: dict) -> dict:
+        """
+        Method responsible for generating the dictionary with the institution's
+        data from the slot values.
+        """
+        slot_names = [slot_name for slot_name in slots.keys()]
+        slot_values = {name: get_slot_value(slots, name) for name in slot_names}
+
+        institution_data = {
+            "cnpj": slot_values["CNPJ"],
+            "name": slot_values["InstitutionName"],
+            "email": slot_values["InstitutionEmail"],
+            "phone_number": slot_values["InstitutionPhone"],
+            "region": slot_values["InstitutionRegion"],
+            "state": slot_values["InstitutionState"],
+            "address": slot_values["InstitutionAddress"],
+            "city": slot_values["InstitutionCity"],
+            "neighborhood": slot_values["InstitutionNeighborhood"],
+            "cep": slot_values["InstitutionCep"],
+            "address_number": slot_values["InstitutionAddressNumber"],
+            "confirmation_audio": "https://www.teste.com.br",
+            "image": "https://wwww.teste.com.br",
+            "about": slot_values["InstitutionDescription"],
+            "site": slot_values["InstitutionSite"],
+        }
+
+        return institution_data
