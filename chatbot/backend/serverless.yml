@@ -20,6 +20,13 @@ functions:
           path: /
           method: post
 
+  twillio:
+    handler: handlers/twilio.twilio
+    events:
+      - httpApi:
+          path: /twillio
+          method: post
+
 
 plugins:
   - serverless-offline
