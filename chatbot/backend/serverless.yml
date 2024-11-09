@@ -20,11 +20,11 @@ functions:
           path: /
           method: post
 
-  twillio:
+  twilio:
     handler: handlers/twilio.twilio
     events:
       - httpApi:
-          path: /twillio
+          path: /twilio
           method: post
 
 
