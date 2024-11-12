@@ -14,7 +14,9 @@ def download_media_file(media_url: str) -> bytes:
             return response.content
         else:
             raise ValueError(
-                f"Unexpected content type: {response.headers.get('Content-Type')}"
+                f"Request failed with status code {response.status_code}. "
+                f"Content-Type: {response.headers.get('Content-Type')}. "
+                f"Response content: {response.text}"
             )
     except RequestException as e:
         raise Exception(

@@ -14,7 +14,7 @@ def upload_file_to_s3(media_content: bytes, content_type: str) -> str:
     )
 
     # Gera um nome de arquivo único
-    media_key = f"media/{uuid.uuid4()}{extension}"
+    media_key = f"{uuid.uuid4()}{extension}"
 
     s3_client.put_object(Bucket=bucket_name, Key=media_key, Body=media_content)
 

@@ -1,5 +1,7 @@
 import re
 import os
+import requests
+from typing import Optional
 from utils.responses import LexResponses
 from services.api import ApiClient
 from services.via_cep_api import ViaCepService
@@ -30,6 +32,27 @@ def update_multiple_slot_values(event: dict, slots_values: dict) -> None:
         }
 
 
+def check_image_path_slot(
+    slot_value: str, event: dict, slot_name: str
+) -> Optional[dict]:
+    """Checks if the provided image is appropriate using Amazon Rekognition
+    to analyze its content."""
+
+    bucket_name = os.getenv("BUCKET_NAME")
+
+    rekognition_response = requests.post(
+        os.getenv("REKOGNITION_ENDPOINT"),
+        json={"bucket": bucket_name, "image_key": slot_value},
+    )
+
+    print(f"Resposta do Rekognition - Status Code: {rekognition_response.status_code}")
+
+    if rekognition_response.status_code != 204:
+        return LexResponses.elicit_slot(event, slot_name)
+
+    return None
+
+
 def check_slot_filling(slots: dict, event: dict, validation_rules: dict) -> None:
     """
     Responsible for checking if the slots are properly filled.
@@ -49,6 +72,11 @@ def check_slot_filling(slots: dict, event: dict, validation_rules: dict) -> None
             is_valid = validate_slot(slot_value, pattern)
             if not is_valid:
                 return LexResponses.elicit_slot(event, slot_name)
+
+        if slot_name == "ImagePath" and slot_value:
+            image_check_response = check_image_path_slot(slot_value, event, slot_name)
+            if image_check_response:
+                return image_check_response
 
     print(event)
     if intent_name == "RegisterIntent":
