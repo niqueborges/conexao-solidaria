@@ -6,23 +6,23 @@ body {
 }
 
 header {
-    background-color: #13678A; 
+    background-color: #13678A;
 }
 
 header h1 {
-    color: #f9f9f9; 
+    color: #f9f9f9;
 }
 
 header .nav-link {
-    color: #f9f9f9; 
+    color: #f9f9f9;
 }
 
 header .nav-link:hover {
-    color: #45C4B0; 
+    color: #45C4B0;
 }
 
 .highlight-section {
-    background-color: #ffffff; 
+    background-color: #ffffff;
     padding: 2rem;
     border-radius: 8px;
     margin-bottom: 2rem;
@@ -37,20 +37,20 @@ header .nav-link:hover {
 }
 
 .highlight-section h2 {
-    color: #13678A; 
-    font-size: 2.5rem; 
+    color: #13678A;
+    font-size: 2.5rem;
 }
 
 .highlight-section p {
     color: #333;
-    font-size: 1.1rem; 
+    font-size: 1.1rem;
 }
 
 .highlight-section .btn {
-    background-color: #0d2041; 
+    background-color: #0d2041;
     color: #fff;
-    font-size: 1rem; 
-    padding: 0.5rem 1rem; 
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
     font-weight: 600;
     border: none;
     border-radius: 5px;
@@ -58,12 +58,12 @@ header .nav-link:hover {
 }
 
 .highlight-section .btn:hover {
-    background-color: #45C4B0; 
+    background-color: #45C4B0;
 }
 
 footer {
-    background-color: #0d2041; 
-    color: #f9f9f9; 
+    background-color: #0d2041;
+    color: #f9f9f9;
     padding: 20px 0;
     text-align: center;
 }
@@ -74,17 +74,17 @@ footer p {
 }
 
 footer .footer-link {
-    color: #f9f9f9; 
+    color: #f9f9f9;
     text-decoration: none;
 }
 
 footer .footer-link:hover {
-    color: #45C4B0; 
+    color: #45C4B0;
 }
 
 @media (max-width: 1024px) {
     .highlight-section h2 {
-        font-size: 2rem; 
+        font-size: 2rem;
     }
 }
 
