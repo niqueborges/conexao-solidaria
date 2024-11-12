@@ -127,5 +127,14 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Institution endpoints
 GET_INSTITUTIONS = env("GET_INSTITUTIONS")
 GET_INSTITUTION = env("GET_INSTITUTION")
+
+# Lex infos
+BOT_ID = env("BOT_ID")
+ALIAS_ID = env("ALIAS_ID")
+LOCALE_ID = env("LOCALE_ID")
+
+# AWS settings
+REGION_NAME = env("REGION_NAME")
