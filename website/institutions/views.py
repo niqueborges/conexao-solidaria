@@ -1,8 +1,8 @@
 from django.core.paginator import Paginator
-from django.shortcuts import render
 from django.views.generic import TemplateView, View
+from django.shortcuts import render
+from utils.http import fetch_data
 from app import settings
-from .utils import get_endpoint_data
 
 
 class HomeView(TemplateView):
@@ -10,7 +10,7 @@ class HomeView(TemplateView):
     View responsible for rendering the homepage template
     """
 
-    template_name = "base.html"
+    template_name = "home.html"
 
 
 class InstitutionListView(View):
@@ -21,12 +21,10 @@ class InstitutionListView(View):
 
     def get(self, request):
         endpoint = settings.GET_INSTITUTIONS
-        institutions = get_endpoint_data(endpoint)
+        institutions = fetch_data(endpoint)
 
         paginator = Paginator(institutions, 6)
-
         page_number = request.GET.get("page", 1)
-
         page_object = paginator.get_page(page_number)
 
         return render(request, "institutions.html", {"page_object": page_object})
@@ -40,8 +38,7 @@ class DetailInstitutionView(View):
 
     def get(self, request, cnpj):
         endpoint = settings.GET_INSTITUTION.format(cnpj=cnpj)
-
-        institution = get_endpoint_data(endpoint)
+        institution = fetch_data(endpoint)
 
         return render(request, "detail_institution.html", {"institution": institution})
 
@@ -52,16 +49,3 @@ class TermsOfUseView(TemplateView):
     """
 
     template_name = "terms_of_use.html"
-
-
-# class ChatBotView(View):
-#     """
-#     View responsible for displaying all institutions registered at the
-#     specified endpoint.
-#     """
-
-#     def get(self, request):
-#         endpoint = settings.GET_INSTITUTIONS
-#         institutions = get_endpoint_data(endpoint)[:12]
-
-#         return render(request, "institutions.html", {"institutions": institutions})
