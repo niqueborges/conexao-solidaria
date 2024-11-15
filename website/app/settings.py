@@ -138,3 +138,6 @@ LOCALE_ID = env("LOCALE_ID")
 
 # AWS settings
 REGION_NAME = env("REGION_NAME")
+
+# S3
+S3_BUCKET_NAME = env("S3_BUCKET_NAME")
