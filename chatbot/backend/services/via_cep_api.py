@@ -11,7 +11,11 @@ class ViaCepService:
 
     def get_cep(self, cep: str) -> dict:
         """Obtains the user's postal code information through the Via Cep API."""
-        return self.api_client.get(f"{cep}/json")
+        response = self.api_client.get(f"{cep}/json")
+        if response.get("erro"):
+            return None
+
+        return response
 
     def format_cep_response(self, address_data: dict) -> str:
         """
