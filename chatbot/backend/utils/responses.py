@@ -3,6 +3,8 @@ class LexResponses:
     A class to format responses for Amazon Lex.
     """
 
+    MAX_ATTEMPTS = 3
+
     @staticmethod
     def sent_fulfillment_response(
         event: dict, slots: dict, response_message: str
@@ -28,12 +30,100 @@ class LexResponses:
         """
         Sends a response to Amazon Lex to request a specific slot from the user.
         """
+        session_attributes = event.get("sessionState", {}).get("sessionAttributes", {})
+        attempt_key = f"{slot_to_elicit}_attempts"
+        continue_key = "continue_prompt"
+
+        if session_attributes.get(continue_key) == "waiting_for_confirmation":
+            user_response = event.get("inputTranscript", "").strip().lower()
+
+            if user_response == "sim":
+                return {
+                    "sessionState": {
+                        "dialogAction": {"type": "Close"},
+                        "intent": {
+                            "name": event["sessionState"]["intent"]["name"],
+                            "state": "Fulfilled",
+                        },
+                        "sessionAttributes": session_attributes,
+                    },
+                    "messages": [
+                        {
+                            "contentType": "PlainText",
+                            "content": (
+                                "Entendido! Se precisar de alguma coisa é só chamar."
+                            ),
+                        }
+                    ],
+                }
+
+            elif user_response == "não":
+                session_attributes[attempt_key] = "0"
+                session_attributes.pop(continue_key, None)
+                return LexResponses.elicit_slot_response(
+                    slot_to_elicit, event, session_attributes
+                )
+
+            else:
+                return LexResponses.elicit_slot_response(
+                    slot_to_elicit,
+                    event,
+                    session_attributes,
+                    "Por favor, responda com 'sim' para encerrar ou 'não' para "
+                    "continuar tentando.",
+                )
+
+        attempts = int(session_attributes.get(attempt_key, 0)) + 1
+        session_attributes[attempt_key] = str(attempts)
+
+        if attempts >= LexResponses.MAX_ATTEMPTS:
+            session_attributes[continue_key] = "waiting_for_confirmation"
+            return {
+                "sessionState": {
+                    "dialogAction": {
+                        "type": "ElicitSlot",
+                        "slotToElicit": slot_to_elicit,
+                    },
+                    "intent": event["sessionState"]["intent"],
+                    "sessionAttributes": session_attributes,
+                },
+                "messages": [
+                    {
+                        "contentType": "PlainText",
+                        "content": (
+                            "Parece que você está tendo um pouco de dificuldade com"
+                            "essa informação.\n"
+                            "Deseja encerrar por agora? Responda 'sim' para encerrar"
+                            "ou 'não' para tentar novamente."
+                        ),
+                    }
+                ],
+            }
+
+        return LexResponses.elicit_slot_response(
+            slot_to_elicit, event, session_attributes
+        )
+
+    @staticmethod
+    def elicit_slot_response(
+        slot_to_elicit, event, session_attributes, message_content=None
+    ):
+        """
+        Helper function to format a response for eliciting a slot with a custom message.
+        """
         response = {
             "sessionState": {
                 "dialogAction": {"type": "ElicitSlot", "slotToElicit": slot_to_elicit},
                 "intent": event["sessionState"]["intent"],
+                "sessionAttributes": session_attributes,
             }
         }
+
+        if message_content:
+            response["messages"] = [
+                {"contentType": "PlainText", "content": message_content}
+            ]
+
         return response
 
     @staticmethod

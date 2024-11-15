@@ -13,7 +13,7 @@ class RegisterIntent:
 
     validation_rules = {
         "CNPJ": r"^\d{14}$",
-        "InstitutionName": r"^[A-Za-z0-9\s.,&-]{2,}$",
+        "InstitutionName": r"^[\w\s.,&-]{2,}$",
         "InstitutionEmail": r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
         "InstitutionPhone": r"^\d{11}$",
         "InstitutionAddressNumber": r"^\d+$",
