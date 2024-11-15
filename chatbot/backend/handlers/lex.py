@@ -1,6 +1,7 @@
 from intents.list import ListIntent
 from intents.register import RegisterIntent
 from intents.tips import TipsIntent
+from intents.welcome import WelcomeIntent
 from utils.responses import LexResponses
 
 
@@ -19,6 +20,8 @@ def lex(event, context):
         intent = ListIntent(event)
     elif intent_name == "TipsIntent":
         intent = TipsIntent(event)
+    elif intent_name == "WelcomeIntent":
+        intent = WelcomeIntent(event)
 
     if intent is None:
         return LexResponses.delegate(event)
