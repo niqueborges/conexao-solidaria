@@ -22,6 +22,7 @@ functions:
 
   twilio:
     handler: handlers/twilio.twilio
+    timeout: 45
     events:
       - httpApi:
           path: /twilio
