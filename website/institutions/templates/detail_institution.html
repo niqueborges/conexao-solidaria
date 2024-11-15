@@ -4,7 +4,7 @@
     {{ block.super }}
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static '/css/detail_institution.css' %}">
-{% endblock %}
+{% endblock styles %}
 
 {% block content %}
     {% if institution %}
@@ -28,4 +28,4 @@
     {% else %}
         <p class="nenhum-resultado text-primary">Nenhuma instituição encontrada.</p>
     {% endif %}
-{% endblock %}
+{% endblock content %}

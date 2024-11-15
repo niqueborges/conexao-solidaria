@@ -4,7 +4,7 @@
     {{ block.super }}
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static '/css/institutions.css' %}">
-{% endblock %}
+{% endblock styles %}
 
 {% block content %}
     <main>
@@ -54,4 +54,4 @@
             {% endif %}
         </div>
     </main>
-{% endblock %}
+{% endblock content %}
