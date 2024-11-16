@@ -18,7 +18,7 @@ def get_slot_value(slots: str, slot_name: str) -> str:
 
 def validate_slot(slot_value: str, pattern: str) -> bool:
     """Validates the slot value based on the provided regex pattern."""
-    return bool(re.match(pattern, slot_value))
+    return bool(re.match(pattern, slot_value, re.IGNORECASE))
 
 
 def update_multiple_slot_values(event: dict, slots_values: dict) -> None:
