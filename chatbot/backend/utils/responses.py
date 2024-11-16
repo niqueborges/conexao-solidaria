@@ -37,7 +37,7 @@ class LexResponses:
         if session_attributes.get(continue_key) == "waiting_for_confirmation":
             user_response = event.get("inputTranscript", "").strip().lower()
 
-            if user_response == "sim":
+            if user_response == "encerrar":
                 return {
                     "sessionState": {
                         "dialogAction": {"type": "Close"},
@@ -57,7 +57,7 @@ class LexResponses:
                     ],
                 }
 
-            elif user_response == "não":
+            elif user_response == "continuar":
                 session_attributes[attempt_key] = "0"
                 session_attributes.pop(continue_key, None)
                 return LexResponses.elicit_slot_response(
@@ -69,8 +69,8 @@ class LexResponses:
                     slot_to_elicit,
                     event,
                     session_attributes,
-                    "Por favor, responda com 'sim' para encerrar ou 'não' para "
-                    "continuar tentando.",
+                    "Por favor, responda com 'encerrar' para encerrar ou 'continuar'"
+                    "para continuar tentando.",
                 )
 
         attempts = int(session_attributes.get(attempt_key, 0)) + 1
@@ -91,10 +91,10 @@ class LexResponses:
                     {
                         "contentType": "PlainText",
                         "content": (
-                            "Parece que você está tendo um pouco de dificuldade com"
+                            "Parece que você está tendo um pouco de dificuldade com "
                             "essa informação.\n"
-                            "Deseja encerrar por agora? Responda 'sim' para encerrar"
-                            "ou 'não' para tentar novamente."
+                            "Deseja encerrar por agora? Responda 'encerrar'"
+                            "para encerrar ou 'continuar' para tentar novamente."
                         ),
                     }
                 ],

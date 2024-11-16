@@ -20,14 +20,14 @@ def send_message_to_lex(text: str, session_id: str) -> str:
             text=text,
         )
 
-        # Extrai a mensagem de resposta do Lex
-        bot_message = (
-            "\n".join(
-                msg.get("content", "")
-                for msg in response.get("messages", [])
-                if msg.get("contentType") == "PlainText"
-            )
-            or "Ocorreu um erro. Tente novamente!"
+        bot_message = "\n".join(
+            msg.get("content", "").replace("#", "\n")
+            for msg in response.get("messages", [])
+            if msg.get("contentType") == "PlainText"
+        ) or (
+            "Desculpe, houve um problema interno. Estamos trabalhando para"
+            "resolver. Por favor, tente novamente em instantes.\n"
+            " Agradecemos pela compreensão."
         )
 
         return bot_message
