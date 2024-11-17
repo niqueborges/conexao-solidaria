@@ -1,4 +1,4 @@
-from uuid import uuid4
+import re
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views import View
@@ -9,11 +9,6 @@ from django.http import HttpRequest
 
 
 class ChatBotView(View):
-    """
-    View to handle chatbot interactions. Supports GET and POST requests
-    for rendering the chatbot page and sending messages or media to the chatbot.
-    """
-
     def get(self, request: HttpRequest, *args, **kwargs):
         """Handles GET requests to render the chatbot page."""
 
@@ -25,17 +20,13 @@ class ChatBotView(View):
         message = request.POST.get("message", "").strip()
         audio = request.FILES.get("audio", None)
         image = request.FILES.get("image", None)
+        session_id = request.COOKIES.get("session_id")
 
-        # Checks if a session_id already exists,
-        # otherwise creates a new one and stores it in the cookie
-        session_id = request.COOKIES.get("session_id") or str(uuid4())
-
-        # Store audio and image files in S3 (if they exist)
         audio_url = (
             s3.put_object(
                 bucket=S3_BUCKET_NAME,
                 body=audio.read(),
-                key=f"{session_id}-audio.mp3",
+                key=f"{session_id}-audio.webm",
                 contentType=audio.content_type,
             )
             if audio
@@ -46,22 +37,25 @@ class ChatBotView(View):
             s3.put_object(
                 bucket=S3_BUCKET_NAME,
                 body=image.read(),
-                key=f"{session_id}-image",
+                key=f"{session_id}-image.jpg",
                 contentType=image.content_type,
             )
             if image
             else None
         )
 
-        # Sends the message or URLs to the bot
-        response = Chat.post_message(
-            message=message or audio_url or image_url,
+        regex = r"(?<=\.com\/).+"
+
+        if image_url:
+            image_key = re.search(regex, image_url).group(0)
+
+        chat_input = message or audio_url or image_key
+        response_data = Chat.post_message(
+            message=chat_input,
             session_id=session_id,
         )
 
-        # Returns the response with the session_id cookie
-        response = JsonResponse(response)
-        # Sets the session_id cookie
+        response = JsonResponse(response_data)
         response.set_cookie("session_id", session_id)
 
         return response
