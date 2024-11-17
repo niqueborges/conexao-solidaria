@@ -30,6 +30,7 @@ const sessionIdInput = document.getElementById("session_id");
 const chatBox = document.getElementById("chat-box");
 const clearChatButton = document.getElementById("clear-chat");
 const recordAudioButton = document.getElementById("record-audio");
+const imageInput = document.getElementById("image");
 
 let mediaRecorder;
 let audioChunks = [];
@@ -50,28 +51,10 @@ async function sendAudio(audioBlob, sessionId) {
             body: formData,
         });
 
-        if (!response.ok) {
-            console.error("Server response error:", response.status, response.statusText);
-            chatBox.innerHTML += `
-                <div class="d-flex justify-content-start mb-2">
-                    <div class="bg-danger text-white p-2 rounded" style="max-width: 70%;">
-                        <strong>Error:</strong> Server response processing error.
-                    </div>
-                </div>`;
-            return;
-        }
-
         const data = await response.json();
         displayBotResponse(data);
-
     } catch (error) {
         console.error("Audio request error:", error);
-        chatBox.innerHTML += `
-            <div class="d-flex justify-content-start mb-2">
-                <div class="bg-danger text-white p-2 rounded" style="max-width: 70%;">
-                    <strong>Error:</strong> Unable to send audio. Please try again.
-                </div>
-            </div>`;
     }
 }
 
@@ -94,55 +77,62 @@ function displayBotResponse(data) {
                 </div>`;
         });
     }
-    chatBox.scrollTop = chatBox.scrollHeight;  // Scroll to the end of the chat
+    chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// Form submission to send a message to the backend
+// Form submission to send a message or image to the backend
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const message = messageInput.value.trim();
     const sessionId = sessionIdInput.value;
+    const imageFile = imageInput.files[0];
 
     if (message) {
-        // Display the user's message in the chat
         chatBox.innerHTML += `
             <div class="d-flex justify-content-end mb-2">
                 <div class="bg-success-subtle text-dark p-2 rounded" style="max-width: 70%;">
                     <strong>You:</strong> ${message}
                 </div>
             </div>`;
+    }
 
-        messageInput.value = '';  // Clear the input field
+    messageInput.value = '';
+    imageInput.value = '';
 
-        // Prepare the data for sending
-        const formData = new FormData();
+    const formData = new FormData();
+    formData.append("session_id", sessionId);
+
+    if (message) {
         formData.append("message", message);
-        formData.append("session_id", sessionId);
+    }
 
-        if (audioBlob) {
-            formData.append("audio", audioBlob, "recording.webm");
-            audioBlob = null;
-        }
+    if (audioBlob) {
+        formData.append("audio", audioBlob, "recording.webm");
+        audioBlob = null;
+    }
 
-        try {
-            const response = await fetch("/chatbot/", {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": csrftoken,
-                },
-                body: formData,
-            });
+    if (imageFile) {
+        formData.append("image", imageFile);
+    }
 
-            const data = await response.json();
-            displayBotResponse(data);
-        } catch (error) {
-            console.error("Request error:", error);
-        }
+    try {
+        const response = await fetch("/chatbot/", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrftoken,
+            },
+            body: formData,
+        });
+
+        const data = await response.json();
+        displayBotResponse(data);
+    } catch (error) {
+        console.error("Request error:", error);
     }
 });
 
-// Clear the chat when clicking the "Clear Chat" button
+// Clear the chat
 clearChatButton.addEventListener("click", () => {
     chatBox.innerHTML = '';
 });
@@ -151,7 +141,7 @@ clearChatButton.addEventListener("click", () => {
 recordAudioButton.addEventListener("click", async () => {
     if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
-        recordAudioButton.textContent = "Record Audio";
+        recordAudioButton.textContent = "🎙️ Gravar Áudio";
         return;
     }
 
@@ -167,7 +157,7 @@ recordAudioButton.addEventListener("click", async () => {
             mediaRecorder.addEventListener("stop", () => {
                 audioBlob = new Blob(audioChunks, { type: "audio/webm" });
                 audioChunks = [];
-                sendAudio(audioBlob, sessionIdInput.value);  // Sends the audio after stopping recording
+                sendAudio(audioBlob, sessionIdInput.value);
             });
         } catch (error) {
             alert("Unable to access the microphone.");
@@ -177,7 +167,7 @@ recordAudioButton.addEventListener("click", async () => {
     }
 
     mediaRecorder.start();
-    recordAudioButton.textContent = "Stop Recording";
+    recordAudioButton.textContent = "⏹️ Parar Gravação";
 });
 
 // Generate a new session_id when the page loads
