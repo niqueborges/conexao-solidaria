@@ -19,7 +19,7 @@ class RegisterIntent:
         "InstitutionAddressNumber": r"^\d+$",
         "InstitutionSite": r"^(https?://)?(www\.)?([a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+)(/[a-zA-Z0-9-._~:/?#[\]@!$&\'()*+,;=%]*)?$",
         "InstitutionCep": r"^\d{8}$",
-        "InstitutionDescription": r"^[A-Za-z0-9\s.,&-]{10,150}$",
+        "InstitutionDescription": r"^[A-Za-z0-9\w\s.,&-]{10,150}$",
     }
 
     def __init__(self, event: dict) -> None:
@@ -46,7 +46,11 @@ class RegisterIntent:
 
         try:
             amazon_service.create_institution(institution_data)
-            response_message = "Cadastro realizado com sucesso"
+            response_message = (
+                "Cadastro da instituição realizado com sucesso! "
+                "Ele estará disponível assim que aprovado. "
+                "Agradecemos pelo seu registro."
+            )
         except Exception as e:
             print(e)
             response_message = """Ocorreu um erro ao cadastrar a sua
