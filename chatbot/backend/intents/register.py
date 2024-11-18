@@ -4,6 +4,8 @@ from services.api import ApiClient
 from services.aws import AmazonServices
 from utils.responses import LexResponses
 from utils.slots import check_slot_filling, get_slot_value
+from services.polly import generate_audio_as_bytes
+from services.s3 import upload_file_to_s3
 
 
 class RegisterIntent:
@@ -51,6 +53,13 @@ class RegisterIntent:
                 "Ele estará disponível assim que aprovado. "
                 "Agradecemos pelo seu registro."
             )
+
+            audio_bytes = generate_audio_as_bytes(response_message)
+            media_key = upload_file_to_s3(audio_bytes, "audio")
+            bucket_name = os.getenv("BUCKET_NAME")
+            response_message += f"""Para ouvir a resposta em áudio clique no link : "
+            "https://{bucket_name}.s3.amazonaws.com/{media_key}"""
+
         except Exception as e:
             print(e)
             response_message = """Ocorreu um erro ao cadastrar a sua
