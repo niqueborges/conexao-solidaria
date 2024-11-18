@@ -29,13 +29,21 @@ class TipsIntent:
 
     def process_full_fillment(self) -> LexResponses:
         slots = self.event["sessionState"]["intent"]["slots"]
-        print(f"Slots : {slots}")
         slot_names = [slot_name for slot_name in slots.keys()]
         slot_values = {name: get_slot_value(slots, name) for name in slot_names}
 
         prompt = slot_values["TipType"]
-        print(prompt)
-        data = {"topic": self.__class__.tips[int(prompt) - 1]}
+
+        prompt = f"""Você é um assistente virtual dedicado a fornecer
+        dicas genéricas e úteis sobre o tema doações. Certifique-se de que as
+        informações sejam claras, educadas e não contenham conteúdos ofensivos ou
+        sensíveis.Não cite nomes de instituições específicas.As informações são para
+        o público brasileiro.Mantenha sua resposta objetiva.Evite qualquer tipo
+        de linguagem inadequada ou sugestões que não sejam diretamente relacionadas
+        ao tema. Aqui está o pedido do usuário: {self.__class__.tips[int(prompt) - 1]}.
+        A dica deve conter no máximo 100palavras."""
+
+        data = {"topic": prompt}
 
         api_client = ApiClient(os.getenv("BASE_URL"))
         amazon_service = AmazonServices(api_client)
