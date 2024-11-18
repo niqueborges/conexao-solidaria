@@ -53,17 +53,27 @@ class TermsOfUseView(TemplateView):
     template_name = "terms_of_use.html"
 
 
-class FilterStateInstitutionView(View):
-    def get(self, request):
-        paginator = Paginator("change", 6)
+class FilterInstitutionView(View):
+    """View responsible for filtering institutions by state or region."""
+
+    def get(self, request, filter_by, value):
+        if filter_by == "state":
+            endpoint = settings.GET_INSTITUTIONS_BY_STATE.format(state=value)
+        elif filter_by == "region":
+            endpoint = settings.GET_INSTITUTIONS_BY_REGION.format(region=value)
+
+        try:
+            institutions = fetch_data(endpoint).get("institutions", [])
+        except Exception as e:
+            institutions = []
+            print(f"Error fetching data: {e}")
+
+        verified_institutions = [
+            institution for institution in institutions if institution.get("verified")
+        ]
+
+        paginator = Paginator(verified_institutions, 6)
         page_number = request.GET.get("page", 1)
         page_object = paginator.get_page(page_number)
-        return render(request, "institutions.html", {"page_object": page_object})
 
-
-class FilterRegionInstitutionView(View):
-    def get(self, request):
-        paginator = Paginator("change", 6)
-        page_number = request.GET.get("page", 1)
-        page_object = paginator.get_page(page_number)
         return render(request, "institutions.html", {"page_object": page_object})

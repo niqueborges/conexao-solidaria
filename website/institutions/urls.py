@@ -5,8 +5,7 @@ from .views import (
     HomeView,
     InstitutionListView,
     TermsOfUseView,
-    FilterRegionInstitutionView,
-    FilterStateInstitutionView,
+    FilterInstitutionView,
 )
 
 
@@ -17,14 +16,9 @@ urlpatterns = [
         "institutions/<str:cnpj>/", DetailInstitutionView.as_view(), name="institution"
     ),
     path(
-        "institutions/filter/<str:state>",
-        FilterStateInstitutionView.as_view(),
-        name="institution",
-    ),
-    path(
-        "institutions/filter/<str:region>",
-        FilterRegionInstitutionView.as_view(),
-        name="institution",
+        "institutions/filter/<str:filter_by>/<str:value>/",
+        FilterInstitutionView.as_view(),
+        name="filter_institutions",
     ),
     path("terms-of-use/", TermsOfUseView.as_view(), name="terms_of_use"),
 ]
