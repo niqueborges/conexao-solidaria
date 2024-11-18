@@ -3,17 +3,18 @@ from django.http import HttpRequest
 from typing import Any
 
 
-def fetch_data(endpoint: HttpRequest) -> list[dict[str, Any]]:
+def fetch_data(endpoint: str) -> dict[str, Any]:
     """
-    Retrieves JSON data from the specified endpoint.
+    Retrieves JSON data from the specified endpoint for a single institution.
     """
     try:
         response = requests.get(endpoint, timeout=20)
+        response.raise_for_status()
     except requests.exceptions.RequestException as exc:
         print(f"Erro ao consumir o endpoint: {exc}")
-        return
+        return {}
 
-    return response.json().get("institutions", [])
+    return response.json()
 
 
 def get_client_ip(request: HttpRequest):
