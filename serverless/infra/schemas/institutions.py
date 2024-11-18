@@ -56,11 +56,6 @@ class CreateInstitution(BaseSchema):
         description="The neighborhood or district within the city.",
         examples=["Centro", "Copacabana"],
     )
-    confirmation_audio: str = Field(
-        pattern=url_pattern,
-        description="URL of the confirmation audio file",
-        examples=["https://bucket.s3.us-east-1.amazonaws.com/audio.mp3"],
-    )
     image: str = Field(
         pattern=url_pattern,
         description="URL of the institution's image",
@@ -139,12 +134,6 @@ class UpdateInstitution(BaseSchema):
         default=None,
         description="The neighborhood or district within the city.",
         examples=["Centro", "Copacabana"],
-    )
-    confirmation_audio: Optional[str] = Field(
-        default=None,
-        pattern=url_pattern,
-        description="Updated URL of the confirmation audio file",
-        examples=["https://bucket.s3.us-east-1.amazonaws.com/otheraudio.mp3"],
     )
     image: Optional[str] = Field(
         default=None,
