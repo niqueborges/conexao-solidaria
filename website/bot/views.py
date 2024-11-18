@@ -1,11 +1,12 @@
 import re
-from django.shortcuts import render
 from django.http import JsonResponse
 from django.views import View
-from app.aws.s3 import s3
-from bot.lex import Chat
-from app.settings import S3_BUCKET_NAME
 from django.http import HttpRequest
+from bot.lex import Chat
+from utils.http import get_client_ip
+from django.shortcuts import render
+from app.aws.s3 import s3
+from app.settings import S3_BUCKET_NAME
 
 
 class ChatBotView(View):
@@ -20,7 +21,7 @@ class ChatBotView(View):
         message = request.POST.get("message", "").strip()
         audio = request.FILES.get("audio", None)
         image = request.FILES.get("image", None)
-        session_id = request.COOKIES.get("session_id")
+        session_id = get_client_ip(request=request)
 
         audio_url = (
             s3.put_object(
