@@ -28,7 +28,10 @@ def twilio(event, context):
             response_message = send_message_to_lex(media_key, from_number)
         except Exception as e:
             print(f"Error processing media: {e}")
-            response_message = "Failed to process media content."
+            response_message = (
+                "Houve um problema ao processar seu arquivo."
+                " Por favor, tente novamente."
+            )
 
     else:
         text_to_translate = params.get("Body", "")
