@@ -47,6 +47,7 @@ class InstitutionService:
             address_number=data.address_number,
             city=data.city,
             neighborhood=data.neighborhood,
+            confirmation_audio=data.confirmation_audio,
             image=data.image,
             about=data.about,
             verified=False,

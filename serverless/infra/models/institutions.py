@@ -24,6 +24,7 @@ class InstitutionModel(Model):
     address_number = NumberAttribute(null=False)
     city = UnicodeAttribute(null=False)
     neighborhood = UnicodeAttribute(null=False)
+    confirmation_audio = UnicodeAttribute(null=False)
     image = UnicodeAttribute(null=False)
     about = UnicodeAttribute(null=False)
     verified = BooleanAttribute(default=False, null=False)
