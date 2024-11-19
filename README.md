@@ -13,9 +13,9 @@
   <img src="https://img.shields.io/badge/API%20ViaCEP-0072C6?style=for-the-badge&logo=postman&logoColor=white" width="100" height="30"/>
   <img src="https://img.shields.io/badge/AWS%20Lambda-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white" width="100" height="30"/>
   <img src="https://img.shields.io/badge/Amazon%20DynamoDB-4053D6?style=for-the-badge&logo=amazonaws&logoColor=white" width="100" height="30"/>
-  <img src="https://img.shields.io/badge/Amazon%20Transcribe-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white" width="100" height="30"/>
   <img src="https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white" width="100" height="30"/>
   <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" width="100" height="30"/>
+  <img src="https://img.shields.io/badge/Amazon%20EC2-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white" width="100" height="30"/>
 </p>
 
 
@@ -30,7 +30,7 @@
 
 ## **📜 Descrição**
 
-Este projeto **Conexão Solidária** tem como objetivo criar uma plataforma de comunicação entre doadores e instituições, com suporte a um chatbot multicanal e integração com AWS. A plataforma utiliza Django para o backend e frontend, Docker para a execução do chatbot, e diversas soluções AWS para melhorar a experiência do usuário.
+Este projeto **Conexão Solidária** tem como objetivo criar uma plataforma de comunicação entre doadores e instituições, com suporte a um chatbot multicanal e integração com AWS. A plataforma utiliza Django para o backend e frontend, Docker e EC2 para a execução do chatbot, e diversas soluções AWS para melhorar a experiência do usuário.
 
 ---
 
@@ -49,23 +49,28 @@ Este projeto **Conexão Solidária** tem como objetivo criar uma plataforma de c
 
 ## **✨ Funcionalidades, Arquitetura e Fluxo de trabalho ⚙️**
 
+---
 
-O repositório é dividido em três áreas principais:
-
-- **Backend (Chatbot)**: Implementação da lógica do chatbot, com integrações ao Amazon Lex, Twilio e outros serviços AWS.
-- **Backend (Infraestrutura AWS)**: Configurações utilizando o Serverless Framework para gerenciar recursos AWS, como S3, Polly e Rekognition.
-- **Frontend (Website)**: Aplicação Django que fornece a interface para os usuários, incluindo páginas para busca de instituições e integração com o backend.
+Aqui está a explicação revisada, mais concisa e sem repetição, mas ainda bem detalhada:
 
 ---
 
-O projeto segue uma arquitetura serverless na AWS. Principais passos incluem:
+O repositório é estruturado em três áreas principais:
 
-1. **Chatbot Multicanal**: Interação integrada via **Amazon Lex** e **Twilio** para WhatsApp.
-2. **Armazenamento**: **DynamoDB** para persistência de dados, **AWS Lambda** para processamento.
-3. **Moderação Inteligente**: Utiliza **Amazon Rekognition** e **Bedrock** para moderação de imagens e textos.
-4. **Acessibilidade Avançada**: Conversão de texto para áudio com **Amazon Polly**.
-5. **Suporte Avançado**: Transcrição de áudio para texto usando **Amazon Transcribe**.
-6. **Geolocalização e Endereços**: Consulta eficiente via **API ViaCEP**.
+- **Backend (Chatbot)**: Implementação da lógica do chatbot, com integrações ao **Amazon Lex**, **Twilio** e outros serviços AWS.
+- **Backend (Infraestrutura AWS)**: Configurações do **Serverless Framework** para gerenciar recursos da AWS, como **S3**, **Polly** e **Rekognition**.
+- **Frontend (Website)**: Aplicação Django que oferece a interface para os usuários, permitindo a busca por instituições e integração com o backend. A aplicação é containerizada com **Docker** para garantir consistência no ambiente e implantada em **Amazon EC2** para alta disponibilidade e escalabilidade.
+
+---
+
+O projeto adota uma arquitetura serverless na AWS, complementada por contêineres e instâncias escaláveis para flexibilidade e desempenho. Os principais componentes incluem:
+
+1. **Chatbot Multicanal**: Integração com **Amazon Lex** e **Twilio** para interação via WhatsApp.
+2. **Armazenamento**: Persistência de dados no **DynamoDB**, com processamento via **AWS Lambda**.
+3. **Moderação Inteligente**: Uso de **Amazon Rekognition** e **Bedrock** para moderação de imagens e textos.
+4. **Acessibilidade**: Conversão de texto para fala com **Amazon Polly**.
+5. **Geolocalização**: Consultas de endereços feitas pela **API ViaCEP**.
+6. **Escalabilidade e Containerização**: A aplicação web é executada em **Docker** para ambientes consistentes e escalada na **Amazon EC2** para maior capacidade conforme necessário.
 7. **Diagrama da Arquitetura**
    ![Arquitetura](./assets/img/architecture.png)
 
@@ -90,6 +95,7 @@ Clone o repositório em sua máquina:
 ```bash
 git clone https://github.com/Compass-pb-aws-2024-JUNHO/sprints-9-10-pb-aws-junho.git grupo-1
 cd grupo-1
+```
 ```
 
 Antes de realizar o deploy, configure suas credenciais AWS e o ambiente:
@@ -138,7 +144,7 @@ O comando acima criará os seguintes recursos:
 - Funções Lambda
 - Buckets S3 para armazenamento
 - Tabelas DynamoDB
-- Serviços como Amazon Polly, Rekognition e Transcribe
+- Serviços como Amazon Polly, Rekognition
 
 Ao final, o Serverless fornecerá os endpoints necessários para acessar as APIs e o chatbot.
 
@@ -193,15 +199,8 @@ cd website
 pip install -r requirements.txt
 ```
 
-#### **2. Configuração do Banco de Dados**
-
-Aplique as migrações para configurar o banco de dados SQLite:
-
-```bash
-python manage.py migrate
 ```
-
-#### **3. Executando o Servidor Local**
+Executando o Servidor Local**
 
 Para rodar o servidor Django localmente:
 
@@ -211,13 +210,14 @@ python manage.py runserver
 
 Acesse o site em [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
+
 ---
 
-## **Execução com Docker**
+## **Execução com Docker e EC2**
 
-Caso prefira rodar o chatbot em um ambiente isolado, siga as etapas abaixo:
+Para rodar o chatbot em um ambiente isolado e escalável, siga as etapas abaixo:
 
-#### **1. Criar a Imagem Docker**
+### **1. Criar a Imagem Docker**
 
 No diretório do chatbot:
 
@@ -227,27 +227,57 @@ docker build -t conexao-solidaria .
 
 #### **2. Rodar o Contêiner Docker**
 
-Execute o contêiner:
+Execute o contêiner localmente:
 
 ```bash
 docker run -p 80:80 conexao-solidaria
 ```
+
+#### **3. Implantação no Amazon EC2**
+
+Para rodar a aplicação em uma instância EC2, siga os passos abaixo:
+
+1. **Criar uma Instância EC2**: Acesse o console da AWS e crie uma instância EC2 com a configuração desejada (ex: Amazon Linux 2 ou Ubuntu).
+2. **Instalar o Docker na EC2**:
+
+```bash
+sudo yum install docker   # Para Amazon Linux
+sudo service docker start
+sudo usermod -a -G docker ec2-user
+```
+
+3. **Transferir a Imagem Docker para a EC2**: Se necessário, use o Docker Hub ou faça o upload da imagem Docker para o EC2.
+
+4. **Rodar o Contêiner na EC2**:
+
+```bash
+docker run -p 80:80 conexao-solidaria
+```
+
+Isso iniciará o chatbot na instância EC2, permitindo que ele seja acessado publicamente via IP da instância. Se necessário, configure regras de segurança para permitir o tráfego na porta 80.
+
 ---
 
-**Verificação e Testes**
+## **Verificação e Testes**
 
 Após o deploy, teste os seguintes itens:
 
 - **Backend**:
   - Verifique os endpoints fornecidos pelo Serverless.
   - Teste as funções Lambda para garantir que estão funcionando corretamente.
+  - Se a aplicação estiver rodando em uma instância EC2, certifique-se de que o contêiner Docker está em execução corretamente:
+    ```bash
+    docker ps
+    ```
+    Isso garantirá que o contêiner esteja rodando e acessível na porta configurada.
 
 - **Frontend**:
-  - Certifique-se de que a aplicação web está acessível no navegador.
+  - Certifique-se de que a aplicação web está acessível no navegador. Se você estiver usando EC2 para hospedar o frontend, acesse o IP público da instância.
   - Verifique a integração com os serviços backend, como o chatbot e os recursos AWS.
 
 - **Chatbot**:
-  - Teste a interação com o chatbot via WhatsApp (ou outro canal configurado).
+  - Teste a interação com o chatbot via WhatsApp, verificando se a integração com o Twilio e o Amazon Lex está funcionando conforme o esperado.
+  - Se a aplicação estiver rodando em Docker no EC2, certifique-se de que a instância EC2 tem as portas corretas abertas nas regras de segurança para permitir a comunicação com o serviço de WhatsApp.
 
 ---
 
@@ -263,8 +293,8 @@ Após o deploy, teste os seguintes itens:
 - **Amazon Lex**  
 - **Amazon Polly**  
 - **Amazon Rekognition**  
-- **Amazon S3**  
-- **Amazon Transcribe**  
+- **Amazon S3**
+- **Amazon EC2**  
 - **API ViaCEP**  
 - **AWS Lambda**  
 - **Django**
@@ -290,37 +320,41 @@ Este repositório contém o código-fonte do projeto **Conexão Solidária**, co
 Sprints-9-10-PB-AWS-JUNHO/
 ├── assets/
 │   └── img/
-│       ├── architecture.png            # Imagem representando a arquitetura do projeto
-│       └── database.png                # Imagem representando o design do banco de dados
-├── chatbot/                            # Diretório principal do chatbot
-│   ├── backend/                        # Backend do chatbot
-│   ├── handlers/                       # Manipuladores para as interações do chatbot
-│   │   ├── health.py                   # Verificação de saúde do serviço
-│   │   ├── lex.py                      # Manipulação de integração com o Amazon Lex
-│   │   └── twilio.py                   # Manipulação de integração com o Twilio
-│   ├── intents/                        # Intenções definidas para o chatbot
-│   │   ├── list.py                     # Intenção de listagem
-│   │   ├── register.py                 # Intenção de registro
-│   │   └── tips.py                     # Intenção de dicas
-│   ├── services/                       # Serviços auxiliares para o chatbot
-│   │   ├── api.py                      # Serviço para chamada de APIs externas
-│   │   ├── aws.py                      # Integração com serviços AWS
-│   │   ├── lex.py                      # Serviço para integração com o Amazon Lex
-│   │   ├── s3.py                       # Serviço para integração com o Amazon S3
-│   │   └── via_cep_api.py              # Serviço para integração com a API ViaCEP
-│   ├── utils/                          # Funções utilitárias e auxiliares
-│   │   ├── content_type.py             # Funções relacionadas ao tipo de conteúdo
-│   │   ├── decode.py                   # Função para decodificação de dados
-│   │   ├── download_media.py           # Função para download de mídia
-│   │   ├── get_twilio_phone.py         # Função para obtenção do número de telefone do Twilio
-│   │   ├── responses.py                # Funções para manipulação de respostas do chatbot
-│   │   └── slots.py                    # Funções para manipulação de slots do chatbot
-│   ├── requirements.txt                # Dependências Python do projeto
-│   ├── serverless.yml                  # Arquivo de configuração do Serverless
-│   └── __init__.py                     # Inicializador de pacote Python
-├── serverless/                         # Configurações do Serverless Framework
-│   ├── api/                            # Diretório de APIs do Serverless
-│   │   ├── v1/                         # Versão 1 da API
+│       ├── architecture.png             # Imagem representando a arquitetura do projeto
+│       └── database.png                 # Imagem representando o design do banco de dados
+├── chatbot/                             # Diretório principal do chatbot
+│   ├── backend/                         # Backend do chatbot
+│   │   ├── handlers/                    # Manipuladores para as interações do chatbot
+│   │   │   ├── __init__.py              
+│   │   │   ├── health.py                # Verificação de saúde do serviço
+│   │   │   ├── lex.py                   # Manipulação de integração com o Amazon Lex
+│   │   │   └── twilio.py                # Manipulação de integração com o Twilio
+│   │   ├── intents/                     # Intenções definidas para o chatbot
+│   │   │   ├── __init__.py              
+│   │   │   ├── list.py                  # Intenção de listagem
+│   │   │   ├── register.py              # Intenção de registro
+│   │   │   └── tips.py                  # Intenção de dicas
+│   │   ├── services/                    # Serviços auxiliares para o chatbot
+│   │   │   ├── __init__.py              
+│   │   │   ├── api.py                   # Serviço para chamada de APIs externas
+│   │   │   ├── aws.py                   # Integração com serviços AWS
+│   │   │   ├── lex.py                   # Serviço para integração com o Amazon Lex
+│   │   │   ├── s3.py                    # Serviço para integração com o Amazon S3
+│   │   │   └── via_cep_api.py           # Serviço para integração com a API ViaCEP
+│   │   ├── utils/                       # Funções utilitárias e auxiliares
+│   │   │   ├── __init__.py              
+│   │   │   ├── content_type.py          # Funções relacionadas ao tipo de conteúdo
+│   │   │   ├── decode.py                # Função para decodificação de dados
+│   │   │   ├── download_media.py        # Função para download de mídia
+│   │   │   ├── get_twilio_phone.py      # Função para obtenção do número de telefone do Twilio
+│   │   │   ├── responses.py             # Funções para manipulação de respostas do chatbot
+│   │   │   └── slots.py                 # Funções para manipulação de slots do chatbot
+│   │   ├── requirements.txt             # Dependências Python do projeto
+│   │   ├── serverless.yml               # Arquivo de configuração do Serverless
+│   │   └── __init__.py                  
+├── serverless/                          # Configurações do Serverless Framework
+│   ├── api/                             # Diretório de APIs do Serverless
+│   │   ├── v1/                          # Versão 1 da API
 │   │   │   └── __init__.py          
 │   │   └── __init__.py              
 │   ├── core/                            # Lógica central e configurações
@@ -338,7 +372,6 @@ Sprints-9-10-PB-AWS-JUNHO/
 │   │   │   ├── polly.py                 # Integração com o Amazon Polly
 │   │   │   ├── rekognition.py           # Integração com o Amazon Rekognition
 │   │   │   ├── s3.py                    # Integração com o Amazon S3
-│   │   │   ├── transcribe.py            # Integração com o Amazon Transcribe
 │   │   │   └── __init__.py         
 │   │   └── __init__.py              
 │   ├── models/                          
@@ -393,9 +426,6 @@ Sprints-9-10-PB-AWS-JUNHO/
 └── README.md                            # Documentação principal do projeto
 ```
 
-
-```
-
 ---
 
 ## **📅 Metodologia de Desenvolvimento**
@@ -420,4 +450,5 @@ Os **Termos de Uso** podem ser acessados em [termos de uso](https://conexao-soli
 ---
 
 Este README segue as melhores práticas, conforme recomendado no Programa de Bolsas Compass UOL e AWS.
+
 
