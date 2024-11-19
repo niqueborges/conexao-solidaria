@@ -13,15 +13,13 @@
         <form id="chat-form" class="d-flex mb-2">
             {% csrf_token %}
             <input type="text" id="message" class="form-control me-2" placeholder="Digite sua mensagem...">
-            <input type="file" id="audio" class="form-control me-2" accept="audio/*" style="display:none;">
             <input type="file" id="image" class="form-control me-2" accept="image/*">
             <input type="hidden" id="session_id">
             <button type="submit" class="btn btn-primary w-100">Enviar</button>
         </form>
 
         <div class="d-flex gap-2">
-            <button id="record-audio" class="btn btn-outline-secondary w-50">🎙️ Gravar Áudio</button>
-            <button id="clear-chat" class="btn btn-outline-secondary w-50">Limpar</button>
+            <button id="clear-chat" class="btn btn-outline-secondary w-100">Limpar</button>
         </div>
     </div>
 </div>

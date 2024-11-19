@@ -29,34 +29,7 @@ const messageInput = document.getElementById("message");
 const sessionIdInput = document.getElementById("session_id");
 const chatBox = document.getElementById("chat-box");
 const clearChatButton = document.getElementById("clear-chat");
-const recordAudioButton = document.getElementById("record-audio");
 const imageInput = document.getElementById("image");
-
-let mediaRecorder;
-let audioChunks = [];
-let audioBlob = null;
-
-// Function to send the audio to the backend
-async function sendAudio(audioBlob, sessionId) {
-    const formData = new FormData();
-    formData.append("session_id", sessionId);
-    formData.append("audio", audioBlob, "recording.webm");
-
-    try {
-        const response = await fetch("/chatbot/", {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": csrftoken,
-            },
-            body: formData,
-        });
-
-        const data = await response.json();
-        displayBotResponse(data);
-    } catch (error) {
-        console.error("Audio request error:", error);
-    }
-}
 
 // Function to display SoliBot's response
 function displayBotResponse(data) {
@@ -107,11 +80,6 @@ form.addEventListener("submit", async (e) => {
         formData.append("message", message);
     }
 
-    if (audioBlob) {
-        formData.append("audio", audioBlob, "recording.webm");
-        audioBlob = null;
-    }
-
     if (imageFile) {
         formData.append("image", imageFile);
     }
@@ -135,39 +103,6 @@ form.addEventListener("submit", async (e) => {
 // Clear the chat
 clearChatButton.addEventListener("click", () => {
     chatBox.innerHTML = '';
-});
-
-// Handles the audio recording button
-recordAudioButton.addEventListener("click", async () => {
-    if (mediaRecorder && mediaRecorder.state === "recording") {
-        mediaRecorder.stop();
-        recordAudioButton.textContent = "🎙️ Gravar Áudio";
-        return;
-    }
-
-    if (!mediaRecorder) {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorder = new MediaRecorder(stream);
-
-            mediaRecorder.addEventListener("dataavailable", (event) => {
-                audioChunks.push(event.data);
-            });
-
-            mediaRecorder.addEventListener("stop", () => {
-                audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-                audioChunks = [];
-                sendAudio(audioBlob, sessionIdInput.value);
-            });
-        } catch (error) {
-            alert("Unable to access the microphone.");
-            console.error("Microphone access error:", error);
-            return;
-        }
-    }
-
-    mediaRecorder.start();
-    recordAudioButton.textContent = "⏹️ Parar Gravação";
 });
 
 // Generate a new session_id when the page loads
