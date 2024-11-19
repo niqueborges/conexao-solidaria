@@ -205,7 +205,7 @@ Para rodar o chatbot em um ambiente isolado e escalável, siga as etapas abaixo:
 
 ### **1. Criar a Imagem Docker**
 
-No diretório do chatbot:
+No diretório do website:
 
 ```bash
 docker build -t conexao-solidaria .
@@ -240,7 +240,7 @@ sudo usermod -a -G docker ec2-user
 docker run -p 80:80 conexao-solidaria
 ```
 
-Isso iniciará o chatbot na instância EC2, permitindo que ele seja acessado publicamente via IP da instância. Se necessário, configure regras de segurança para permitir o tráfego na porta 80.
+Isso iniciará o website na instância EC2, permitindo que ele seja acessado publicamente via IP da instância. Se necessário, configure regras de segurança para permitir o tráfego na porta 80.
 
 ---
 
