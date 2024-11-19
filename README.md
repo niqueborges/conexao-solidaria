@@ -51,10 +51,6 @@ Este projeto **Conexão Solidária** tem como objetivo criar uma plataforma de c
 
 ---
 
-Aqui está a explicação revisada, mais concisa e sem repetição, mas ainda bem detalhada:
-
----
-
 O repositório é estruturado em três áreas principais:
 
 - **Backend (Chatbot)**: Implementação da lógica do chatbot, com integrações ao **Amazon Lex**, **Twilio** e outros serviços AWS.
@@ -96,11 +92,7 @@ Clone o repositório em sua máquina:
 git clone https://github.com/Compass-pb-aws-2024-JUNHO/sprints-9-10-pb-aws-junho.git grupo-1
 cd grupo-1
 ```
-```
-
-Antes de realizar o deploy, configure suas credenciais AWS e o ambiente:
-
-#### **Definindo Credenciais AWS**
+**Antes de realizar o deploy, configure suas credenciais AWS e o ambiente:**
 
 Configure o AWS CLI para que os serviços possam ser acessados corretamente:
 
@@ -111,9 +103,9 @@ aws configure
 Defina manualmente as variáveis de ambiente, se necessário:
 
 ```bash
-export AWS_ACCESS_KEY_ID=your_access_key
-export AWS_SECRET_ACCESS_KEY=your_secret_key
-export AWS_REGION=your_region
+AWS_ACCESS_KEY_ID=your_access_key
+AWS_SECRET_ACCESS_KEY=your_secret_key
+AWS_REGION=your_region
 ```
 
 #### **Configurando o Serverless Framework**
@@ -172,7 +164,6 @@ Realize o deploy das funções AWS Lambda e recursos:
 ```bash
 serverless deploy
 ```
-
 ---
 
 ### **Infraestrutura AWS**
@@ -183,7 +174,6 @@ Os serviços AWS, como S3 e Polly, são configurados no diretório `serverless/i
 cd serverless
 serverless deploy
 ```
-
 ---
 
 ## **Frontend**
@@ -199,17 +189,13 @@ cd website
 pip install -r requirements.txt
 ```
 
-```
-Executando o Servidor Local**
-
-Para rodar o servidor Django localmente:
+Executando o Servidor Django localmente:
 
 ```bash
 python manage.py runserver
 ```
 
 Acesse o site em [http://127.0.0.1:8000](http://127.0.0.1:8000).
-
 
 ---
 
@@ -225,7 +211,7 @@ No diretório do chatbot:
 docker build -t conexao-solidaria .
 ```
 
-#### **2. Rodar o Contêiner Docker**
+### **2. Rodar o Contêiner Docker**
 
 Execute o contêiner localmente:
 
@@ -233,7 +219,7 @@ Execute o contêiner localmente:
 docker run -p 80:80 conexao-solidaria
 ```
 
-#### **3. Implantação no Amazon EC2**
+### **3. Implantação no Amazon EC2**
 
 Para rodar a aplicação em uma instância EC2, siga os passos abaixo:
 
