@@ -48,8 +48,10 @@ class ListIntent:
             state = slot_values["States"]
 
             if filter_type.lower() == "estado":
+                filter_type = "state"
                 link = f"{base_url}/filter/{filter_type.lower()}/{state.lower()}"
             else:
+                filter_type = "region"
                 link = f"{base_url}/filter/{filter_type.lower()}/{region.lower()}"
 
             response_message = (

@@ -57,8 +57,9 @@ class RegisterIntent:
 
             audio_bytes = generate_audio_as_bytes(response_message)
             media_key = upload_file_to_s3(audio_bytes, "audio")
-            response_message += f"""Para ouvir a resposta em áudio clique no link : "
-            "https://{self.bucket_name}.s3.amazonaws.com/{media_key}"""
+            response_message += f"Para ouvir a resposta em áudio clique no link : " \
+            f"https://{self.bucket_name}.s3.amazonaws.com/{media_key}"
+
 
         except Exception as e:
             print(e)
