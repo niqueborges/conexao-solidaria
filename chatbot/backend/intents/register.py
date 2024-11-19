@@ -26,6 +26,7 @@ class RegisterIntent:
 
     def __init__(self, event: dict) -> None:
         self.event = event
+        self.bucket_name = os.getenv("BUCKET_NAME")
 
     def process_dialog_hook(self) -> LexResponses:
         """
@@ -56,9 +57,8 @@ class RegisterIntent:
 
             audio_bytes = generate_audio_as_bytes(response_message)
             media_key = upload_file_to_s3(audio_bytes, "audio")
-            bucket_name = os.getenv("BUCKET_NAME")
             response_message += f"""Para ouvir a resposta em áudio clique no link : "
-            "https://{bucket_name}.s3.amazonaws.com/{media_key}"""
+            "https://{self.bucket_name}.s3.amazonaws.com/{media_key}"""
 
         except Exception as e:
             print(e)
@@ -92,7 +92,7 @@ class RegisterIntent:
             "cep": slot_values["InstitutionCep"],
             "address_number": slot_values["InstitutionAddressNumber"],
             "confirmation_audio": "https://www.teste.com.br",
-            "image": "https://wwww.teste.com.br",
+            "image": f"https://{self.bucket_name}.s3.amazonaws.com/{slot_values["ImagePath"]}",
             "about": slot_values["InstitutionDescription"],
             "site": slot_values["InstitutionSite"],
         }

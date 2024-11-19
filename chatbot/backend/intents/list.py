@@ -1,3 +1,4 @@
+import os
 from utils.responses import LexResponses
 from utils.slots import check_slot_filling, get_slot_value
 
@@ -34,14 +35,26 @@ class ListIntent:
         slot_values = {name: get_slot_value(slots, name) for name in slot_names}
 
         filter_boolean = slot_values["FilterBoolean"]
-        if filter_boolean == "Não":
-            response_message = "Todas as instituições"
+
+        base_url = os.getenv("INSTITUTIONS_BASE_URL")
+        if filter_boolean.lower() == "não":
+            response_message = (
+                "Acesse o nosso link para visualizar "
+                "todas as instituições: {base_url}/"
+            )
         else:
             filter_type = slot_values["FilterType"]
+            region = slot_values["Region"]
             state = slot_values["States"]
 
-            response_message = f"""FilterBoolean: {filter_boolean},
-            FilterType: {filter_type}, state {state}"""
+            if filter_type.lower() == "estado":
+                link = f"{base_url}/filter/{filter_type.lower()}/{state.lower()}"
+            else:
+                link = f"{base_url}/filter/{filter_type.lower()}/{region.lower()}"
+
+            response_message = (
+                f"Para visualizar por {filter_type} acesse nosso link: {link}"
+            )
 
         response = LexResponses.sent_fulfillment_response(
             self.event, slots, response_message

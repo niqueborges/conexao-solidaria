@@ -1,7 +1,6 @@
 import boto3
 import os
 
-
 bot_id = os.getenv("BOT_ID")
 alias_id = os.getenv("ALIAS_ID")
 
