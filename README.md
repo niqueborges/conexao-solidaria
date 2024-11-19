@@ -68,7 +68,7 @@ O projeto adota uma arquitetura serverless na AWS, complementada por contêinere
 5. **Geolocalização**: Consultas de endereços feitas pela **API ViaCEP**.
 6. **Escalabilidade e Containerização**: A aplicação web é executada em **Docker** para ambientes consistentes e escalada na **Amazon EC2** para maior capacidade conforme necessário.
 7. **Diagrama da Arquitetura**
-   ![Arquitetura](./assets/img/architecture.png)
+
 
 ---
 
@@ -293,9 +293,7 @@ Após o deploy, teste os seguintes itens:
 
 ## **🗄️ Banco de Dados**
 
-A estrutura de armazenamento das Instituições em **DynamoDB** segue o modelo abaixo:
-![Banco de Dados](./assets/img/database.png)
-
+A estrutura de armazenamento das Instituições em **DynamoDB** 
 ---
 
 ## **📂 Estrutura de Diretórios**
