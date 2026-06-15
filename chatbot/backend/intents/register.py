@@ -11,6 +11,7 @@ from services.s3 import upload_file_to_s3
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+
 class RegisterIntent:
     """
     Class responsible for handling events related to the RegisterIntent intent.
@@ -60,9 +61,10 @@ class RegisterIntent:
 
             audio_bytes = generate_audio_as_bytes(response_message)
             media_key = upload_file_to_s3(audio_bytes, "audio")
-            response_message += f"Para ouvir a resposta em áudio clique no link : " \
-            f"https://{self.bucket_name}.s3.amazonaws.com/{media_key}"
-
+            response_message += (
+                f"Para ouvir a resposta em áudio clique no link : "
+                f"https://{self.bucket_name}.s3.amazonaws.com/{media_key}"
+            )
 
         except Exception as e:
             logger.error(f"Erro ao criar instituição: {e}")

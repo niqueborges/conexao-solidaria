@@ -4,6 +4,7 @@ import logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+
 class ApiClient:
     """Class to handle API connections."""
 

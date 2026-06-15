@@ -2,7 +2,6 @@ from typing import Optional
 from pydantic import Field
 from infra.schemas.base import BaseSchema
 
-
 url_pattern = r"^(http|https):\/\/[^\s$.?#].[^\s]*$"
 email_pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
 
