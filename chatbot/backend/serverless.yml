@@ -3,6 +3,16 @@ service: chatbot-lex
 provider:
   name: aws
   runtime: python3.12
+  memorySize: 128
+  timeout: 10
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - lex:RecognizeText
+            - lex:RecognizeUtterance
+          Resource: "*"
 
 functions:
   hello:
@@ -14,7 +24,7 @@ functions:
 
   lex:
     handler: handlers/lex.lex
-    timeout: 300
+    timeout: 30
     events:
       - httpApi:
           path: /
@@ -22,7 +32,7 @@ functions:
 
   twilio:
     handler: handlers/twilio.twilio
-    timeout: 45
+    timeout: 15
     events:
       - httpApi:
           path: /twilio
