@@ -5,29 +5,31 @@
 {% block content %}
 
 <!-- Main Content -->
-<main class="flex-grow-1 py-5">
+<main class="flex-grow-1 py-5" aria-label="Conteúdo Principal">
     <div class="container">
-        <div class="d-flex align-items-center justify-content-between bg-white p-4 rounded shadow-sm mb-4">
-            <div class="me-4">
-                <h2 class="text-primary mb-3">Conecte-se e Faça a Diferença</h2>
-                <p class="text-dark">Com o Conexão Solidária, você pode ajudar instituições e fazer parte de uma
+        <section class="highlight-section d-flex flex-column flex-lg-row align-items-center justify-content-between p-4 p-md-5 rounded shadow-sm mb-5" aria-labelledby="hero-title">
+            <div class="me-lg-5 mb-4 mb-lg-0 text-center text-lg-start">
+                <h2 id="hero-title" class="mb-3">Conecte-se e Faça a Diferença</h2>
+                <p class="mb-4">Com o Conexão Solidária, você pode ajudar instituições e fazer parte de uma
                     comunidade solidária. Contribua e faça a diferença na vida de muitos.</p>
-                <a href="{% url 'institutions' %}" class="btn btn-outline-primary mt-3">Conheça as instituições</a>
+                <a href="{% url 'institutions' %}" class="btn btn-primary btn-lg" aria-label="Ir para a lista de instituições">Conheça as instituições</a>
             </div>
 
             <!-- Home image -->
-            <img src="{% static 'img/home.png' %}" alt="Imagem Conexão Solidária" class="img-fluid"
-                style="width: 350px; height: auto;">
-        </div>
+            <img src="{% static 'img/home.png' %}" alt="Ilustração abstrata representando conexões e doações" class="img-fluid hero-image"
+                style="max-width: 400px; width: 100%; height: auto;">
+        </section>
 
-        <div class="institutions-list">
+        <section class="institutions-list row g-4" aria-label="Lista de Instituições em Destaque">
             {% for institution in page_obj %}
-            <div class="institution-card mb-3 p-3 bg-white rounded shadow-sm">
-                <h3 class="text-primary">{{ institution.name }}</h3>
-                <p>{{ institution.description }}</p>
+            <div class="col-12 col-md-6 col-lg-4">
+                <article class="institution-card h-100 d-flex flex-column">
+                    <h3>{{ institution.name }}</h3>
+                    <p class="flex-grow-1">{{ institution.description }}</p>
+                </article>
             </div>
             {% endfor %}
-        </div>
+        </section>
     </div>
 </main>
 {% endblock content %}

@@ -1,13 +1,15 @@
 {% load static %}
 
-<footer class="bg-primary py-4 mt-auto">
+<footer class="py-4 mt-auto">
     <div class="container d-flex flex-column align-items-center">
-        <p class="mb-1 text-light">&copy; 2024 Conexão Solidária. Todos os direitos reservados.</p>
-        <p class="text-light">
-            <a href="{% url 'home' %}" class="text-light">Home</a> |
-            <a href="{% url 'terms_of_use' %}" class="text-light">Termos de Uso</a> |
-            <a href="{% url 'institutions' %}" class="text-light">Instituições</a>
-        </p>
+        <p class="mb-2 text-light">&copy; 2024 Conexão Solidária. Todos os direitos reservados.</p>
+        <nav aria-label="Links do Rodapé">
+            <p class="text-light m-0">
+                <a href="{% url 'home' %}" class="footer-link mx-2" aria-label="Página Inicial">Home</a> |
+                <a href="{% url 'terms_of_use' %}" class="footer-link mx-2" aria-label="Página de Termos de Uso">Termos de Uso</a> |
+                <a href="{% url 'institutions' %}" class="footer-link mx-2" aria-label="Página de Instituições">Instituições</a>
+            </p>
+        </nav>
     </div>
 
     <!-- Bootstrap JS -->

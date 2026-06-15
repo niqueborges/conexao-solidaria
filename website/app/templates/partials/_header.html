@@ -1,17 +1,17 @@
 {% load static %}
 
-<header class="bg-primary p-3 shadow-sm">
-    <div class="container d-flex justify-content-between align-items-center">
-        <div class="d-flex align-items-center">
-            <img src="{% static 'img/logo.png' %}" alt="Logo Solidariedade" class="me-2" style="width: 40px; height: auto;">
+<header class="p-3 shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap">
+        <a href="{% url 'home' %}" class="d-flex align-items-center text-decoration-none" aria-label="Página inicial do Conexão Solidária">
+            <img src="{% static 'img/logo.png' %}" alt="Logotipo do Conexão Solidária" class="me-2" style="width: 40px; height: auto;">
             <h1 class="h3 mb-0 text-light">Conexão Solidária</h1>
-        </div>
-        <nav>
+        </a>
+        <nav aria-label="Navegação Principal">
             <ul class="nav">
-                <li class="nav-item"><a href="{% url 'home' %}" class="nav-link text-light">Home</a></li>
-                <li class="nav-item"><a href="{% url 'terms_of_use' %}" class="nav-link text-light">Termos de Uso</a></li>
-                <li class="nav-item"><a href="{% url 'institutions' %}" class="nav-link text-light">Instituições</a></li>
-                <li class="nav-item"><a href="{% url 'chatbot' %}" class="nav-link text-light">ChatBot</a></li>
+                <li class="nav-item"><a href="{% url 'home' %}" class="nav-link text-light" aria-label="Página Inicial">Home</a></li>
+                <li class="nav-item"><a href="{% url 'terms_of_use' %}" class="nav-link text-light" aria-label="Página de Termos de Uso">Termos de Uso</a></li>
+                <li class="nav-item"><a href="{% url 'institutions' %}" class="nav-link text-light" aria-label="Página de Instituições">Instituições</a></li>
+                <li class="nav-item"><a href="{% url 'chatbot' %}" class="nav-link text-light" aria-label="Acessar o Assistente Virtual ChatBot">ChatBot</a></li>
             </ul>
         </nav>
     </div>
