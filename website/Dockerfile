@@ -5,7 +5,7 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Instale dependências do sistema
-RUN apt-get update && apt-get install -y gcc libpq-dev && apt-get clean
+RUN apt-get update && apt-get install -y gcc && apt-get clean
 
 # Copie os arquivos de requisitos para o container e instale as dependências
 COPY requirements.txt /app/
@@ -18,8 +18,8 @@ COPY . /app/
 RUN useradd -m appuser
 USER appuser
 
-# Exponha a porta 80
-EXPOSE 80
+# Exponha a porta 8000
+EXPOSE 8000
 
 # Comando para rodar o Gunicorn no container
-CMD ["gunicorn", "--bind", "0.0.0.0:80", "app.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app.wsgi:application"]
