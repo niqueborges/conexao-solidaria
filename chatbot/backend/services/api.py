@@ -1,5 +1,8 @@
 import requests
+import logging
 
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 class ApiClient:
     """Class to handle API connections."""
@@ -11,7 +14,7 @@ class ApiClient:
         """Helper method to send HTTP requests."""
         url = f"{self.base_url}/{endpoint}"
         try:
-            response = requests.request(method, url, json=data)
+            response = requests.request(method, url, json=data, timeout=5)
 
             if response.status_code not in [200, 201]:
                 raise ValueError(f"Unexpected status code: {response.status_code}.")
@@ -19,7 +22,7 @@ class ApiClient:
             return response.json()
 
         except requests.exceptions.RequestException as e:
-            print(f"Request error: {e}")
+            logger.error(f"Request error while calling {url}: {e}")
             raise e
 
     def post(self, endpoint: str, data: dict) -> dict:
