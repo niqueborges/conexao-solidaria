@@ -1,4 +1,5 @@
 import os
+import logging
 
 from services.api import ApiClient
 from services.aws import AmazonServices
@@ -7,6 +8,8 @@ from utils.slots import check_slot_filling, get_slot_value
 from services.polly import generate_audio_as_bytes
 from services.s3 import upload_file_to_s3
 
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 class RegisterIntent:
     """
@@ -39,7 +42,7 @@ class RegisterIntent:
         """
         Responsible for processing the FulfillmentCodeHook step of the RegisterIntent.
         """
-        print(f"Evento no fulfillment: {self.event}")
+        logger.info(f"Evento no fulfillment: {self.event}")
         slots = self.event["sessionState"]["intent"]["slots"]
 
         institution_data = self.generate_institution_data(slots)
@@ -62,14 +65,13 @@ class RegisterIntent:
 
 
         except Exception as e:
-            print(e)
-            response_message = """Ocorreu um erro ao cadastrar a sua
-            instituição. Tente novamente mais tarde."""
+            logger.error(f"Erro ao criar instituição: {e}")
+            response_message = "Ocorreu um erro ao cadastrar a sua instituição. Tente novamente mais tarde."
 
         response = LexResponses.sent_fulfillment_response(
             self.event, slots, response_message
         )
-        print(f"Response : {response}")
+        logger.info(f"Response: {response}")
         return response
 
     def generate_institution_data(self, slots: dict) -> dict:
@@ -77,25 +79,24 @@ class RegisterIntent:
         Method responsible for generating the dictionary with the institution's
         data from the slot values.
         """
-        slot_names = [slot_name for slot_name in slots.keys()]
-        slot_values = {name: get_slot_value(slots, name) for name in slot_names}
+        slot_values = {name: get_slot_value(slots, name) for name in slots.keys()}
 
         institution_data = {
-            "cnpj": slot_values["CNPJ"],
-            "name": slot_values["InstitutionName"],
-            "email": slot_values["InstitutionEmail"],
-            "phone_number": slot_values["InstitutionPhone"],
-            "region": slot_values["InstitutionRegion"],
-            "state": slot_values["InstitutionState"],
-            "address": slot_values["InstitutionAddress"],
-            "city": slot_values["InstitutionCity"],
-            "neighborhood": slot_values["InstitutionNeighborhood"],
-            "cep": slot_values["InstitutionCep"],
-            "address_number": slot_values["InstitutionAddressNumber"],
+            "cnpj": slot_values.get("CNPJ"),
+            "name": slot_values.get("InstitutionName"),
+            "email": slot_values.get("InstitutionEmail"),
+            "phone_number": slot_values.get("InstitutionPhone"),
+            "region": slot_values.get("InstitutionRegion"),
+            "state": slot_values.get("InstitutionState"),
+            "address": slot_values.get("InstitutionAddress"),
+            "city": slot_values.get("InstitutionCity"),
+            "neighborhood": slot_values.get("InstitutionNeighborhood"),
+            "cep": slot_values.get("InstitutionCep"),
+            "address_number": slot_values.get("InstitutionAddressNumber"),
             "confirmation_audio": "https://www.teste.com.br",
-            "image": f"https://{self.bucket_name}.s3.amazonaws.com/{slot_values["ImagePath"]}",
-            "about": slot_values["InstitutionDescription"],
-            "site": slot_values["InstitutionSite"],
+            "image": f"https://{self.bucket_name}.s3.amazonaws.com/{slot_values.get('ImagePath', '')}",
+            "about": slot_values.get("InstitutionDescription"),
+            "site": slot_values.get("InstitutionSite"),
         }
 
         return institution_data
