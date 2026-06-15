@@ -2,16 +2,19 @@ import requests
 from django.http import HttpRequest
 from typing import Any
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 def fetch_data(endpoint: str) -> dict[str, Any]:
     """
     Retrieves JSON data from the specified endpoint for a single institution.
     """
     try:
-        response = requests.get(endpoint, timeout=20)
+        response = requests.get(endpoint, timeout=5)
         response.raise_for_status()
     except requests.exceptions.RequestException as exc:
-        print(f"Erro ao consumir o endpoint: {exc}")
+        logger.error(f"Erro ao consumir o endpoint: {exc}")
         return {}
 
     return response.json()
