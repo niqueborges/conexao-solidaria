@@ -4,6 +4,29 @@ service: conexao-solidaria
 provider:
   name: aws
   runtime: python3.9
+  memorySize: 128
+  timeout: 10
+  environment:
+    TABLE_NAME: ${self:custom.tableName}
+    REGION_NAME: ${opt:region, 'us-east-1'}
+    BILLING_MODE: PAY_PER_REQUEST
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: !GetAtt InstitutionsTable.Arn
+        - Effect: Allow
+          Action:
+            - bedrock:InvokeModel
+            - rekognition:DetectModerationLabels
+          Resource: "*"
 
 functions:
   # Health handler
@@ -53,7 +76,7 @@ functions:
   # Bedrock suggestions handler
   suggestions:
     handler: api/v1/handlers.bedrock.suggestions
-    timeout: 45
+    timeout: 30
     events:
       - httpApi:
           method: post
@@ -81,6 +104,7 @@ plugins:
   - serverless-dotenv-plugin
 
 custom:
+  tableName: institutions-${opt:stage, 'dev'}
   pythonRequirements:
       useStaticCache: false
       useDownloadCache: false
@@ -90,3 +114,17 @@ custom:
         - "--python-version 3.9"
         - "--only-binary=:all:"
         - "--upgrade"
+
+resources:
+  Resources:
+    InstitutionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: cnpj
+            AttributeType: S
+        KeySchema:
+          - AttributeName: cnpj
+            KeyType: HASH
