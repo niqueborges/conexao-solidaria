@@ -41,7 +41,7 @@ class TipsIntent:
         o público brasileiro.Mantenha sua resposta objetiva.Evite qualquer tipo
         de linguagem inadequada ou sugestões que não sejam diretamente relacionadas
         ao tema. Aqui está o pedido do usuário: {self.__class__.tips[int(prompt) - 1]}.
-        A dica deve conter no máximo 100palavras."""
+        A dica deve conter no máximo 100 palavras."""
 
         data = {"topic": prompt}
 
