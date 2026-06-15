@@ -1,87 +1,183 @@
-body {
-    background-image: url("{% 'assets/img/fundo.jpg' %}");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+/* 
+  ==========================================
+  Design System - Conexão Solidária
+  ==========================================
+*/
+
+:root {
+    /* Paleta de Cores Premium */
+    --color-primary: #4F46E5; /* Indigo */
+    --color-primary-hover: #4338CA;
+    --color-secondary: #0F172A; /* Slate escuro */
+    --color-accent: #14B8A6; /* Teal / Cyan */
+    --color-background: #F8FAFC;
+    --color-surface: rgba(255, 255, 255, 0.85); /* Glass base */
+    --color-text-dark: #1E293B;
+    --color-text-light: #F1F5F9;
+    
+    /* Efeitos e Animações */
+    --glass-blur: blur(12px);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.3);
+    --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --transition-snappy: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+body {
+    background-color: var(--color-background);
+    background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                      radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                      radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+    background-attachment: fixed;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--color-text-dark);
+}
+
+/* ==========================================
+   Header & Navigation (Glassmorphism)
+   ========================================== */
 header {
-    background-color: #13678A;
+    background: var(--color-secondary);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-bottom: var(--glass-border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: var(--transition-snappy);
 }
 
 header h1 {
-    color: #f9f9f9;
+    color: var(--color-text-light);
+    font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
 header .nav-link {
-    color: #f9f9f9;
+    color: var(--color-text-light);
+    font-weight: 500;
+    position: relative;
+    transition: var(--transition-snappy);
 }
 
-header .nav-link:hover {
-    color: #45C4B0;
+header .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--color-accent);
+    transition: var(--transition-snappy);
 }
 
-.highlight-section {
-    background-color: #ffffff;
-    padding: 2rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    text-align: left;
-    max-width: 1400px;
-    margin-left: auto;
-    margin-right: auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+header .nav-link:hover, header .nav-link:focus {
+    color: var(--color-accent);
 }
 
-.highlight-section h2 {
-    color: #13678A;
-    font-size: 2.5rem;
+header .nav-link:hover::after {
+    width: 100%;
 }
 
-.highlight-section p {
-    color: #333;
+/* ==========================================
+   Highlight Sections & Cards
+   ========================================== */
+.highlight-section, .institution-card {
+    background: var(--color-surface);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: var(--glass-border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 2.5rem;
+    transition: var(--transition-snappy);
+}
+
+.institution-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-hover);
+}
+
+.highlight-section h2, .institution-card h3 {
+    color: var(--color-primary);
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+.highlight-section p, .institution-card p {
+    color: #475569;
+    line-height: 1.7;
     font-size: 1.1rem;
 }
 
-.highlight-section .btn {
-    background-color: #0d2041;
-    color: #fff;
-    font-size: 1rem;
-    padding: 0.5rem 1rem;
+/* ==========================================
+   Buttons (Micro-animations)
+   ========================================== */
+.btn-primary, .btn-outline-primary {
+    border-radius: 8px;
     font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 0.75rem 1.5rem;
+    transition: var(--transition-snappy);
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
     border: none;
-    border-radius: 5px;
-    transition: background-color 0.3s;
+    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
 }
 
-.highlight-section .btn:hover {
-    background-color: #45C4B0;
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
 }
 
+.btn-outline-primary {
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--color-primary);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+}
+
+/* ==========================================
+   Footer
+   ========================================== */
 footer {
-    background-color: #0d2041;
-    color: #f9f9f9;
-    padding: 20px 0;
+    background-color: var(--color-secondary);
+    color: var(--color-text-light);
+    padding: 2rem 0;
     text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 footer p {
     margin: 5px 0;
-    color: #f9f9f9;
+    opacity: 0.8;
 }
 
 footer .footer-link {
-    color: #f9f9f9;
+    color: var(--color-accent);
     text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition-snappy);
 }
 
 footer .footer-link:hover {
-    color: #45C4B0;
+    color: #fff;
+    text-decoration: underline;
 }
 
+/* ==========================================
+   Responsiveness
+   ========================================== */
 @media (max-width: 1024px) {
     .highlight-section h2 {
         font-size: 2rem;
@@ -90,7 +186,10 @@ footer .footer-link:hover {
 
 @media (max-width: 768px) {
     .highlight-section {
-        flex-direction: column;
-        text-align: center;
+        padding: 1.5rem;
+    }
+    
+    .institution-card {
+        padding: 1.5rem;
     }
 }
