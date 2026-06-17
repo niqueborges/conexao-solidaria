@@ -1,4 +1,4 @@
-# Conexão Solidária
+# Conexão Solidária (Refatorado)
 
 ---
 
@@ -18,17 +18,12 @@
   <img src="https://img.shields.io/badge/Amazon%20EC2-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white" width="100" height="30"/>
 </p>
 
-
----
-
-## **👥 Desenvolvedores**
-
-| [<img loading="lazy" src="https://avatars.githubusercontent.com/u/97261564?v=4" width="100" alt="Gusttavo Felipe">](https://github.com/gusttavofelipe) <br>[Gusttavo Felipe](https://github.com/gusttavofelipe) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/95103547?v=4" width="100" alt="Monique da Silva Borges">](https://github.com/niqueborges) <br>[Monique da Silva Borges](https://github.com/niqueborges) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/154631421?v=4" width="100" alt="Pedro Nunes">](https://github.com/PedroNunesBH) <br>[Pedro Nunes](https://github.com/PedroNunesBH) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/167145673?v=4" width="100" alt="Roger Dev">](https://github.com/Rogerdev02) <br>[Roger Dev](https://github.com/Rogerdev02) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/114765722?v=4" width="100" alt="Silvio CMJ">](https://github.com/SilvioCMJ) <br>[Silvio CMJ](https://github.com/SilvioCMJ) |
-|:---:|:---:|:---:|:---:|:---:|
-
 ---
 
 ## **📜 Descrição**
+
+> **Nota da Mantenedora:** Este projeto nasceu originalmente como conclusão do bootcamp AWS da Compass UOL. Atualmente, ele foi refatorado e é evoluído de forma solo por [Monique da Silva Borges](https://github.com/niqueborges). Os créditos à equipe original estão no final deste documento.
+
 
 Este projeto **Conexão Solidária** tem como objetivo criar uma plataforma de comunicação entre doadores e instituições, com suporte a um chatbot multicanal e integração com AWS. A plataforma utiliza Django para o backend e frontend, Docker e EC2 para a execução do chatbot, e diversas soluções AWS para melhorar a experiência do usuário.
 
@@ -89,8 +84,8 @@ Certifique-se de ter os seguintes pré-requisitos instalados:
 Clone o repositório em sua máquina:
 
 ```bash
-git clone https://github.com/Compass-pb-aws-2024-JUNHO/sprints-9-10-pb-aws-junho.git grupo-1
-cd grupo-1
+git clone https://github.com/niqueborges/conexao-solidaria.git
+cd conexao-solidaria
 ```
 **Antes de realizar o deploy, configure suas credenciais AWS e o ambiente:**
 
@@ -433,6 +428,14 @@ Os **Termos de Uso** podem ser acessados em [termos de uso](https://conexao-soli
 
 ---
 
-Este README segue as melhores práticas, conforme recomendado no Programa de Bolsas Compass UOL e AWS.
+## **👥 Equipe Original (Bootcamp)**
 
+O projeto base foi construído de forma colaborativa durante o bootcamp da Compass UOL pelos seguintes desenvolvedores:
+
+| [<img loading="lazy" src="https://avatars.githubusercontent.com/u/97261564?v=4" width="100" alt="Gusttavo Felipe">](https://github.com/gusttavofelipe) <br>[Gusttavo Felipe](https://github.com/gusttavofelipe) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/95103547?v=4" width="100" alt="Monique da Silva Borges">](https://github.com/niqueborges) <br>[Monique da Silva Borges](https://github.com/niqueborges) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/154631421?v=4" width="100" alt="Pedro Nunes">](https://github.com/PedroNunesBH) <br>[Pedro Nunes](https://github.com/PedroNunesBH) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/167145673?v=4" width="100" alt="Roger Dev">](https://github.com/Rogerdev02) <br>[Roger Dev](https://github.com/Rogerdev02) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/114765722?v=4" width="100" alt="Silvio CMJ">](https://github.com/SilvioCMJ) <br>[Silvio CMJ](https://github.com/SilvioCMJ) |
+|:---:|:---:|:---:|:---:|:---:|
+
+---
+
+Este projeto continuou sendo evoluído de forma solo seguindo padrões avançados de arquitetura serverless.
 
