@@ -38,6 +38,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "institutions",
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -76,13 +78,11 @@ WSGI_APPLICATION = "app.wsgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 # Database is not used since data is fetched from AWS API
 DATABASES = {}
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
+# Use signed cookies for sessions since we don't have a database
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 
-
-
-# Internationalization
+# Password validation# Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
 LANGUAGE_CODE = "pt-br"

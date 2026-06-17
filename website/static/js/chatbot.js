@@ -45,7 +45,7 @@ function displayBotResponse(data) {
             chatBox.innerHTML += `
                 <div class="d-flex justify-content-start mb-2">
                     <div class="bg-secondary-subtle text-dark p-2 rounded" style="max-width: 70%;">
-                        <strong>SoliBot:</strong> ${msg['content']}
+                        <strong>SoliBot:</strong> ${msg['content'].replace(/#/g, '<br>')}
                     </div>
                 </div>`;
         });
