@@ -49,7 +49,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install Serverless Framework
-        run: npm install -g serverless
+        run: npm install -g serverless@3
 
       - name: Install Plugins
         working-directory: ./serverless
@@ -78,7 +78,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install Serverless Framework
-        run: npm install -g serverless
+        run: npm install -g serverless@3
 
       - name: Install Plugins
         working-directory: ./chatbot/backend
