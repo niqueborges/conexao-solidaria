@@ -1,0 +1,274 @@
+{
+  "info": {
+    "name": "Conexão Solidária API - AWS Serverless",
+    "description": "Endpoints da API Serverless do projeto Conexão Solidária",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://ff88h43417.execute-api.us-east-1.amazonaws.com/",
+          "protocol": "https",
+          "host": [
+            "ff88h43417",
+            "execute-api",
+            "us-east-1",
+            "amazonaws",
+            "com"
+          ],
+          "path": [
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Listar Instituições",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://ff88h43417.execute-api.us-east-1.amazonaws.com/api/v1/institutions",
+          "protocol": "https",
+          "host": [
+            "ff88h43417",
+            "execute-api",
+            "us-east-1",
+            "amazonaws",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "institutions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Criar Instituição",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cnpj\": \"12345678000190\",\n  \"name\": \"ONG Maos Acolhedoras\",\n  \"email\": \"contato@maosacolhedoras.org.br\",\n  \"phone_number\": \"11987654321\",\n  \"region\": \"Sudeste\",\n  \"state\": \"SP\",\n  \"cep\": \"12345678\",\n  \"address\": \"Rua da Ajuda\",\n  \"address_number\": 123,\n  \"city\": \"Sao Paulo\",\n  \"neighborhood\": \"Centro\",\n  \"confirmation_audio\": \"https://meubucket.s3.amazonaws.com/audio.mp3\",\n  \"image\": \"https://meubucket.s3.amazonaws.com/imagem.jpg\",\n  \"about\": \"Ajudamos pessoas oferecendo abrigo e comida.\",\n  \"site\": \"https://maosacolhedoras.org.br\"\n}"
+        },
+        "url": {
+          "raw": "https://ff88h43417.execute-api.us-east-1.amazonaws.com/api/v1/institutions",
+          "protocol": "https",
+          "host": [
+            "ff88h43417",
+            "execute-api",
+            "us-east-1",
+            "amazonaws",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "institutions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Buscar Instituição por CNPJ",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://ff88h43417.execute-api.us-east-1.amazonaws.com/api/v1/institutions/12345678000199",
+          "protocol": "https",
+          "host": [
+            "ff88h43417",
+            "execute-api",
+            "us-east-1",
+            "amazonaws",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "institutions",
+            "12345678000199"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Atualizar Instituição",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"ONG Maos Acolhedoras Atualizada\",\n  \"phone_number\": \"11900000000\",\n  \"verified\": true\n}"
+        },
+        "url": {
+          "raw": "https://ff88h43417.execute-api.us-east-1.amazonaws.com/api/v1/institutions/12345678000199",
+          "protocol": "https",
+          "host": [
+            "ff88h43417",
+            "execute-api",
+            "us-east-1",
+            "amazonaws",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "institutions",
+            "12345678000199"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Deletar Instituição",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "https://ff88h43417.execute-api.us-east-1.amazonaws.com/api/v1/institutions/12345678000199",
+          "protocol": "https",
+          "host": [
+            "ff88h43417",
+            "execute-api",
+            "us-east-1",
+            "amazonaws",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "institutions",
+            "12345678000199"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Query Instituições (Filtros)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://ff88h43417.execute-api.us-east-1.amazonaws.com/api/v1/institutions/query?state=SP&region=Sudeste",
+          "protocol": "https",
+          "host": [
+            "ff88h43417",
+            "execute-api",
+            "us-east-1",
+            "amazonaws",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "institutions",
+            "query"
+          ],
+          "query": [
+            {
+              "key": "state",
+              "value": "SP"
+            },
+            {
+              "key": "region",
+              "value": "Sudeste"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Obter Sugestões (Bedrock)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"Crie uma dica rapida de doacao para minha ONG\"\n}"
+        },
+        "url": {
+          "raw": "https://ff88h43417.execute-api.us-east-1.amazonaws.com/api/v1/institutions/suggestions",
+          "protocol": "https",
+          "host": [
+            "ff88h43417",
+            "execute-api",
+            "us-east-1",
+            "amazonaws",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "institutions",
+            "suggestions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Scan Imagem (Rekognition)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"image_base64\": \"base64_da_imagem_aqui\"\n}"
+        },
+        "url": {
+          "raw": "https://ff88h43417.execute-api.us-east-1.amazonaws.com/api/v1/scan",
+          "protocol": "https",
+          "host": [
+            "ff88h43417",
+            "execute-api",
+            "us-east-1",
+            "amazonaws",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "scan"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

@@ -6,6 +6,9 @@ provider:
   runtime: python3.9
   memorySize: 128
   timeout: 10
+  tracing:
+    apiGateway: true
+    lambda: true
   environment:
     TABLE_NAME: ${self:custom.tableName}
     REGION_NAME: ${opt:region, 'us-east-1'}
@@ -13,6 +16,11 @@ provider:
   iam:
     role:
       statements:
+        - Effect: Allow
+          Action:
+            - xray:PutTraceSegments
+            - xray:PutTelemetryRecords
+          Resource: "*"
         - Effect: Allow
           Action:
             - dynamodb:Query

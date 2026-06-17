@@ -9,8 +9,14 @@ from infra.schemas.institutions import CreateInstitution, UpdateInstitution
 from aws_lambda_powertools.utilities.parser import parse, ValidationError
 from aws_lambda_powertools.utilities.typing import LambdaContext
 from utils.build import build_http_response
+from aws_lambda_powertools import Logger, Tracer
+
+logger = Logger()
+tracer = Tracer()
 
 
+@logger.inject_lambda_context(log_event=True)
+@tracer.capture_lambda_handler
 def create(event: dict, context: LambdaContext) -> dict[str, Any]:
     """Registers a new Institution in Dynamo."""
     try:
@@ -28,6 +34,8 @@ def create(event: dict, context: LambdaContext) -> dict[str, Any]:
     return build_http_response(status_code=201, body=institution)
 
 
+@logger.inject_lambda_context(log_event=True)
+@tracer.capture_lambda_handler
 def list_items(event: dict, context: LambdaContext) -> list[dict[str, Any]]:
     """Retrieves all Institution records from Dynamo."""
     try:
@@ -38,6 +46,8 @@ def list_items(event: dict, context: LambdaContext) -> list[dict[str, Any]]:
     return build_http_response(status_code=200, body=institutions)
 
 
+@logger.inject_lambda_context(log_event=True)
+@tracer.capture_lambda_handler
 def retrieve(event: dict, context: LambdaContext) -> dict[str, Any]:
     """Retrieves a specific record using 'cnpj' as a filter."""
 
@@ -52,6 +62,8 @@ def retrieve(event: dict, context: LambdaContext) -> dict[str, Any]:
     return build_http_response(status_code=200, body=institution)
 
 
+@logger.inject_lambda_context(log_event=True)
+@tracer.capture_lambda_handler
 def query(event: dict, context: LambdaContext) -> dict[str, Any]:
     """Queries institutions by optional 'region' and/or 'state' parameters."""
     query_params = event.get("queryStringParameters") or {}
@@ -66,6 +78,8 @@ def query(event: dict, context: LambdaContext) -> dict[str, Any]:
     return build_http_response(status_code=200, body=institutions)
 
 
+@logger.inject_lambda_context(log_event=True)
+@tracer.capture_lambda_handler
 def update(event: dict, context: LambdaContext) -> dict[str, Any]:
     """Updates the specified fields of a record in Dynamo."""
 
@@ -87,6 +101,8 @@ def update(event: dict, context: LambdaContext) -> dict[str, Any]:
     return build_http_response(status_code=200, body=institution)
 
 
+@logger.inject_lambda_context(log_event=True)
+@tracer.capture_lambda_handler
 def delete(event: dict, context: LambdaContext) -> bool:
     """Deletes the specific record using 'cnpj' as a filter."""
 

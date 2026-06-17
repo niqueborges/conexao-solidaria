@@ -5,9 +5,17 @@ provider:
   runtime: python3.12
   memorySize: 128
   timeout: 10
+  tracing:
+    apiGateway: true
+    lambda: true
   iam:
     role:
       statements:
+        - Effect: Allow
+          Action:
+            - xray:PutTraceSegments
+            - xray:PutTelemetryRecords
+          Resource: "*"
         - Effect: Allow
           Action:
             - lex:RecognizeText

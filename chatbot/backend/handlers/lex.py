@@ -3,8 +3,14 @@ from intents.register import RegisterIntent
 from intents.tips import TipsIntent
 from intents.welcome import WelcomeIntent
 from utils.responses import LexResponses
+from aws_lambda_powertools import Logger, Tracer
+
+logger = Logger()
+tracer = Tracer()
 
 
+@logger.inject_lambda_context(log_event=True)
+@tracer.capture_lambda_handler
 def lex(event, context):
     """
     Main handler for processing the backend of the Lex chatbot.

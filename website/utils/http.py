@@ -1,4 +1,4 @@
-import requests
+import httpx
 from django.http import HttpRequest
 from typing import Any
 
@@ -6,15 +6,19 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def fetch_data(endpoint: str) -> dict[str, Any]:
+async def fetch_data(endpoint: str) -> dict[str, Any]:
     """
-    Retrieves JSON data from the specified endpoint for a single institution.
+    Retrieves JSON data from the specified endpoint asynchronously.
     """
     try:
-        response = requests.get(endpoint, timeout=5)
-        response.raise_for_status()
-    except requests.exceptions.RequestException as exc:
-        logger.error(f"Erro ao consumir o endpoint: {exc}")
+        async with httpx.AsyncClient() as client:
+            response = await client.get(endpoint, timeout=5.0)
+            response.raise_for_status()
+    except httpx.RequestError as exc:
+        logger.error(f"Erro de conexão ao consumir o endpoint: {exc}")
+        return {}
+    except httpx.HTTPStatusError as exc:
+        logger.error(f"Erro HTTP {exc.response.status_code} ao consumir o endpoint: {exc}")
         return {}
 
     return response.json()

@@ -5,29 +5,35 @@ from utils.content_type import get_content_type
 from utils.download_media import download_media_file
 from utils.get_twilio_phone import get_twilio_phone_number
 
+from aws_lambda_powertools import Logger, Tracer
 
+logger = Logger()
+tracer = Tracer()
+
+@logger.inject_lambda_context(log_event=True)
+@tracer.capture_lambda_handler
 def twilio(event, context):
-    print(event)
+
 
     params = decode_body(event)
 
     from_number = get_twilio_phone_number(params)
-    print(f"Número de origem: {from_number}")
+    logger.info(f"Número de origem: {from_number}")
 
     content_type = get_content_type(params)
     response_message = None
 
     if content_type in ["image", "audio"]:
         media_url = params.get("MediaUrl0")
-        print(f"URL da mídia ({content_type}):", media_url)
+        logger.info(f"URL da mídia ({content_type}): {media_url}")
 
         try:
             media_content = download_media_file(media_url)
             media_key = upload_file_to_s3(media_content, content_type)
-            print(f"Media stored in S3 at: {media_key}")
+            logger.info(f"Media stored in S3 at: {media_key}")
             response_message = send_message_to_lex(media_key, from_number)
         except Exception as e:
-            print(f"Error processing media: {e}")
+            logger.error(f"Error processing media: {e}", exc_info=True)
             response_message = (
                 "Houve um problema ao processar seu arquivo."
                 " Por favor, tente novamente."
@@ -36,6 +42,6 @@ def twilio(event, context):
     else:
         text_to_translate = params.get("Body", "")
         response_message = send_message_to_lex(text_to_translate, from_number)
-        print(response_message)
+        logger.info(f"Lex response: {response_message}")
 
     return {"statusCode": 200, "body": response_message}
