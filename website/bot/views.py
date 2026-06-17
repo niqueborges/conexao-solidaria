@@ -8,7 +8,7 @@ from utils.http import get_client_ip
 from django.shortcuts import render
 
 class ChatBotView(View):
-    def get(self, request: HttpRequest, *args, **kwargs):
+    async def get(self, request: HttpRequest, *args, **kwargs):
         """Handles GET requests to render the chatbot page."""
         return render(request, "chatbot.html")
 
