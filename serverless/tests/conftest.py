@@ -1,6 +1,7 @@
 import os
 import pytest
 from moto import mock_aws
+from infra.models.institutions import InstitutionModel
 
 @pytest.fixture(scope='function')
 def aws_credentials():
@@ -15,3 +16,9 @@ def aws_credentials():
 def dynamodb_mock(aws_credentials):
     with mock_aws():
         yield
+
+@pytest.fixture(autouse=True)
+def setup_dynamodb_table(dynamodb_mock):
+    InstitutionModel.create_table(read_capacity_units=1, write_capacity_units=1, wait=True)
+    yield
+    InstitutionModel.delete_table()
