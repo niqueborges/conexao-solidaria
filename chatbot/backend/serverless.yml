@@ -81,4 +81,5 @@ plugins:
 
 custom:
   pythonRequirements:
+    dockerizePip: true
     fileName: requirements.txt

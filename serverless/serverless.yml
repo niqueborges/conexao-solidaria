@@ -123,6 +123,7 @@ plugins:
 custom:
   tableName: institutions-${opt:stage, 'dev'}
   pythonRequirements:
+      dockerizePip: true
       useStaticCache: false
       useDownloadCache: false
       pipCmdExtraArgs:
