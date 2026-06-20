@@ -6,6 +6,15 @@ provider:
   runtime: python3.12
   memorySize: 128
   timeout: 10
+  apiGateway:
+    usagePlan:
+      quota:
+        limit: 5000
+        offset: 2
+        period: MONTH
+      throttle:
+        burstLimit: 40
+        rateLimit: 20
   tracing:
     apiGateway: true
     lambda: true
@@ -136,3 +145,21 @@ resources:
         KeySchema:
           - AttributeName: cnpj
             KeyType: HASH
+
+    ProjectBudget:
+      Type: AWS::Budgets::Budget
+      Properties:
+        Budget:
+          BudgetType: COST
+          TimeUnit: MONTHLY
+          BudgetLimit:
+            Amount: 10
+            Unit: USD
+        NotificationsWithSubscribers:
+          - Notification:
+              NotificationType: ACTUAL
+              ComparisonOperator: GREATER_THAN
+              Threshold: 100
+            Subscribers:
+              - SubscriptionType: EMAIL
+                Address: admin@example.com
