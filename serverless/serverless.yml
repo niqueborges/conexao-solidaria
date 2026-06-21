@@ -6,15 +6,6 @@ provider:
   runtime: python3.12
   memorySize: 128
   timeout: 10
-  apiGateway:
-    usagePlan:
-      quota:
-        limit: 5000
-        offset: 2
-        period: MONTH
-      throttle:
-        burstLimit: 40
-        rateLimit: 20
   tracing:
     apiGateway: true
     lambda: true
@@ -164,3 +155,96 @@ resources:
             Subscribers:
               - SubscriptionType: EMAIL
                 Address: admin@example.com
+
+    ApiWafWebAcl:
+      Type: AWS::WAFv2::WebACL
+      Properties:
+        Name: conexao-solidaria-waf-${opt:stage, 'dev'}
+        Scope: CLOUDFRONT
+        DefaultAction:
+          Allow: {}
+        VisibilityConfig:
+          SampledRequestsEnabled: true
+          CloudWatchMetricsEnabled: true
+          MetricName: conexao-solidaria-waf-metric
+        Rules:
+          - Name: RateLimitRule
+            Priority: 1
+            Action:
+              Block: {}
+            Statement:
+              RateBasedStatement:
+                Limit: 500
+                AggregateKeyType: IP
+            VisibilityConfig:
+              SampledRequestsEnabled: true
+              CloudWatchMetricsEnabled: true
+              MetricName: rate-limit-metric
+          - Name: AWSManagedRulesCommonRuleSet
+            Priority: 2
+            OverrideAction:
+              None: {}
+            Statement:
+              ManagedRuleGroupStatement:
+                VendorName: AWS
+                Name: AWSManagedRulesCommonRuleSet
+            VisibilityConfig:
+              SampledRequestsEnabled: true
+              CloudWatchMetricsEnabled: true
+              MetricName: aws-common-rules-metric
+          - Name: AWSManagedRulesAmazonIpReputationList
+            Priority: 3
+            OverrideAction:
+              None: {}
+            Statement:
+              ManagedRuleGroupStatement:
+                VendorName: AWS
+                Name: AWSManagedRulesAmazonIpReputationList
+            VisibilityConfig:
+              SampledRequestsEnabled: true
+              CloudWatchMetricsEnabled: true
+              MetricName: aws-ip-reputation-metric
+
+    ApiCloudFrontDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Enabled: true
+          Comment: CloudFront for Conexao Solidaria Serverless API
+          WebACLId: !GetAtt ApiWafWebAcl.Arn
+          Origins:
+            - Id: ApiGatewayOrigin
+              DomainName:
+                Fn::Join:
+                  - ""
+                  - - !Ref HttpApi
+                    - ".execute-api.${opt:region, 'us-east-1'}.amazonaws.com"
+              CustomOriginConfig:
+                HTTPSPort: 443
+                OriginProtocolPolicy: https-only
+              OriginCustomHeaders:
+                - HeaderName: X-Origin-Verify
+                  HeaderValue: "SECRET-WAF-TOKEN-12345"
+          DefaultCacheBehavior:
+            TargetOriginId: ApiGatewayOrigin
+            ViewerProtocolPolicy: redirect-to-https
+            AllowedMethods:
+              - GET
+              - HEAD
+              - OPTIONS
+              - PUT
+              - PATCH
+              - POST
+              - DELETE
+            CachedMethods:
+              - GET
+              - HEAD
+            ForwardedValues:
+              QueryString: true
+              Headers:
+                - Authorization
+        
+  Outputs:
+    CloudFrontDomainName:
+      Value: !GetAtt ApiCloudFrontDistribution.DomainName
+      Description: URL da Distribuicao CloudFront protegida pelo WAF
