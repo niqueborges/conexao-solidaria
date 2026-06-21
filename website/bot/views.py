@@ -17,7 +17,11 @@ class ChatBotView(View):
 
         message = request.POST.get("message", "").strip()
         image = request.FILES.get("image", None)
-        session_id = get_client_ip(request=request)
+        
+        session_id = request.COOKIES.get("session_id")
+        if not session_id:
+            import uuid
+            session_id = str(uuid.uuid4())
 
         image_key = None
 

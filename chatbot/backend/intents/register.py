@@ -1,5 +1,5 @@
 import os
-import logging
+from aws_lambda_powertools import Logger
 
 from services.api import ApiClient
 from services.aws import AmazonServices
@@ -8,8 +8,7 @@ from utils.slots import check_slot_filling, get_slot_value
 from services.polly import generate_audio_as_bytes
 from services.s3 import upload_file_to_s3
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger = Logger()
 
 
 class RegisterIntent:
@@ -46,13 +45,7 @@ class RegisterIntent:
         logger.info(f"Evento no fulfillment: {self.event}")
         slots = self.event["sessionState"]["intent"]["slots"]
 
-        institution_data = self.generate_institution_data(slots)
-
-        api_client = ApiClient(os.getenv("BASE_URL"))
-        amazon_service = AmazonServices(api_client)
-
         try:
-            amazon_service.create_institution(institution_data)
             response_message = (
                 "Cadastro da instituição realizado com sucesso! "
                 "Ele estará disponível assim que aprovado. "
@@ -61,9 +54,18 @@ class RegisterIntent:
 
             audio_bytes = generate_audio_as_bytes(response_message)
             media_key = upload_file_to_s3(audio_bytes, "audio")
+            confirmation_audio_url = f"https://{self.bucket_name}.s3.amazonaws.com/{media_key}"
+
+            institution_data = self.generate_institution_data(slots, confirmation_audio_url)
+
+            api_client = ApiClient(os.getenv("BASE_URL"))
+            amazon_service = AmazonServices(api_client)
+
+            amazon_service.create_institution(institution_data)
+
             response_message += (
                 f"Para ouvir a resposta em áudio clique no link : "
-                f"https://{self.bucket_name}.s3.amazonaws.com/{media_key}"
+                f"{confirmation_audio_url}"
             )
 
         except Exception as e:
@@ -76,7 +78,7 @@ class RegisterIntent:
         logger.info(f"Response: {response}")
         return response
 
-    def generate_institution_data(self, slots: dict) -> dict:
+    def generate_institution_data(self, slots: dict, confirmation_audio_url: str) -> dict:
         """
         Method responsible for generating the dictionary with the institution's
         data from the slot values.
@@ -95,7 +97,7 @@ class RegisterIntent:
             "neighborhood": slot_values.get("InstitutionNeighborhood"),
             "cep": slot_values.get("InstitutionCep"),
             "address_number": slot_values.get("InstitutionAddressNumber"),
-            "confirmation_audio": "https://www.teste.com.br",
+            "confirmation_audio": confirmation_audio_url,
             "image": f"https://{self.bucket_name}.s3.amazonaws.com/{slot_values.get('ImagePath', '')}",
             "about": slot_values.get("InstitutionDescription"),
             "site": slot_values.get("InstitutionSite"),

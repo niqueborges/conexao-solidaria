@@ -1,7 +1,7 @@
 from typing import Optional
 
 
-class BaseException(Exception):
+class AppException(Exception):
     """Base class for all custom exceptions."""
 
     def __init__(self, *args: object, message: Optional[str] = None) -> None:
@@ -9,7 +9,7 @@ class BaseException(Exception):
         self.message = message or "An exception occurred."
 
 
-class AudioStreamNotFoundException(BaseException):
+class AudioStreamNotFoundException(AppException):
     """AudioStream was not found in Polly's response."""
 
     def __init__(self, *args: object, message: Optional[str] = None) -> None:
@@ -17,7 +17,7 @@ class AudioStreamNotFoundException(BaseException):
         super().__init__(*args, message=message or self.message)
 
 
-class InstitutionAlreadyExistsException(BaseException):
+class InstitutionAlreadyExistsException(AppException):
     """Institution already exists."""
 
     def __init__(self, *args: object, message: Optional[str] = None) -> None:
@@ -25,7 +25,7 @@ class InstitutionAlreadyExistsException(BaseException):
         super().__init__(*args, message=message or self.message)
 
 
-class InstitutionNotFoundException(BaseException):
+class InstitutionNotFoundException(AppException):
     """Institution not found."""
 
     def __init__(self, *args: object, message: Optional[str] = None) -> None:

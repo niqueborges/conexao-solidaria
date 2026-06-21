@@ -1,5 +1,8 @@
 import boto3
 import os
+from aws_lambda_powertools import Logger
+
+logger = Logger()
 
 bot_id = os.getenv("BOT_ID")
 alias_id = os.getenv("ALIAS_ID")
@@ -31,5 +34,5 @@ def send_message_to_lex(text: str, session_id: str) -> str:
 
         return bot_message
     except Exception as e:
-        print(f"Erro ao enviar mensagem para o Lex: {e}")
-        return "Erro ao processar a mensagem", None
+        logger.error(f"Erro ao enviar mensagem para o Lex: {e}")
+        return "Erro ao processar a mensagem"

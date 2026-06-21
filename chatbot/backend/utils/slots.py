@@ -5,6 +5,9 @@ from typing import Optional
 from utils.responses import LexResponses
 from services.api import ApiClient
 from services.via_cep_api import ViaCepService
+from aws_lambda_powertools import Logger
+
+logger = Logger()
 
 
 def get_slot_value(slots: str, slot_name: str) -> str:
@@ -45,7 +48,7 @@ def check_image_path_slot(
         json={"bucket": bucket_name, "image_key": slot_value},
     )
 
-    print(f"Resposta do Rekognition - Status Code: {rekognition_response.status_code}")
+    logger.info(f"Resposta do Rekognition - Status Code: {rekognition_response.status_code}")
 
     if rekognition_response.status_code != 204:
         return LexResponses.elicit_slot(event, slot_name)
@@ -78,7 +81,7 @@ def check_slot_filling(slots: dict, event: dict, validation_rules: dict) -> None
             if image_check_response:
                 return image_check_response
 
-    print(event)
+    logger.info(f"Checking slot filling: {event}")
     if intent_name == "RegisterIntent":
         cep = get_slot_value(slots, "InstitutionCep")
 
@@ -101,7 +104,7 @@ def check_slot_filling(slots: dict, event: dict, validation_rules: dict) -> None
                 }
                 update_multiple_slot_values(event, slots_values_to_update)
 
-                print(event)
+                logger.info(f"Event after slots update: {event}")
 
                 return LexResponses.delegate(event)
             else:

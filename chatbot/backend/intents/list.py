@@ -40,7 +40,7 @@ class ListIntent:
         if filter_boolean.lower() == "não":
             response_message = (
                 "Acesse o nosso link para visualizar "
-                "todas as instituições: {base_url}/"
+                f"todas as instituições: {base_url}/"
             )
         else:
             filter_type = slot_values["FilterType"]
