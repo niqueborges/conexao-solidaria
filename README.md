@@ -31,14 +31,14 @@ Este projeto **Conexão Solidária** tem como objetivo criar uma plataforma de c
 
 ## **📑 Índice**
 
-- [✨ Funcionalidades, Arquitetura e Fluxo de Trabalho](#funcionalidades-arquitetura-e-fluxo-de-trabalho)
-- [📦 Como Rodar a Aplicação](#como-rodar-a-aplicação)
-- [💻 Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [🗄️ Banco de Dados](#banco-de-dados)
-- [📂 Estrutura de Diretórios](#estrutura-de-diretórios)
-- [📅 Metodologia de Desenvolvimento](#metodologia-de-desenvolvimento)
-- [😿 Principais Dificuldades](#principais-dificuldades)
-- [📜 Termos de Uso](#termos-de-uso)
+- [✨ Funcionalidades, Arquitetura e Fluxo de Trabalho](#✨-funcionalidades-arquitetura-e-fluxo-de-trabalho-⚙️)
+- [📦 Como Rodar a Aplicação](#📦-como-rodar-a-aplicação)
+- [💻 Tecnologias Utilizadas](#💻-tecnologias-utilizadas)
+- [🗄️ Banco de Dados](#🗄️-banco-de-dados)
+- [📂 Estrutura de Diretórios](#📂-estrutura-de-diretórios)
+- [📅 Metodologia de Desenvolvimento](#📅-metodologia-de-desenvolvimento)
+- [😿 Principais Dificuldades](#😿-principais-dificuldades)
+- [📜 Termos de Uso](#📜-termos-de-uso)
 
 ---
 
