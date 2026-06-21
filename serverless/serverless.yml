@@ -3,7 +3,7 @@ service: conexao-solidaria
 
 provider:
   name: aws
-  runtime: python3.12
+  runtime: python3.11
   memorySize: 128
   timeout: 10
   tracing:
@@ -114,13 +114,13 @@ plugins:
 custom:
   tableName: institutions-${opt:stage, 'dev'}
   pythonRequirements:
-      dockerizePip: true
+      dockerizePip: non-linux
       useStaticCache: false
       useDownloadCache: false
       pipCmdExtraArgs:
         - "--platform manylinux2014_x86_64"
         - "--implementation cp"
-        - "--python-version 3.12"
+        - "--python-version 3.11"
         - "--only-binary=:all:"
         - "--upgrade"
 

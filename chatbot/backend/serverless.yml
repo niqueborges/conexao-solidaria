@@ -2,7 +2,7 @@ service: chatbot-lex
 
 provider:
   name: aws
-  runtime: python3.12
+  runtime: python3.11
   memorySize: 128
   timeout: 10
   tracing:
@@ -76,5 +76,5 @@ plugins:
 
 custom:
   pythonRequirements:
-    dockerizePip: true
+    dockerizePip: non-linux
     fileName: requirements.txt
