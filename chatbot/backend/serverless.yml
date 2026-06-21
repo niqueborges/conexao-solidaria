@@ -28,7 +28,7 @@ provider:
         - Effect: Allow
           Action:
             - secretsmanager:GetSecretValue
-          Resource: arn:aws:secretsmanager:${aws:region}:${aws:accountId}:secret:conexao-solidaria/twilio*
+          Resource: arn:aws:secretsmanager:${opt:region, 'us-east-1'}:${env:AWS_ACCOUNT_ID, '*'}:secret:conexao-solidaria/twilio*
 
 functions:
   hello:
