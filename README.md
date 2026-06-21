@@ -95,9 +95,29 @@ aws configure
 
 ---
 
-### **2. Deploy da Infraestrutura e API (Serverless)**
+### **2. Configuração de Parâmetros e Segredos (AWS SSM & Secrets Manager)**
 
-Este passo cria o DynamoDB, S3, Lambdas da API e serviços base.
+Antes de realizar os deploys, a arquitetura requer a configuração de parâmetros seguros na sua conta AWS:
+
+1. **E-mail de Alertas Financeiros (AWS SSM):**
+   Crie um parâmetro no *Parameter Store* para receber os alarmes de custos do projeto.
+   ```bash
+   aws ssm put-parameter --name "/conexao-solidaria/budget/email" --value "seu-email@exemplo.com" --type String
+   ```
+
+2. **Credenciais do Twilio (AWS Secrets Manager):**
+   O chatbot faz o *fetch* das chaves do Twilio dinamicamente para não as expor no código. Crie o segredo:
+   ```bash
+   aws secretsmanager create-secret \
+       --name "conexao-solidaria/twilio" \
+       --secret-string '{"ACCOUNT_SID":"seu_sid","AUTH_TOKEN":"seu_token"}'
+   ```
+
+---
+
+### **3. Deploy da Infraestrutura e API (Serverless)**
+
+Este passo cria o DynamoDB, S3, Lambdas da API, WAF Global e a distribuição CloudFront.
 
 ```bash
 cd serverless
@@ -105,17 +125,17 @@ npm install
 serverless deploy
 ```
 
-**Importante:** Ao final do processo, o terminal exibirá os **endpoints da API** (ex: `https://xxxxxx.execute-api.us-east-1.amazonaws.com`). Copie esta URL base, pois ela será usada nos próximos passos.
+**Importante:** Ao final do processo, o terminal exibirá os **endpoints e outputs**. O sistema possui um bloqueio (*Anti-Bypass*) contra acessos diretos à API Gateway. Portanto, **NÃO** use o endpoint cru. Copie o valor de **`CloudFrontDomainName`** (ex: `d123456.cloudfront.net`), pois ele será a URL base `https://d123456.cloudfront.net` nos próximos passos.
 
 ---
 
-### **3. Deploy do Chatbot e Integração Twilio**
+### **4. Deploy do Chatbot e Integração Twilio**
 
 O Chatbot requer suas próprias dependências Python. É fundamental isolá-las usando um ambiente virtual (venv).
 
 1. Entre na pasta do chatbot, crie o ambiente virtual e ative-o:
 ```bash
-cd chatbot
+cd chatbot/backend
 python -m venv venv
 # No Windows:
 .\venv\Scripts\activate
@@ -128,18 +148,14 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-3. Crie um arquivo `.env` (se necessário) na pasta contendo as variáveis exigidas.
-
-4. Realize o deploy:
+3. Realize o deploy:
 ```bash
 serverless deploy
 ```
 
 **Configuração do Twilio:** O comando acima gerará um endpoint específico para o webhook (ex: `/twilio`). Para que o bot funcione no WhatsApp, você **deve** ir ao painel do Twilio, na configuração do seu número de WhatsApp, e colar a URL gerada pelo Serverless no campo de webhook de mensagens recebidas.
 
----
-
-### **4. Rodando o Frontend (Website)**
+### **5. Rodando o Frontend (Website)**
 
 O Frontend atua como um BFF e precisa saber onde estão as APIs recém-deployadas.
 
@@ -173,7 +189,7 @@ Acesse: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 ---
 
-### **5. Execução com Docker e EC2 (Produção)**
+### **6. Execução com Docker e EC2 (Produção)**
 
 Caso não queira rodar localmente com o `runserver`, você pode rodar o Frontend via contêiner. O `.env` criado no passo anterior será absorvido pelo Docker.
 
@@ -335,8 +351,9 @@ conexao-solidaria/
 │           └── terms_of_use.css         # Estilos para página de Termos de Uso
 ├── .gitignore                           # Arquivo para ignorar arquivos/desnecessários no Git
 ├── .pre-commit-config.yaml              # Configuração de hooks de pré-commit
-├── Makefile                             # Script de automação de tarefas
+├── package-lock.json                    # Controle estrito de versões do NPM
 ├── package.json                         # Dependências e scripts do Node.js
+├── postman_collection.json              # Coleção de rotas para teste da API
 └── README.md                            # Documentação principal do projeto
 ```
 
