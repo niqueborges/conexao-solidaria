@@ -6,7 +6,9 @@ from infra.aws.rekognition import Rekognition
 from aws_lambda_powertools.utilities.parser import parse, ValidationError
 from utils.build import build_http_response
 
+from core.security import verify_origin
 
+@verify_origin
 def scan(event: dict, context: LambdaContext):
     """Analyze an image for inappropriate content."""
     rekognition = Rekognition()

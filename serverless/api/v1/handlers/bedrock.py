@@ -6,7 +6,9 @@ from botocore.exceptions import ClientError
 from aws_lambda_powertools.utilities.parser import parse, ValidationError
 from utils.build import build_http_response
 
+from core.security import verify_origin
 
+@verify_origin
 def suggestions(event: dict, context: LambdaContext):
     """
     Handle suggestions request by processing the input and generating a suggestion.
