@@ -31,17 +31,18 @@ Este projeto **Conexão Solidária** tem como objetivo criar uma plataforma de c
 
 ## **📑 Índice**
 
-- [✨ Funcionalidades, Arquitetura e Fluxo de Trabalho](#✨-funcionalidades-arquitetura-e-fluxo-de-trabalho-⚙️)
-- [📦 Como Rodar a Aplicação](#📦-como-rodar-a-aplicação)
-- [💻 Tecnologias Utilizadas](#💻-tecnologias-utilizadas)
-- [🗄️ Banco de Dados](#🗄️-banco-de-dados)
-- [📂 Estrutura de Diretórios](#📂-estrutura-de-diretórios)
-- [📅 Metodologia de Desenvolvimento](#📅-metodologia-de-desenvolvimento)
-- [😿 Principais Dificuldades](#😿-principais-dificuldades)
-- [📜 Termos de Uso](#📜-termos-de-uso)
+- [✨ Funcionalidades, Arquitetura e Fluxo de Trabalho](#funcionalidades)
+- [📦 Como Rodar a Aplicação](#como-rodar)
+- [💻 Tecnologias Utilizadas](#tecnologias)
+- [🗄️ Banco de Dados](#banco-de-dados)
+- [📂 Estrutura de Diretórios](#estrutura)
+- [📅 Metodologia de Desenvolvimento](#metodologia)
+- [😿 Principais Dificuldades](#dificuldades)
+- [📜 Termos de Uso](#termos)
 
 ---
 
+<a id="funcionalidades"></a>
 ## **✨ Funcionalidades, Arquitetura e Fluxo de trabalho ⚙️**
 
 ---
@@ -67,6 +68,7 @@ O projeto adota uma arquitetura serverless na AWS, complementada por contêinere
 
 ---
 
+<a id="como-rodar"></a>
 ## **📦 Como Rodar a Aplicação**
 
 A ordem de deploy deste projeto é estritamente sequencial, pois o Frontend e o Chatbot dependem das URLs geradas pela API Serverless.
@@ -212,6 +214,7 @@ Para produção no EC2:
 --- 
 
 
+<a id="tecnologias"></a>
 ## **💻 Tecnologias Utilizadas**
 
 - **Amazon Bedrock**  
@@ -231,11 +234,13 @@ Para produção no EC2:
 
 ---
 
+<a id="banco-de-dados"></a>
 ## **🗄️ Banco de Dados**
 
 A estrutura de armazenamento das Instituições em **DynamoDB** 
 ---
 
+<a id="estrutura"></a>
 ## **📂 Estrutura de Diretórios**
 
 Este repositório contém o código-fonte do projeto **Conexão Solidária**, com a divisão entre backend, integração com AWS, e o frontend da aplicação. Abaixo está a estrutura principal do repositório:
@@ -359,12 +364,14 @@ conexao-solidaria/
 
 ---
 
+<a id="metodologia"></a>
 ## **📅 Metodologia de Desenvolvimento**
 
 Adotamos a metodologia **Ágil**, com **Sprints** curtas, **Daily Meetings** e **Code Reviews** para garantir a qualidade e agilidade no desenvolvimento.
 
 ---
 
+<a id="dificuldades"></a>
 ## **😿 Principais Dificuldades**
 
 1. **Integração de múltiplos serviços AWS**: A configuração de vários serviços como **Lex**, **Rekognition** e **Polly** envolveu um desafio técnico considerável.
@@ -374,6 +381,7 @@ Adotamos a metodologia **Ágil**, com **Sprints** curtas, **Daily Meetings** e *
 
 ---
 
+<a id="termos"></a>
 ## **📜 Termos de Uso**
 
 Os **Termos de Uso** podem ser acessados em [termos de uso](https://conexao-solidaria-termos.s3.amazonaws.com/termos.html).
