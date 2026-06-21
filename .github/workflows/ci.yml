@@ -32,6 +32,7 @@ jobs:
         GET_INSTITUTION: "http://test/institution"
         GET_INSTITUTIONS_BY_STATE: "http://test/state"
         GET_INSTITUTIONS_BY_REGION: "http://test/region"
+        CHATBOT_API_URL: "http://test/chatbot"
       run: pytest tests/
 
   test-serverless:
@@ -50,10 +51,11 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        pip install moto
     - name: Lint with flake8
       run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
     - name: Test with pytest
-      run: pytest tests/
+      run: PYTHONPATH=. pytest tests/
 
   test-chatbot:
     runs-on: ubuntu-latest
@@ -74,4 +76,4 @@ jobs:
     - name: Lint with flake8
       run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
     - name: Test with pytest
-      run: pytest tests/
+      run: PYTHONPATH=. pytest tests/
