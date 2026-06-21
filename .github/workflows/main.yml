@@ -16,7 +16,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.12
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -25,10 +25,12 @@ jobs:
         run: pip install flake8 black
 
       - name: Check Formatting (Black)
-        run: black --check . || echo "Format warnings found, but continuing..."
+        # Exclui diretorios gerados automaticamente para evitar falsos positivos
+        run: black --check --exclude "(node_modules|\.serverless|\.venv|venv)" . || echo "Format warnings found, but continuing..."
 
       - name: Lint Code (Flake8)
-        run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # Exclui node_modules e artefatos do Serverless
+        run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=node_modules,.serverless,venv,.venv
 
   build-serverless-api:
     name: Build Serverless API
@@ -38,12 +40,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Set up Node.js 24
         uses: actions/setup-node@v4
         with:
           node-version: '24'
 
-      - name: Set up Python 3.12
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -57,6 +59,12 @@ jobs:
 
       - name: Serverless Package (Build Validation)
         working-directory: ./serverless
+        # SLS_SKIP_VALIDATE suprime erros de resolucao de variaveis (SSM, env) em CI
+        env:
+          SLS_SKIP_VALIDATE: 1
+          AWS_ACCESS_KEY_ID: dummy
+          AWS_SECRET_ACCESS_KEY: dummy
+          AWS_DEFAULT_REGION: us-east-1
         run: serverless package
 
   build-chatbot-lex:
@@ -67,12 +75,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Set up Node.js 24
         uses: actions/setup-node@v4
         with:
           node-version: '24'
 
-      - name: Set up Python 3.12
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -86,4 +94,10 @@ jobs:
 
       - name: Serverless Package (Build Validation)
         working-directory: ./chatbot/backend
+        # SLS_SKIP_VALIDATE suprime erros de resolucao de variaveis em CI
+        env:
+          SLS_SKIP_VALIDATE: 1
+          AWS_ACCESS_KEY_ID: dummy
+          AWS_SECRET_ACCESS_KEY: dummy
+          AWS_DEFAULT_REGION: us-east-1
         run: serverless package
