@@ -69,17 +69,16 @@ O projeto adota uma arquitetura serverless na AWS, complementada por contêinere
 
 ## **📦 Como Rodar a Aplicação**
 
-### Requisitos
+A ordem de deploy deste projeto é estritamente sequencial, pois o Frontend e o Chatbot dependem das URLs geradas pela API Serverless.
+
+### **1. Requisitos e Clonagem**
 
 Certifique-se de ter os seguintes pré-requisitos instalados:
-
 - [Python 3.9+](https://www.python.org/downloads/)
-- [Docker](https://www.docker.com/products/docker-desktop) (opcional para rodar o chatbot)
+- [Docker](https://www.docker.com/products/docker-desktop) (para rodar a aplicação web isoladamente)
 - [AWS CLI](https://aws.amazon.com/cli/)
-- [Serverless Framework](https://www.serverless.com/framework/docs/getting-started/)
+- [Serverless Framework](https://www.serverless.com/framework/docs/getting-started/) (`npm install -g serverless`)
 - [Node.js](https://nodejs.org/en/download/)
-
-### **Clonando o Repositório**
 
 Clone o repositório em sua máquina:
 
@@ -87,183 +86,113 @@ Clone o repositório em sua máquina:
 git clone https://github.com/niqueborges/conexao-solidaria.git
 cd conexao-solidaria
 ```
-**Antes de realizar o deploy, configure suas credenciais AWS e o ambiente:**
 
-Configure o AWS CLI para que os serviços possam ser acessados corretamente:
+Configure o AWS CLI com suas credenciais para que o Serverless Framework possa provisionar os recursos:
 
 ```bash
 aws configure
 ```
 
-Defina manualmente as variáveis de ambiente, se necessário:
+---
 
-```bash
-AWS_ACCESS_KEY_ID=your_access_key
-AWS_SECRET_ACCESS_KEY=your_secret_key
-AWS_REGION=your_region
-```
+### **2. Deploy da Infraestrutura e API (Serverless)**
 
-#### **Configurando o Serverless Framework**
-
-Certifique-se de ter o **Serverless Framework** instalado e configurado. Para instalar, execute:
-
-```bash
-npm install -g serverless
-```
-
-Navegue até o diretório `serverless/` e instale as dependências do projeto:
+Este passo cria o DynamoDB, S3, Lambdas da API e serviços base.
 
 ```bash
 cd serverless
 npm install
-```
-
-#### **Realizando o Deploy**
-
-Com as dependências instaladas, execute o seguinte comando para realizar o deploy dos recursos AWS:
-
-```bash
 serverless deploy
 ```
 
-O comando acima criará os seguintes recursos:
-
-- Funções Lambda
-- Buckets S3 para armazenamento
-- Tabelas DynamoDB
-- Serviços como Amazon Polly, Rekognition
-
-Ao final, o Serverless fornecerá os endpoints necessários para acessar as APIs e o chatbot.
+**Importante:** Ao final do processo, o terminal exibirá os **endpoints da API** (ex: `https://xxxxxx.execute-api.us-east-1.amazonaws.com`). Copie esta URL base, pois ela será usada nos próximos passos.
 
 ---
 
-## **Backend**
+### **3. Deploy do Chatbot e Integração Twilio**
 
-### **Chatbot**
+O Chatbot requer suas próprias dependências Python. É fundamental isolá-las usando um ambiente virtual (venv).
 
-O chatbot interage com usuários via WhatsApp e site, utilizando Amazon Lex para compreensão de intenções e Twilio para envio de mensagens.
-
-#### **Instalação das Dependências**
-
-Navegue até o diretório do chatbot e instale as dependências:
-
+1. Entre na pasta do chatbot, crie o ambiente virtual e ative-o:
 ```bash
 cd chatbot
+python -m venv venv
+# No Windows:
+.\venv\Scripts\activate
+# No Linux/Mac:
+source venv/bin/activate
+```
+
+2. Instale as dependências:
+```bash
 pip install -r requirements.txt
 ```
 
-#### **Deploy com Serverless Framework**
+3. Crie um arquivo `.env` (se necessário) na pasta contendo as variáveis exigidas.
 
-Realize o deploy das funções AWS Lambda e recursos:
-
+4. Realize o deploy:
 ```bash
 serverless deploy
 ```
+
+**Configuração do Twilio:** O comando acima gerará um endpoint específico para o webhook (ex: `/twilio`). Para que o bot funcione no WhatsApp, você **deve** ir ao painel do Twilio, na configuração do seu número de WhatsApp, e colar a URL gerada pelo Serverless no campo de webhook de mensagens recebidas.
+
 ---
 
-### **Infraestrutura AWS**
+### **4. Rodando o Frontend (Website)**
 
-Os serviços AWS, como S3 e Polly, são configurados no diretório `serverless/infra/`. Após configurar o `serverless.yml`, faça o deploy:
+O Frontend atua como um BFF e precisa saber onde estão as APIs recém-deployadas.
 
-```bash
-cd serverless
-serverless deploy
-```
----
-
-## **Frontend**
-
-A aplicação Django fornece a interface de usuário do projeto.
-
-### **1. Instalação das Dependências**
-
-No diretório `website`, instale os pacotes necessários:
-
+1. Navegue até a pasta `website`:
 ```bash
 cd website
+```
+
+2. Crie um arquivo `.env` na raiz do `website` contendo as URLs geradas nos passos 2 e 3. Exemplo:
+```env
+GET_INSTITUTIONS="https://<URL_API>/api/v1/institutions"
+GET_INSTITUTION="https://<URL_API>/api/v1/institutions/{cnpj}"
+GET_INSTITUTIONS_BY_STATE="https://<URL_API>/api/v1/institutions/query?state={state}"
+GET_INSTITUTIONS_BY_REGION="https://<URL_API>/api/v1/institutions/query?region={region}"
+CHATBOT_API_URL="https://<URL_CHATBOT>"
+```
+
+3. Crie um ambiente virtual e instale as dependências (para execução local):
+```bash
+python -m venv venv
+# Ative o venv (Windows): .\venv\Scripts\activate
+# Ative o venv (Linux/Mac): source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Executando o Servidor Django localmente:
-
+4. Execute o servidor localmente:
 ```bash
 python manage.py runserver
 ```
-
-Acesse o site em [http://127.0.0.1:8000](http://127.0.0.1:8000).
+Acesse: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 ---
 
-## **Execução com Docker e EC2**
+### **5. Execução com Docker e EC2 (Produção)**
 
-Para rodar o chatbot em um ambiente isolado e escalável, siga as etapas abaixo:
-
-### **1. Criar a Imagem Docker**
-
-No diretório do website:
+Caso não queira rodar localmente com o `runserver`, você pode rodar o Frontend via contêiner. O `.env` criado no passo anterior será absorvido pelo Docker.
 
 ```bash
 docker build -t conexao-solidaria .
+docker run -d -p 8000:8000 conexao-solidaria
 ```
 
-### **2. Rodar o Contêiner Docker**
-
-Execute o contêiner localmente:
-
-```bash
-docker run -p 80:80 conexao-solidaria
-```
-
-### **3. Implantação no Amazon EC2**
-
-Para rodar a aplicação em uma instância EC2, siga os passos abaixo:
-
-1. **Criar uma Instância EC2**: Acesse o console da AWS e crie uma instância EC2 com a configuração desejada (ex: Amazon Linux 2 ou Ubuntu).
-2. **Instalar o Docker na EC2**:
-
-```bash
-sudo yum install docker   # Para Amazon Linux
-sudo service docker start
-sudo usermod -a -G docker ec2-user
-```
-
-3. **Transferir a Imagem Docker para a EC2**: Se necessário, use o Docker Hub ou faça o upload da imagem Docker para o EC2.
-
-4. **Rodar o Contêiner na EC2**:
-
-```bash
-docker run -p 80:80 conexao-solidaria
-```
-
-Isso iniciará o website na instância EC2, permitindo que ele seja acessado publicamente via IP da instância. Se necessário, configure regras de segurança para permitir o tráfego na porta 80.
+Para produção no EC2:
+1. Suba uma instância EC2 (Ubuntu/Amazon Linux 2)
+2. Instale o Docker e faça upload da sua imagem.
+3. Garanta que o Security Group permita tráfego na porta desejada (ex: 8000 ou 80) e execute o contêiner.
 
 ---
 
-## **Verificação e Testes**
+## **Verificação Final**
 
-Após o deploy, teste os seguintes itens:
-
-- **Backend**:
-  - Verifique os endpoints fornecidos pelo Serverless.
-  - Teste as funções Lambda para garantir que estão funcionando corretamente.
-  - Se a aplicação estiver rodando em uma instância EC2, certifique-se de que o contêiner Docker está em execução corretamente:
-    ```bash
-    docker ps
-    ```
-    Isso garantirá que o contêiner esteja rodando e acessível na porta configurada.
-
-- **Frontend**:
-  - Certifique-se de que a aplicação web está acessível no navegador. Se você estiver usando EC2 para hospedar o frontend, acesse o IP público da instância.
-  - Verifique a integração com os serviços backend, como o chatbot e os recursos AWS.
-
-- **Chatbot**:
-  - Teste a interação com o chatbot via WhatsApp, verificando se a integração com o Twilio e o Amazon Lex está funcionando conforme o esperado.
-  - Se a aplicação estiver rodando em Docker no EC2, certifique-se de que a instância EC2 tem as portas corretas abertas nas regras de segurança para permitir a comunicação com o serviço de WhatsApp.
-
----
-
-### **Acesse o chatbot via WhatsApp ou a aplicação web no URL fornecido**
-
+- **Frontend:** Abra a aba "Instituições" e garanta que os cards foram carregados do DynamoDB pela API Serverless.
+- **Chatbot:** Envie uma mensagem ("Oi") para o número de WhatsApp configurado no Twilio e garanta que o Amazon Lex respondeu corretamente.
 --- 
 
 
