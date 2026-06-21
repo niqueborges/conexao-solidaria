@@ -225,7 +225,10 @@ A estrutura de armazenamento das Instituições em **DynamoDB**
 Este repositório contém o código-fonte do projeto **Conexão Solidária**, com a divisão entre backend, integração com AWS, e o frontend da aplicação. Abaixo está a estrutura principal do repositório:
 
 ```plaintext
-Sprints-9-10-PB-AWS-JUNHO/
+conexao-solidaria/
+├── .github/
+│   └── workflows/
+│       └── ci.yml                       # Pipeline de CI/CD (GitHub Actions)
 ├── assets/
 │   └── img/
 │       ├── architecture.png             # Imagem representando a arquitetura do projeto
@@ -268,6 +271,7 @@ Sprints-9-10-PB-AWS-JUNHO/
 │   ├── core/                            # Lógica central e configurações
 │   │   ├── config.py                    # Arquivo de configurações
 │   │   ├── exceptions.py                # Exceções personalizadas
+│   │   ├── security.py                  # Middleware Anti-Bypass WAF (X-Origin-Verify)
 │   │   └── __init__.py              
 │   ├── domain/                          # Lógica de negócio
 │   │   ├── services/
@@ -294,6 +298,8 @@ Sprints-9-10-PB-AWS-JUNHO/
 │   ├── utils/                           # Funções utilitárias
 │   │   ├── build.py                     # Script para compilar o projeto
 │   │   └── __init__.py                  
+│   ├── tests/
+│   │   └── k6_load_test.js              # Script de Teste de Carga e Segurança (WAF)
 │   ├── requirements.txt                 # Dependências Python do backend
 │   └── serverless.yml                   # Configuração principal do Serverless para o backend
 ├── website/                             # Diretório principal do website
