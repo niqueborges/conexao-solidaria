@@ -1,24 +1,27 @@
 from utils.responses import LexResponses
-from utils.slots import check_slot_filling
-
+from domain.adapters.lex_mapper import LexMapper
+from domain.services.welcome_flow import WelcomeFlow
 
 class WelcomeIntent:
     """Class responsible for processing the WelcomeIntent"""
 
-    validation_rules = {"FilterBoolean": r"^(sim|não)$", "AvailableIntents": r"^[1-3]$"}
-
     def __init__(self, event: dict) -> None:
         self.event = event
+        self.flow = WelcomeFlow()
 
     def process_dialog_hook(self) -> LexResponses:
-        """
-        Responsible for processing the DialogCodeHook step of the WelcomeIntent.
-        """
         slots = self.event["sessionState"]["intent"]["slots"]
-        return check_slot_filling(slots, self.event, self.__class__.validation_rules)
+        flat_slots = LexMapper.extract_flat_slots(slots)
+        
+        result = self.flow.validate_step(flat_slots)
+        
+        if not result.is_valid:
+            return LexResponses.elicit_slot(self.event, result.elicit_slot)
+            
+        return LexResponses.delegate(self.event)
 
     def process_full_fillment(self) -> LexResponses:
         """
-        Responsible for processing the FulfillmentCodeHook step of the RegisterIntent.
+        Responsible for processing the FulfillmentCodeHook step of the WelcomeIntent.
         """
         return LexResponses.delegate(self.event)

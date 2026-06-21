@@ -9,7 +9,7 @@ logger = Logger()
 tracer = Tracer()
 
 
-@logger.inject_lambda_context(log_event=True)
+@logger.inject_lambda_context(log_event=True, correlation_id_path="sessionId")
 @tracer.capture_lambda_handler
 def lex(event, context):
     """

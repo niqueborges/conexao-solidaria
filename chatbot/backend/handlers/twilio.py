@@ -1,5 +1,5 @@
-from services.lex import send_message_to_lex
-from services.s3 import upload_file_to_s3
+from infrastructure.lex import send_message_to_lex
+from infrastructure.s3 import upload_file_to_s3
 from utils.decode import decode_body
 from utils.content_type import get_content_type
 from utils.download_media import download_media_file
