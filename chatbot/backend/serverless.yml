@@ -25,6 +25,10 @@ provider:
           Action:
             - s3:PutObject
           Resource: "*"
+        - Effect: Allow
+          Action:
+            - secretsmanager:GetSecretValue
+          Resource: arn:aws:secretsmanager:${aws:region}:${aws:accountId}:secret:conexao-solidaria/twilio*
 
 functions:
   hello:

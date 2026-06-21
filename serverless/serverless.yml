@@ -151,10 +151,62 @@ resources:
           - Notification:
               NotificationType: ACTUAL
               ComparisonOperator: GREATER_THAN
+              Threshold: 50
+            Subscribers:
+              - SubscriptionType: EMAIL
+                Address: ${ssm:/conexao-solidaria/budget/email, 'admin@example.com'}
+          - Notification:
+              NotificationType: ACTUAL
+              ComparisonOperator: GREATER_THAN
+              Threshold: 80
+            Subscribers:
+              - SubscriptionType: EMAIL
+                Address: ${ssm:/conexao-solidaria/budget/email, 'admin@example.com'}
+          - Notification:
+              NotificationType: ACTUAL
+              ComparisonOperator: GREATER_THAN
               Threshold: 100
             Subscribers:
               - SubscriptionType: EMAIL
-                Address: admin@example.com
+                Address: ${ssm:/conexao-solidaria/budget/email, 'admin@example.com'}
+          - Notification:
+              NotificationType: ACTUAL
+              ComparisonOperator: GREATER_THAN
+              Threshold: 120
+            Subscribers:
+              - SubscriptionType: EMAIL
+                Address: ${ssm:/conexao-solidaria/budget/email, 'admin@example.com'}
+
+    ApiGateway5xxErrorsAlarm:
+      Type: AWS::CloudWatch::Alarm
+      Properties:
+        AlarmName: conexao-solidaria-api-5xx-errors-${opt:stage, 'dev'}
+        AlarmDescription: "Dispara se houver > 0 erros 5xx na API"
+        Namespace: AWS/ApiGateway
+        MetricName: 5XXError
+        Dimensions:
+          - Name: ApiId
+            Value: !Ref HttpApi
+        Statistic: Sum
+        Period: 60
+        EvaluationPeriods: 1
+        Threshold: 0
+        ComparisonOperator: GreaterThanThreshold
+        TreatMissingData: notBreaching
+
+    LambdaThrottlesAlarm:
+      Type: AWS::CloudWatch::Alarm
+      Properties:
+        AlarmName: conexao-solidaria-lambda-throttles-${opt:stage, 'dev'}
+        AlarmDescription: "Dispara se a concorrencia for esgotada"
+        Namespace: AWS/Lambda
+        MetricName: Throttles
+        Statistic: Sum
+        Period: 60
+        EvaluationPeriods: 1
+        Threshold: 0
+        ComparisonOperator: GreaterThanThreshold
+        TreatMissingData: notBreaching
 
     ApiWafWebAcl:
       Type: AWS::WAFv2::WebACL

@@ -1,12 +1,12 @@
 import requests
 import os
 from requests.exceptions import RequestException
+from utils.secrets import get_twilio_credentials
 
 
 def download_media_file(media_url: str) -> bytes:
     """Downloads the media file from the provided URL."""
-    account_sid = os.getenv("ACCOUNT_SID")
-    auth_token = os.getenv("AUTH_TOKEN")
+    account_sid, auth_token = get_twilio_credentials()
 
     try:
         response = requests.get(media_url, auth=(account_sid, auth_token))
