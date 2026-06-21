@@ -4,7 +4,7 @@ service: conexao-solidaria
 provider:
   name: aws
   runtime: python3.11
-  memorySize: 128
+  memorySize: 256
   timeout: 10
   tracing:
     apiGateway: true
@@ -30,6 +30,10 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource: !GetAtt InstitutionsTable.Arn
+        - Effect: Allow
+          Action:
+            - ssm:GetParameter
+          Resource: arn:aws:ssm:${aws:region}:${aws:accountId}:parameter/conexao-solidaria/waf-token
         - Effect: Allow
           Action:
             - bedrock:InvokeModel
@@ -134,9 +138,26 @@ resources:
         AttributeDefinitions:
           - AttributeName: cnpj
             AttributeType: S
+          - AttributeName: state
+            AttributeType: S
+          - AttributeName: region
+            AttributeType: S
         KeySchema:
           - AttributeName: cnpj
             KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: state-index
+            KeySchema:
+              - AttributeName: state
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+          - IndexName: region-index
+            KeySchema:
+              - AttributeName: region
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
 
     ProjectBudget:
       Type: AWS::Budgets::Budget
@@ -276,7 +297,7 @@ resources:
                 OriginProtocolPolicy: https-only
               OriginCustomHeaders:
                 - HeaderName: X-Origin-Verify
-                  HeaderValue: "SECRET-WAF-TOKEN-12345"
+                  HeaderValue: ${ssm:/conexao-solidaria/waf-token, 'dummy-token'}
           DefaultCacheBehavior:
             TargetOriginId: ApiGatewayOrigin
             ViewerProtocolPolicy: redirect-to-https

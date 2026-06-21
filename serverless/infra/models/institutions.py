@@ -1,6 +1,24 @@
 from pynamodb.models import Model
 from pynamodb.attributes import UnicodeAttribute, NumberAttribute, BooleanAttribute
+from pynamodb.indexes import GlobalSecondaryIndex, AllProjection
 from core.config import settings
+
+
+class StateIndex(GlobalSecondaryIndex):
+    class Meta:
+        index_name = "state-index"
+        read_capacity_units = 0
+        write_capacity_units = 0
+        projection = AllProjection()
+    state = UnicodeAttribute(hash_key=True)
+
+class RegionIndex(GlobalSecondaryIndex):
+    class Meta:
+        index_name = "region-index"
+        read_capacity_units = 0
+        write_capacity_units = 0
+        projection = AllProjection()
+    region = UnicodeAttribute(hash_key=True)
 
 
 class InstitutionModel(Model):
@@ -29,3 +47,6 @@ class InstitutionModel(Model):
     about = UnicodeAttribute(null=False)
     verified = BooleanAttribute(default=False, null=False)
     site = UnicodeAttribute(null=False)
+    
+    state_index = StateIndex()
+    region_index = RegionIndex()

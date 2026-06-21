@@ -23,20 +23,12 @@ class InstitutionService:
     @staticmethod
     def create(data: CreateInstitution) -> InstitutionResponse:
         """Creates a new institution record."""
-        try:
-            InstitutionModel.get(hash_key=data.cnpj)
-            raise InstitutionAlreadyExistsException(
-                message=f"Institution with cnpj '{data.cnpj}' already exists."
-            )
-        except DoesNotExist:
-            # The institution does not exist, proceed with creation
-            pass
-
-        # Creates the institution record in DynamoDB
+        from pynamodb.exceptions import PutError
+        # Try to save the institution, but only if the cnpj does not already exist
         institution = InstitutionModel(
             cnpj=data.cnpj,
-            id=str(uuid4()),  # Generates a new UUID
-            token=str(uuid4()),  # Generates a new token
+            id=str(uuid4()),
+            token=str(uuid4()),
             name=data.name,
             email=data.email,
             phone_number=data.phone_number,
@@ -53,7 +45,15 @@ class InstitutionService:
             verified=False,
             site=data.site,
         )
-        institution.save()
+
+        try:
+            institution.save(condition=InstitutionModel.cnpj.does_not_exist())
+        except PutError:
+            raise InstitutionAlreadyExistsException(
+                message=f"Institution with cnpj '{data.cnpj}' already exists."
+            )
+
+
 
         institution_out = InstitutionResponse(**institution.attribute_values)
         return institution_out.model_dump()
@@ -90,13 +90,15 @@ class InstitutionService:
     ) -> ListInstitutionReponse:
         """Retrieve institutions by region and/or state parameters."""
         if state and region:
-            query = InstitutionModel.scan(
-                (InstitutionModel.state == state) & (InstitutionModel.region == region)
+            query = InstitutionModel.state_index.query(
+                state, filter_condition=(InstitutionModel.region == region)
             )
         elif state:
-            query = InstitutionModel.scan(InstitutionModel.state == state)
+            query = InstitutionModel.state_index.query(state)
         elif region:
-            query = InstitutionModel.scan(InstitutionModel.region == region)
+            query = InstitutionModel.region_index.query(region)
+        else:
+            query = InstitutionModel.scan()
 
         institutions = [
             InstitutionResponse(**item.attribute_values).model_dump() for item in query
