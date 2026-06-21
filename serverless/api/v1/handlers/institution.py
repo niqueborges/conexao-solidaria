@@ -11,6 +11,7 @@ from aws_lambda_powertools.utilities.typing import LambdaContext
 from utils.build import build_http_response
 from aws_lambda_powertools import Logger, Tracer
 from core.security import verify_origin
+from core.auth import require_token
 
 logger = Logger()
 tracer = Tracer()
@@ -86,6 +87,7 @@ def query(event: dict, context: LambdaContext) -> dict[str, Any]:
 @logger.inject_lambda_context(log_event=True)
 @tracer.capture_lambda_handler
 @verify_origin
+@require_token
 def update(event: dict, context: LambdaContext) -> dict[str, Any]:
     """Updates the specified fields of a record in Dynamo."""
 
@@ -110,6 +112,7 @@ def update(event: dict, context: LambdaContext) -> dict[str, Any]:
 @logger.inject_lambda_context(log_event=True)
 @tracer.capture_lambda_handler
 @verify_origin
+@require_token
 def delete(event: dict, context: LambdaContext) -> bool:
     """Deletes the specific record using 'cnpj' as a filter."""
 

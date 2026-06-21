@@ -80,12 +80,7 @@ class CreateInstitution(BaseSchema):
 class UpdateInstitution(BaseSchema):
     """Schema for updating an existing institution"""
 
-    cnpj: Optional[str] = Field(
-        default=None,
-        max_length=14,
-        description="Updated CNPJ of the institution",
-        examples=["12345678000195"],
-    )
+    # cnpj is intentionally excluded from updates as it's the primary key
     name: Optional[str] = Field(
         default=None,
         description="Updated name of the institution",
