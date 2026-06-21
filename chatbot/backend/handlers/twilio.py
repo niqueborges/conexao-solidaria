@@ -1,4 +1,4 @@
-from infrastructure.lex import send_message_to_lex
+from infrastructure.orchestrator import ConversationOrchestrator
 from infrastructure.s3 import upload_file_to_s3
 from utils.decode import decode_body
 from utils.content_type import get_content_type
@@ -13,15 +13,18 @@ tracer = Tracer()
 @logger.inject_lambda_context(log_event=True)
 @tracer.capture_lambda_handler
 def twilio(event, context):
-
-
     params = decode_body(event)
 
     from_number = get_twilio_phone_number(params)
     logger.info(f"Número de origem: {from_number}")
+    
+    # Injetando Correlation ID no meio do request usando from_number como session_id
+    logger.set_correlation_id(from_number)
 
     content_type = get_content_type(params)
     response_message = None
+
+    orchestrator = ConversationOrchestrator()
 
     if content_type in ["image", "audio"]:
         media_url = params.get("MediaUrl0")
@@ -31,7 +34,7 @@ def twilio(event, context):
             media_content = download_media_file(media_url)
             media_key = upload_file_to_s3(media_content, content_type)
             logger.info(f"Media stored in S3 at: {media_key}")
-            response_message = send_message_to_lex(media_key, from_number)
+            response_message = orchestrator.process_message(media_key, from_number)
         except Exception as e:
             logger.error(f"Error processing media: {e}", exc_info=True)
             response_message = (
@@ -41,7 +44,7 @@ def twilio(event, context):
 
     else:
         text_to_translate = params.get("Body", "")
-        response_message = send_message_to_lex(text_to_translate, from_number)
-        logger.info(f"Lex response: {response_message}")
+        response_message = orchestrator.process_message(text_to_translate, from_number)
+        logger.info(f"Orchestrator response: {response_message}")
 
     return {"statusCode": 200, "body": response_message}

@@ -35,6 +35,8 @@ def lex(event, context):
     if invocation_source == "DialogCodeHook":
         response = intent.process_dialog_hook()
         return response
+        
+    # Fulfillment agora é responsabilidade exclusiva do ConversationOrchestrator
+    # O Lex Code Hook não processará mais fulfillment.
     if invocation_source == "FulfillmentCodeHook":
-        response = intent.process_full_fillment()
-        return response
+        return LexResponses.delegate(event)

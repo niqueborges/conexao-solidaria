@@ -32,3 +32,10 @@ class ListInstitutionRequest:
     filter_type: Optional[str] = None
     region: Optional[str] = None
     state: Optional[str] = None
+
+@dataclass
+class ConversationContext:
+    intent_name: Optional[str]
+    slots: dict
+    message: str
+    ready_for_fulfillment: bool

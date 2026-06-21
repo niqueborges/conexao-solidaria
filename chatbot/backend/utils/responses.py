@@ -26,7 +26,7 @@ class LexResponses:
         }
 
     @staticmethod
-    def elicit_slot(event, slot_to_elicit):
+    def elicit_slot(event, slot_to_elicit, message_content=None):
         """
         Sends a response to Amazon Lex to request a specific slot from the user.
         """
@@ -61,7 +61,7 @@ class LexResponses:
                 session_attributes[attempt_key] = "0"
                 session_attributes.pop(continue_key, None)
                 return LexResponses.elicit_slot_response(
-                    slot_to_elicit, event, session_attributes
+                    slot_to_elicit, event, session_attributes, message_content
                 )
 
             else:
@@ -69,7 +69,7 @@ class LexResponses:
                     slot_to_elicit,
                     event,
                     session_attributes,
-                    "Por favor, responda com 'encerrar' para encerrar ou 'continuar'"
+                    "Por favor, responda com 'encerrar' para encerrar ou 'continuar' "
                     "para continuar tentando.",
                 )
 
@@ -93,7 +93,7 @@ class LexResponses:
                         "content": (
                             "Parece que você está tendo um pouco de dificuldade com "
                             "essa informação.\n"
-                            "Deseja encerrar por agora? Responda 'encerrar'"
+                            "Deseja encerrar por agora? Responda 'encerrar' "
                             "para encerrar ou 'continuar' para tentar novamente."
                         ),
                     }
@@ -101,7 +101,7 @@ class LexResponses:
             }
 
         return LexResponses.elicit_slot_response(
-            slot_to_elicit, event, session_attributes
+            slot_to_elicit, event, session_attributes, message_content
         )
 
     @staticmethod

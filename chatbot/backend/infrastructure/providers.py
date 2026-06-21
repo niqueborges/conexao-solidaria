@@ -62,13 +62,4 @@ class PollySpeechService(SpeechService):
         media_key = upload_file_to_s3(audio_bytes, "audio")
         return f"https://{self.bucket_name}.s3.amazonaws.com/{media_key}"
 
-class BedrockEngine(ConversationEngine):
-    def __init__(self):
-        self.api_client = ApiClient(os.getenv("BASE_URL"))
-        self.amazon_services = AmazonServices(self.api_client)
 
-    @tracer.capture_method
-    def process(self, prompt: str) -> str:
-        data = {"topic": prompt}
-        response = self.amazon_services.post_bedrock(data)
-        return response["suggestion"]

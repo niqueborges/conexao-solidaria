@@ -26,16 +26,3 @@ class TipsIntent:
             return LexResponses.elicit_slot(self.event, result.elicit_slot)
             
         return LexResponses.delegate(self.event)
-
-    def process_full_fillment(self) -> LexResponses:
-        slots = self.event["sessionState"]["intent"]["slots"]
-        flat_slots = LexMapper.extract_flat_slots(slots)
-        
-        tip_type = flat_slots.get("TipType")
-        response_message = self.flow.execute_tips(tip_type)
-
-        response = LexResponses.sent_fulfillment_response(
-            self.event, slots, response_message
-        )
-        logger.info(f"Response : {response}")
-        return response

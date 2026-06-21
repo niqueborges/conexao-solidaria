@@ -12,11 +12,36 @@ class ListFlow:
 
     @tracer.capture_method
     def validate_step(self, field_values: dict) -> ValidationResult:
+        filter_boolean = field_values.get("FilterBoolean")
+        filter_type = field_values.get("FilterType")
+        
+        # Enforce Required Slots with explicit domain messages (Bypassing Lex bad prompts)
+        if filter_boolean is None:
+            return ValidationResult(
+                is_valid=False, 
+                elicit_slot="FilterBoolean",
+                error_message="Para te ajudar melhor, você gostaria de aplicar um filtro para encontrar as instituições corretas? (Sim ou Não)"
+            )
+            
+        if filter_boolean.lower() == "sim" and filter_type is None:
+            return ValidationResult(
+                is_valid=False,
+                elicit_slot="FilterType",
+                error_message="Você prefere filtrar por 'Estado' ou 'Região'?"
+            )
+
         rules = {
             "FilterBoolean": DomainValidators.validate_boolean_sim_nao,
             "FilterType": DomainValidators.validate_filter_type,
             "Region": DomainValidators.validate_region,
             "States": DomainValidators.validate_state,
+        }
+
+        error_messages = {
+            "FilterBoolean": "Por favor, responda com Sim ou Não.",
+            "FilterType": "Por favor, responda com Estado ou Região.",
+            "Region": "Região inválida. Tente novamente.",
+            "States": "Estado inválido. Tente novamente."
         }
 
         for field_name, value in field_values.items():
@@ -25,7 +50,11 @@ class ListFlow:
                 
             validator = rules.get(field_name)
             if validator and not validator(value):
-                return ValidationResult(is_valid=False, elicit_slot=field_name)
+                return ValidationResult(
+                    is_valid=False, 
+                    elicit_slot=field_name,
+                    error_message=error_messages.get(field_name, "Valor inválido.")
+                )
 
         return ValidationResult(is_valid=True)
 

@@ -22,20 +22,6 @@ class ListIntent:
         result = self.flow.validate_step(flat_slots)
         
         if not result.is_valid:
-            return LexResponses.elicit_slot(self.event, result.elicit_slot)
+            return LexResponses.elicit_slot(self.event, result.elicit_slot, result.error_message)
             
         return LexResponses.delegate(self.event)
-
-    def process_full_fillment(self) -> LexResponses:
-        """
-        Responsible for processing the FulfillmentCodeHook step of the intent.
-        """
-        slots = self.event["sessionState"]["intent"]["slots"]
-        
-        request = LexMapper.to_list_request(slots)
-        response_message = self.flow.execute_list(request)
-
-        response = LexResponses.sent_fulfillment_response(
-            self.event, slots, response_message
-        )
-        return response

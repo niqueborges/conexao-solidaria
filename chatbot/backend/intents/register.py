@@ -45,18 +45,4 @@ class RegisterIntent:
             
         return LexResponses.delegate(self.event)
 
-    def process_full_fillment(self) -> LexResponses:
-        """
-        Responsible for processing the FulfillmentCodeHook step of the RegisterIntent.
-        """
-        logger.info(f"Evento no fulfillment: {self.event}")
-        slots = self.event["sessionState"]["intent"]["slots"]
-        
-        request = LexMapper.to_registration_request(slots)
-        response_message = self.flow.execute_registration(request)
 
-        response = LexResponses.sent_fulfillment_response(
-            self.event, slots, response_message
-        )
-        logger.info(f"Response: {response}")
-        return response

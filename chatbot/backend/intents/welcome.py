@@ -16,12 +16,6 @@ class WelcomeIntent:
         result = self.flow.validate_step(flat_slots)
         
         if not result.is_valid:
-            return LexResponses.elicit_slot(self.event, result.elicit_slot)
+            return LexResponses.elicit_slot(self.event, result.elicit_slot, result.error_message)
             
-        return LexResponses.delegate(self.event)
-
-    def process_full_fillment(self) -> LexResponses:
-        """
-        Responsible for processing the FulfillmentCodeHook step of the WelcomeIntent.
-        """
         return LexResponses.delegate(self.event)
