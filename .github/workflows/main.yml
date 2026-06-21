@@ -65,7 +65,9 @@ jobs:
           AWS_ACCESS_KEY_ID: dummy
           AWS_SECRET_ACCESS_KEY: dummy
           AWS_DEFAULT_REGION: us-east-1
-        run: serverless package
+        run: |
+          sed -i 's/\${ssm:[^}]*}/dummy/g' serverless.yml
+          serverless package
 
   build-chatbot-lex:
     name: Build Chatbot Lex
