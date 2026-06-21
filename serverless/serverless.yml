@@ -33,7 +33,7 @@ provider:
         - Effect: Allow
           Action:
             - ssm:GetParameter
-          Resource: arn:aws:ssm:${aws:region}:${aws:accountId}:parameter/conexao-solidaria/waf-token
+          Resource: arn:aws:ssm:${opt:region, 'us-east-1'}:${env:AWS_ACCOUNT_ID, '*'}:parameter/conexao-solidaria/waf-token
         - Effect: Allow
           Action:
             - bedrock:InvokeModel
