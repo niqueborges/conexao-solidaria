@@ -152,12 +152,12 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-          - IndexName: region-index
-            KeySchema:
-              - AttributeName: region
-                KeyType: HASH
-            Projection:
-              ProjectionType: ALL
+#          - IndexName: region-index
+#            KeySchema:
+#              - AttributeName: region
+#                KeyType: HASH
+#            Projection:
+#              ProjectionType: ALL
 
     ProjectBudget:
       Type: AWS::Budgets::Budget
