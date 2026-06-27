@@ -30,27 +30,52 @@ const sessionIdInput = document.getElementById("session_id");
 const chatBox = document.getElementById("chat-box");
 const clearChatButton = document.getElementById("clear-chat");
 const imageInput = document.getElementById("image");
+const imagePreview = document.getElementById("image-preview");
+const typingIndicator = document.getElementById("typing-indicator");
+
+// Handle image preview
+imageInput.addEventListener("change", () => {
+    if (imageInput.files.length > 0) {
+        imagePreview.style.display = "block";
+        imagePreview.textContent = `Arquivo selecionado: ${imageInput.files[0].name}`;
+    } else {
+        imagePreview.style.display = "none";
+    }
+});
+
+function scrollToBottom() {
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function getFormattedTime() {
+    const now = new Date();
+    return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
 
 // Function to display SoliBot's response
 function displayBotResponse(data) {
     if (data.error) {
-        chatBox.innerHTML += `
-            <div class="d-flex justify-content-start mb-2">
-                <div class="bg-danger text-white p-2 rounded" style="max-width: 70%;">
-                    <strong>Error:</strong> ${data.error}
+        const errorHtml = `
+            <div class="msg-container bot">
+                <div class="msg-bubble" style="background-color: #ef4444; color: white;">
+                    Erro: ${data.error}
                 </div>
+                <span class="msg-time">${getFormattedTime()}</span>
             </div>`;
+        typingIndicator.insertAdjacentHTML('beforebegin', errorHtml);
     } else {
         data.lex.forEach((msg) => {
-            chatBox.innerHTML += `
-                <div class="d-flex justify-content-start mb-2">
-                    <div class="bg-secondary-subtle text-dark p-2 rounded" style="max-width: 70%;">
-                        <strong>SoliBot:</strong> ${msg['content'].replace(/#/g, '<br>')}
+            const html = `
+                <div class="msg-container bot">
+                    <div class="msg-bubble">
+                        ${msg['content'].replace(/#/g, '<br>')}
                     </div>
+                    <span class="msg-time">${getFormattedTime()}</span>
                 </div>`;
+            typingIndicator.insertAdjacentHTML('beforebegin', html);
         });
     }
-    chatBox.scrollTop = chatBox.scrollHeight;
+    scrollToBottom();
 }
 
 // Form submission to send a message or image to the backend
@@ -61,28 +86,37 @@ form.addEventListener("submit", async (e) => {
     const sessionId = sessionIdInput.value;
     const imageFile = imageInput.files[0];
 
+    if (!message && !imageFile) return;
+
     if (message) {
-        chatBox.innerHTML += `
-            <div class="d-flex justify-content-end mb-2">
-                <div class="bg-success-subtle text-dark p-2 rounded" style="max-width: 70%;">
-                    <strong>You:</strong> ${message}
-                </div>
+        const userHtml = `
+            <div class="msg-container user">
+                <div class="msg-bubble">${message}</div>
+                <span class="msg-time">${getFormattedTime()}</span>
             </div>`;
+        typingIndicator.insertAdjacentHTML('beforebegin', userHtml);
+    } else if (imageFile) {
+        const userHtml = `
+            <div class="msg-container user">
+                <div class="msg-bubble">📷 <em>Imagem enviada</em></div>
+                <span class="msg-time">${getFormattedTime()}</span>
+            </div>`;
+        typingIndicator.insertAdjacentHTML('beforebegin', userHtml);
     }
 
     messageInput.value = '';
     imageInput.value = '';
+    imagePreview.style.display = "none";
+    
+    // Show typing indicator
+    typingIndicator.style.display = "flex";
+    scrollToBottom();
 
     const formData = new FormData();
     formData.append("session_id", sessionId);
 
-    if (message) {
-        formData.append("message", message);
-    }
-
-    if (imageFile) {
-        formData.append("image", imageFile);
-    }
+    if (message) formData.append("message", message);
+    if (imageFile) formData.append("image", imageFile);
 
     try {
         const response = await fetch("/chatbot/", {
@@ -94,15 +128,31 @@ form.addEventListener("submit", async (e) => {
         });
 
         const data = await response.json();
+        
+        // Hide typing indicator
+        typingIndicator.style.display = "none";
+        
         displayBotResponse(data);
     } catch (error) {
         console.error("Request error:", error);
+        typingIndicator.style.display = "none";
     }
 });
 
 // Clear the chat
 clearChatButton.addEventListener("click", () => {
-    chatBox.innerHTML = '';
+    // Keep only the welcome message and typing indicator
+    const welcomeHtml = `
+        <div class="msg-container bot">
+            <div class="msg-bubble">
+                Olá! Eu sou o SoliBot, o assistente virtual do Conexão Solidária.<br><br>
+                Como posso ajudar você a transformar uma vida hoje?
+            </div>
+            <span class="msg-time">${getFormattedTime()}</span>
+        </div>`;
+    
+    chatBox.innerHTML = welcomeHtml;
+    chatBox.appendChild(typingIndicator);
 });
 
 // Generate a new session_id when the page loads

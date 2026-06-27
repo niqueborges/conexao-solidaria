@@ -1,6 +1,6 @@
 import httpx
 from typing import Any
-from app.settings import CHATBOT_API_URL
+from app.settings import CHATBOT_API_URL, CHATBOT_API_KEY
 
 class DialogFlow:
     """Class for interacting with the Serverless Chatbot API."""
@@ -14,7 +14,11 @@ class DialogFlow:
                 "session_id": session_id
             }
             
-            async with httpx.AsyncClient(timeout=30.0) as client:
+            headers = {}
+            if CHATBOT_API_KEY:
+                headers["x-api-key"] = CHATBOT_API_KEY
+                
+            async with httpx.AsyncClient(timeout=30.0, headers=headers) as client:
                 response = await client.post(url, json=payload)
                 response.raise_for_status()
                 return response.json()
@@ -32,7 +36,11 @@ class DialogFlow:
                 "content_type": content_type
             }
             
-            async with httpx.AsyncClient(timeout=10.0) as client:
+            headers = {}
+            if CHATBOT_API_KEY:
+                headers["x-api-key"] = CHATBOT_API_KEY
+                
+            async with httpx.AsyncClient(timeout=10.0, headers=headers) as client:
                 response = await client.post(url, json=payload)
                 response.raise_for_status()
                 data = response.json()
@@ -41,3 +49,4 @@ class DialogFlow:
             return None
 
 Chat = DialogFlow()
+

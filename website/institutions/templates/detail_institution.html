@@ -17,8 +17,9 @@
                     <p class="text-dark"><strong>CNPJ:</strong> {{ institution.cnpj }}</p>
                     <p class="text-dark"><strong>Email:</strong> {{ institution.email }}</p>
                     <p class="text-dark"><strong>Telefone:</strong> {{ institution.phone_number }}</p>
+                    <p class="text-dark"><strong>Localidade:</strong> {{ institution.city }} - {{ institution.state }} ({{ institution.region }})</p>
+                    <p class="text-dark"><strong>Endereço:</strong> {{ institution.address }}, {{ institution.address_number }} - {{ institution.neighborhood }}</p>
                     <p class="text-dark"><strong>CEP:</strong> {{ institution.cep }}</p>
-                    <p class="text-dark"><strong>Número de Endereço:</strong> {{ institution.addres_number }}</p>
                     <p class="text-dark"><strong>Sobre:</strong> {{ institution.about }}</p>
                 </div>
                 <a class="btn-voltar" href="{% url 'institutions' %}">Voltar à lista</a>

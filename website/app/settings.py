@@ -118,5 +118,4 @@ GET_INSTITUTIONS_BY_REGION = env("GET_INSTITUTIONS_BY_REGION")
 
 # Chatbot API Endpoint
 CHATBOT_API_URL = env("CHATBOT_API_URL", default="http://localhost:3000")
-
-
+CHATBOT_API_KEY = env("CHATBOT_API_KEY", default="")
