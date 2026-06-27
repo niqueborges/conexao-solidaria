@@ -37,11 +37,11 @@ class RegisterIntent:
         
         result = self.flow.validate_step(flat_slots)
         
-        if not result.is_valid:
-            return LexResponses.elicit_slot(self.event, result.elicit_slot)
-            
         if result.updated_fields:
             update_multiple_slot_values(self.event, result.updated_fields)
+
+        if not result.is_valid:
+            return LexResponses.elicit_slot(self.event, result.elicit_slot)
             
         return LexResponses.delegate(self.event)
 

@@ -3,7 +3,7 @@ from utils.responses import LexResponses
 from domain.adapters.lex_mapper import LexMapper
 from domain.services.tips_flow import TipsFlow
 
-from infrastructure.providers import BedrockEngine
+from infrastructure.engines import BedrockEngine
 
 logger = Logger()
 

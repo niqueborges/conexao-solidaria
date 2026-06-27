@@ -37,17 +37,35 @@ class RegistrationFlow:
             if value is None:
                 continue
                 
+            # Normalização Automática
+            if field_name in ["CNPJ", "InstitutionCep", "InstitutionPhone"]:
+                value = re.sub(r"\D", "", value)
+                field_values[field_name] = value
+                if updated_fields is None:
+                    updated_fields = {}
+                updated_fields[field_name] = value
+
+            if field_name == "InstitutionSite":
+                if not value.startswith(("http://", "https://")):
+                    value = f"https://{value}"
+                field_values[field_name] = value
+                if updated_fields is None:
+                    updated_fields = {}
+                updated_fields[field_name] = value
+
             validator = rules.get(field_name)
             if validator and not validator(value):
-                return ValidationResult(is_valid=False, elicit_slot=field_name)
+                return ValidationResult(is_valid=False, elicit_slot=field_name, updated_fields=updated_fields)
 
             # 2. Image Moderation Validation
             if field_name == "ImagePath":
-                is_safe = self.moderation_service.is_safe(value)
-                if not is_safe:
-                    return ValidationResult(is_valid=False, elicit_slot=field_name)
+                if value.strip().lower() not in ["não", "nao", "no"]:
+                    is_safe = self.moderation_service.is_safe(value)
+                    if not is_safe:
+                        return ValidationResult(is_valid=False, elicit_slot=field_name)
 
         # 3. Address Lookup & Enrichment
+        updated_fields = None
         cep = field_values.get("InstitutionCep")
         if cep and field_values.get("InstitutionState") is None:
             address_data = self.address_provider.get_address(cep)
@@ -61,11 +79,27 @@ class RegistrationFlow:
                     "InstitutionAddress": street,
                     "InstitutionRegion": region,
                 }
-                return ValidationResult(is_valid=True, updated_fields=updated_fields)
+                field_values.update(updated_fields)
             else:
                 return ValidationResult(is_valid=False, elicit_slot="InstitutionCep")
 
-        return ValidationResult(is_valid=True)
+        # 4. Enforce Elicitation Order
+        order = [
+            "CNPJ",
+            "InstitutionCep",
+            "InstitutionAddressNumber",
+            "InstitutionName",
+            "InstitutionEmail",
+            "InstitutionPhone",
+            "InstitutionSite",
+            "InstitutionDescription",
+            "ImagePath"
+        ]
+        for slot in order:
+            if field_values.get(slot) is None:
+                return ValidationResult(is_valid=False, elicit_slot=slot, updated_fields=updated_fields)
+
+        return ValidationResult(is_valid=True, updated_fields=updated_fields)
 
     @tracer.capture_method
     def execute_registration(self, request: RegistrationRequest) -> str:

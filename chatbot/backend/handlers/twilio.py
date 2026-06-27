@@ -1,3 +1,5 @@
+import os
+from twilio.request_validator import RequestValidator
 from infrastructure.orchestrator import ConversationOrchestrator
 from infrastructure.s3 import upload_file_to_s3
 from utils.decode import decode_body
@@ -10,10 +12,31 @@ from aws_lambda_powertools import Logger, Tracer
 logger = Logger()
 tracer = Tracer()
 
+def validate_twilio_request(event, params):
+    auth_token = os.environ.get("TWILIO_AUTH_TOKEN", "")
+    validator = RequestValidator(auth_token)
+    
+    headers = {k.lower(): v for k, v in event.get('headers', {}).items()}
+    signature = headers.get('x-twilio-signature', '')
+    
+    host = headers.get('host', '')
+    # In API Gateway REST API, the stage is typically in the request context path
+    request_context = event.get('requestContext', {})
+    path = request_context.get('path', event.get('path', ''))
+    url = f"https://{host}{path}"
+    
+    if not validator.validate(url, params, signature):
+        logger.warning("Twilio signature validation failed.")
+        return False
+    return True
+
 @logger.inject_lambda_context(log_event=True)
 @tracer.capture_lambda_handler
 def twilio(event, context):
     params = decode_body(event)
+    
+    if not validate_twilio_request(event, params):
+        return {"statusCode": 403, "body": "Forbidden"}
 
     from_number = get_twilio_phone_number(params)
     logger.info(f"Número de origem: {from_number}")

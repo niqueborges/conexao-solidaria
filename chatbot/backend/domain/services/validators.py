@@ -23,7 +23,8 @@ class DomainValidators:
 
     @staticmethod
     def validate_site(site: str) -> bool:
-        return bool(re.match(r"^(https?://)?(www\.)?([a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+)(/[a-zA-Z0-9-._~:/?#[\]@!$&\'()*+,;=%]*)?$", site))
+        # Permissivo para aceitar IDNs, omitir http e suportar TLDs variados
+        return bool(re.match(r"^(https?://)?(www\.)?([a-zA-Z0-9-\u00C0-\u024F]+(\.[a-zA-Z]{2,})+)(/[^\s]*)?$", site))
 
     @staticmethod
     def validate_cep(cep: str) -> bool:

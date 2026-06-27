@@ -14,7 +14,13 @@ class LexMapper:
 
         for slot_name, slot_data in slots.items():
             if slot_data and slot_data.get("value"):
-                flat_slots[slot_name] = slot_data["value"].get("interpretedValue")
+                val = slot_data["value"].get("interpretedValue")
+                orig = slot_data["value"].get("originalValue")
+                
+                if val and str(val).lower() != "null":
+                    flat_slots[slot_name] = val
+                else:
+                    flat_slots[slot_name] = orig
             else:
                 flat_slots[slot_name] = None
         return flat_slots

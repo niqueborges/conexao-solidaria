@@ -23,13 +23,6 @@ class ListFlow:
                 error_message="Para te ajudar melhor, você gostaria de aplicar um filtro para encontrar as instituições corretas? (Sim ou Não)"
             )
             
-        if filter_boolean.lower() == "sim" and filter_type is None:
-            return ValidationResult(
-                is_valid=False,
-                elicit_slot="FilterType",
-                error_message="Você prefere filtrar por 'Estado' ou 'Região'?"
-            )
-
         rules = {
             "FilterBoolean": DomainValidators.validate_boolean_sim_nao,
             "FilterType": DomainValidators.validate_filter_type,
@@ -38,8 +31,8 @@ class ListFlow:
         }
 
         error_messages = {
-            "FilterBoolean": "Por favor, responda com Sim ou Não.",
-            "FilterType": "Por favor, responda com Estado ou Região.",
+            "FilterBoolean": "Por favor, responda apenas com Sim ou Não para aceitar os Termos de Uso.",
+            "FilterType": "Por favor, responda se quer filtrar por Estado ou Região.",
             "Region": "Região inválida. Tente novamente.",
             "States": "Estado inválido. Tente novamente."
         }
@@ -55,6 +48,35 @@ class ListFlow:
                     elicit_slot=field_name,
                     error_message=error_messages.get(field_name, "Valor inválido.")
                 )
+                
+        if filter_boolean.lower() == "sim":
+            if filter_type is None:
+                return ValidationResult(
+                    is_valid=False,
+                    elicit_slot="FilterType",
+                    error_message="Você prefere filtrar por 'Estado' ou 'Região'?"
+                )
+            
+            if filter_type.lower() == "estado":
+                if field_values.get("States") is None:
+                    return ValidationResult(
+                        is_valid=False,
+                        elicit_slot="States",
+                        error_message="Qual o estado brasileiro desejado?"
+                    )
+                else:
+                    return ValidationResult(is_valid=True, is_ready_for_fulfillment=True)
+            elif filter_type.lower() == "região":
+                if field_values.get("Region") is None:
+                    return ValidationResult(
+                        is_valid=False,
+                        elicit_slot="Region",
+                        error_message="Qual a região do Brasil desejada?"
+                    )
+                else:
+                    return ValidationResult(is_valid=True, is_ready_for_fulfillment=True)
+        elif filter_boolean.lower() == "não":
+            return ValidationResult(is_valid=True, is_ready_for_fulfillment=True)
 
         return ValidationResult(is_valid=True)
 

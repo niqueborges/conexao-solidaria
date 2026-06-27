@@ -44,6 +44,8 @@ class ConversationOrchestrator:
                     "3": "Quero dicas de doação"
                 }
                 logger.info(f"Interceptando opção '{text}' do menu e re-roteando o Lex.")
+                # Limpa a sessão do Lex para evitar que a opção do menu suje a intenção anterior
+                self.lex.clear_session(session_id)
                 # Re-analisa a mensagem com a frase perfeita para o Lex ativar a intent correta
                 lex_context = self.lex.analyze(menu_map[text], session_id)
             else:

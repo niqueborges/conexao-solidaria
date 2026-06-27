@@ -8,6 +8,7 @@ class ValidationResult:
     error_message: Optional[str] = None
     elicit_slot: Optional[str] = None
     updated_fields: Optional[dict] = None
+    is_ready_for_fulfillment: bool = False
 
 @dataclass
 class RegistrationRequest:

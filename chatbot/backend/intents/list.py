@@ -24,4 +24,17 @@ class ListIntent:
         if not result.is_valid:
             return LexResponses.elicit_slot(self.event, result.elicit_slot, result.error_message)
             
+        if result.is_ready_for_fulfillment:
+            # Pula os slots restantes e fecha a intenção
+            return {
+                "sessionState": {
+                    "dialogAction": {"type": "Close"},
+                    "intent": {
+                        "name": self.event["sessionState"]["intent"]["name"],
+                        "state": "Fulfilled",
+                        "slots": self.event["sessionState"]["intent"]["slots"],
+                    },
+                }
+            }
+            
         return LexResponses.delegate(self.event)

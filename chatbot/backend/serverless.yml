@@ -31,11 +31,17 @@ provider:
             - secretsmanager:GetSecretValue
           Resource: arn:aws:secretsmanager:${opt:region, 'us-east-1'}:${env:AWS_ACCOUNT_ID, '*'}:secret:conexao-solidaria/twilio*
 
+  environment:
+    TWILIO_AUTH_TOKEN: ${env:TWILIO_AUTH_TOKEN, ''}
+  apiGateway:
+    apiKeys:
+      - chatbotWebClientKey
+
 functions:
   hello:
     handler: handlers/health.hello
     events:
-      - httpApi:
+      - http:
           path: /
           method: get
 
@@ -43,7 +49,7 @@ functions:
     handler: handlers/lex.lex
     timeout: 30
     events:
-      - httpApi:
+      - http:
           path: /
           method: post
 
@@ -51,23 +57,26 @@ functions:
     handler: handlers/twilio.twilio
     timeout: 15
     events:
-      - httpApi:
+      - http:
           path: /twilio
           method: post
 
   upload_url:
     handler: handlers/upload.get_upload_url
     events:
-      - httpApi:
+      - http:
           path: /upload-url
           method: post
+          private: true
 
   web_proxy:
     handler: handlers/proxy.web_proxy
+    timeout: 29
     events:
-      - httpApi:
+      - http:
           path: /web-proxy
           method: post
+          private: true
 
 
 plugins:
