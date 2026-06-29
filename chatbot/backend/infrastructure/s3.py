@@ -2,7 +2,7 @@ import boto3
 import uuid
 import os
 
-bucket_name = os.getenv("BUCKET_NAME")
+bucket_name = os.getenv("S3_BUCKET_NAME")
 s3_client = boto3.client("s3")
 
 

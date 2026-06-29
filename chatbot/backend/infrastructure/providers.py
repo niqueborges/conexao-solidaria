@@ -42,7 +42,7 @@ class ViaCepProvider(AddressProvider):
 class RekognitionModerationService(ImageModerationService):
     def __init__(self):
         self.rekognition_endpoint = os.getenv("REKOGNITION_ENDPOINT")
-        self.bucket_name = os.getenv("BUCKET_NAME")
+        self.bucket_name = os.getenv("S3_BUCKET_NAME")
 
     @tracer.capture_method
     def is_safe(self, image_path: str) -> bool:
@@ -54,7 +54,7 @@ class RekognitionModerationService(ImageModerationService):
 
 class PollySpeechService(SpeechService):
     def __init__(self):
-        self.bucket_name = os.getenv("BUCKET_NAME")
+        self.bucket_name = os.getenv("S3_BUCKET_NAME")
 
     @tracer.capture_method
     def generate_audio_url(self, text: str) -> str:
