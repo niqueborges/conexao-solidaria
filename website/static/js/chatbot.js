@@ -52,6 +52,18 @@ function getFormattedTime() {
     return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
+function formatMessage(text) {
+    let formatted = text.replace(/#/g, '<br>');
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    
+    return formatted.replace(urlRegex, function(url) {
+        if (url.toLowerCase().endsWith('.mp3')) {
+            return `<br><audio controls src="${url}" style="max-width: 100%; margin-top: 8px;"></audio><br><a href="${url}" target="_blank" style="font-size: 12px; color: #0284c7; text-decoration: underline;">Baixar áudio</a>`;
+        }
+        return `<a href="${url}" target="_blank" style="color: #0284c7; text-decoration: underline;">${url}</a>`;
+    });
+}
+
 // Function to display SoliBot's response
 function displayBotResponse(data) {
     if (data.error) {
@@ -65,10 +77,11 @@ function displayBotResponse(data) {
         typingIndicator.insertAdjacentHTML('beforebegin', errorHtml);
     } else {
         data.lex.forEach((msg) => {
+            const formattedContent = formatMessage(msg['content']);
             const html = `
                 <div class="msg-container bot">
                     <div class="msg-bubble">
-                        ${msg['content'].replace(/#/g, '<br>')}
+                        ${formattedContent}
                     </div>
                     <span class="msg-time">${getFormattedTime()}</span>
                 </div>`;
