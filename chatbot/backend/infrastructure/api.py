@@ -14,7 +14,7 @@ class ApiClient:
         """Helper method to send HTTP requests."""
         url = f"{self.base_url}/{endpoint}"
         try:
-            response = requests.request(method, url, json=data, timeout=5)
+            response = requests.request(method, url, json=data, timeout=15)
 
             if response.status_code not in [200, 201]:
                 raise ValueError(f"Unexpected status code: {response.status_code}.")
