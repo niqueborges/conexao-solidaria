@@ -41,7 +41,7 @@ class RegisterIntent:
             update_multiple_slot_values(self.event, result.updated_fields)
 
         if not result.is_valid:
-            return LexResponses.elicit_slot(self.event, result.elicit_slot)
+            return LexResponses.elicit_slot(self.event, result.elicit_slot, result.error_message)
             
         return LexResponses.delegate(self.event)
 

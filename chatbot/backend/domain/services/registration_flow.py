@@ -2,6 +2,7 @@ from aws_lambda_powertools import Logger, Tracer
 from domain.schemas import ValidationResult, RegistrationRequest
 from domain.services.validators import DomainValidators
 from domain.interfaces import InstitutionRepository, AddressProvider, ImageModerationService, SpeechService
+import re
 
 logger = Logger()
 tracer = Tracer()
@@ -33,6 +34,8 @@ class RegistrationFlow:
             "InstitutionDescription": DomainValidators.validate_description,
         }
 
+        updated_fields = None
+
         for field_name, value in field_values.items():
             if value is None:
                 continue
@@ -57,15 +60,14 @@ class RegistrationFlow:
             if validator and not validator(value):
                 return ValidationResult(is_valid=False, elicit_slot=field_name, updated_fields=updated_fields)
 
-            # 2. Image Moderation Validation
             if field_name == "ImagePath":
                 if value.strip().lower() not in ["não", "nao", "no"]:
                     is_safe = self.moderation_service.is_safe(value)
                     if not is_safe:
-                        return ValidationResult(is_valid=False, elicit_slot=field_name)
+                        msg = "A imagem enviada não é adequada ou não passou na moderação. Por favor, envie outra imagem, ou digite 'não' para pular esta etapa."
+                        return ValidationResult(is_valid=False, elicit_slot=field_name, error_message=msg)
 
         # 3. Address Lookup & Enrichment
-        updated_fields = None
         cep = field_values.get("InstitutionCep")
         if cep and field_values.get("InstitutionState") is None:
             address_data = self.address_provider.get_address(cep)
@@ -125,9 +127,9 @@ class RegistrationFlow:
                 "cep": request.cep,
                 "address_number": request.address_number,
                 "confirmation_audio": confirmation_audio_url,
-                "description": request.description,
+                "about": request.description,
                 "site": request.site,
-                "image_path": request.image_path,
+                "image": request.image_path if request.image_path.strip().lower() not in ["não", "nao", "no"] else "https://conexao-solidaria.s3.amazonaws.com/default-institution.png",
             }
 
             self.repository.create(institution_data)
