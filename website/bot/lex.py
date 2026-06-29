@@ -25,7 +25,7 @@ class DialogFlow:
         except httpx.RequestError as exc:
             return {"error": f"Request failed: {exc}", "user": message}
         except httpx.HTTPStatusError as exc:
-            return {"error": f"API returned error status: {exc.response.status_code}", "user": message}
+            return {"error": f"API returned error status: {exc.response.status_code}, details: {exc.response.text}", "user": message}
 
     async def get_presigned_url(self, session_id: str, content_type: str) -> str | None:
         """Requests a presigned URL for direct S3 upload from the API."""
