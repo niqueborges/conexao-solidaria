@@ -25,6 +25,7 @@ provider:
         - Effect: Allow
           Action:
             - s3:PutObject
+            - polly:SynthesizeSpeech
           Resource: "*"
         - Effect: Allow
           Action:
@@ -77,6 +78,14 @@ functions:
           path: /web-proxy
           method: post
           private: true
+
+package:
+  patterns:
+    - '!venv/**'
+    - '!.venv/**'
+    - '!tests/**'
+    - '!.pytest_cache/**'
+    - '!node_modules/**'
 
 
 plugins:
