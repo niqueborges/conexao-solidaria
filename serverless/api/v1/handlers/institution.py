@@ -10,6 +10,7 @@ from aws_lambda_powertools.utilities.parser import parse, ValidationError
 from aws_lambda_powertools.utilities.typing import LambdaContext
 from utils.build import build_http_response
 from aws_lambda_powertools import Logger, Tracer
+from infra.repositories.institution import PynamoDBInstitutionRepository
 from core.security import verify_origin
 from core.auth import require_token
 
@@ -29,8 +30,10 @@ def create(event: dict, context: LambdaContext) -> dict[str, Any]:
         return build_http_response(
             status_code=400, body={"ValidationError": exc.errors(include_url=False)}
         )
+    
+    service = InstitutionService(repository=PynamoDBInstitutionRepository())
     try:
-        institution = InstitutionService.create(data=data)
+        institution = service.create(data=data)
     except InstitutionAlreadyExistsException as exc:
         return build_http_response(status_code=409, body={"detail": exc.message})
 
@@ -42,8 +45,21 @@ def create(event: dict, context: LambdaContext) -> dict[str, Any]:
 @verify_origin
 def list_items(event: dict, context: LambdaContext) -> list[dict[str, Any]]:
     """Retrieves all Institution records from Dynamo."""
+    query_params = event.get("queryStringParameters") or {}
+    limit = query_params.get("limit")
+    if limit:
+        limit = int(limit)
+    
+    last_evaluated_key = query_params.get("last_evaluated_key")
+    if last_evaluated_key:
+        try:
+            last_evaluated_key = json.loads(last_evaluated_key)
+        except json.JSONDecodeError:
+            return build_http_response(status_code=400, body={"detail": "Invalid last_evaluated_key format"})
+
+    service = InstitutionService(repository=PynamoDBInstitutionRepository())
     try:
-        institutions = InstitutionService.get_all()
+        institutions = service.get_all(limit=limit, last_evaluated_key=last_evaluated_key)
     except InstitutionNotFoundException as exc:
         return build_http_response(status_code=500, body={"detail": exc.message})
 
@@ -59,8 +75,9 @@ def retrieve(event: dict, context: LambdaContext) -> dict[str, Any]:
     # Retrieves 'cnpj' from the URL
     cnpj = event["pathParameters"]["cnpj"]
 
+    service = InstitutionService(repository=PynamoDBInstitutionRepository())
     try:
-        institution = InstitutionService.get(cnpj=cnpj)
+        institution = service.get(cnpj=cnpj)
     except InstitutionNotFoundException as exc:
         return build_http_response(status_code=404, body={"detail": exc.message})
 
@@ -75,9 +92,21 @@ def query(event: dict, context: LambdaContext) -> dict[str, Any]:
     query_params = event.get("queryStringParameters") or {}
     region = query_params.get("region")
     state = query_params.get("state")
+    
+    limit = query_params.get("limit")
+    if limit:
+        limit = int(limit)
+    
+    last_evaluated_key = query_params.get("last_evaluated_key")
+    if last_evaluated_key:
+        try:
+            last_evaluated_key = json.loads(last_evaluated_key)
+        except json.JSONDecodeError:
+            return build_http_response(status_code=400, body={"detail": "Invalid last_evaluated_key format"})
 
+    service = InstitutionService(repository=PynamoDBInstitutionRepository())
     try:
-        institutions = InstitutionService.query(region=region, state=state)
+        institutions = service.query(region=region, state=state, limit=limit, last_evaluated_key=last_evaluated_key)
     except InstitutionNotFoundException as exc:
         return build_http_response(status_code=404, body={"detail": exc.message})
 
@@ -101,8 +130,10 @@ def update(event: dict, context: LambdaContext) -> dict[str, Any]:
         return build_http_response(
             status_code=400, body={"ValidationError": exc.errors(include_url=False)}
         )
+        
+    service = InstitutionService(repository=PynamoDBInstitutionRepository())
     try:
-        institution = InstitutionService.update(cnpj=cnpj, data=data)
+        institution = service.update(cnpj=cnpj, data=data)
     except InstitutionNotFoundException as exc:
         return build_http_response(status_code=404, body={"detail": exc.message})
 
@@ -119,8 +150,9 @@ def delete(event: dict, context: LambdaContext) -> bool:
     # Retrieves 'cnpj' from the URL
     cnpj = event["pathParameters"]["cnpj"]
 
+    service = InstitutionService(repository=PynamoDBInstitutionRepository())
     try:
-        InstitutionService.delete(cnpj=cnpj)
+        service.delete(cnpj=cnpj)
     except InstitutionNotFoundException as exc:
         return build_http_response(status_code=404, body={"detail": exc.message})
 

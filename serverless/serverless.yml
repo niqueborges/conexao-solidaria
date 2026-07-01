@@ -64,6 +64,13 @@ functions:
           method: get
           path: /api/v1/institutions
 
+  query:
+    handler: api/v1/handlers.institution.query
+    events:
+      - httpApi:
+          method: get
+          path: /api/v1/institutions/filter
+
   retrieve:
     handler: api/v1/handlers.institution.retrieve
     events:
@@ -152,12 +159,12 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-#          - IndexName: region-index
-#            KeySchema:
-#              - AttributeName: region
-#                KeyType: HASH
-#            Projection:
-#              ProjectionType: ALL
+          - IndexName: region-index
+            KeySchema:
+              - AttributeName: region
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
 
     ProjectBudget:
       Type: AWS::Budgets::Budget
@@ -196,7 +203,13 @@ resources:
               Threshold: 120
             Subscribers:
               - SubscriptionType: EMAIL
-                Address: ${ssm:/conexao-solidaria/budget/email, 'admin@example.com'}
+    ApiAlertsTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: conexao-solidaria-api-alerts-${opt:stage, 'dev'}
+        Subscription:
+          - Protocol: email
+            Endpoint: ${env:ALARM_EMAIL, 'admin@example.com'}
 
     ApiGateway5xxErrorsAlarm:
       Type: AWS::CloudWatch::Alarm
@@ -214,6 +227,8 @@ resources:
         Threshold: 0
         ComparisonOperator: GreaterThanThreshold
         TreatMissingData: notBreaching
+        AlarmActions:
+          - !Ref ApiAlertsTopic
 
     LambdaThrottlesAlarm:
       Type: AWS::CloudWatch::Alarm
@@ -228,6 +243,8 @@ resources:
         Threshold: 0
         ComparisonOperator: GreaterThanThreshold
         TreatMissingData: notBreaching
+        AlarmActions:
+          - !Ref ApiAlertsTopic
 
     ApiWafWebAcl:
       Type: AWS::WAFv2::WebACL
