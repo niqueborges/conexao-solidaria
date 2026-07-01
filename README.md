@@ -24,7 +24,6 @@
 
 > **Nota da Mantenedora:** Este projeto nasceu originalmente como conclusão do bootcamp AWS da Compass UOL. Atualmente, ele foi refatorado e é evoluído de forma solo por [Monique da Silva Borges](https://github.com/niqueborges). Os créditos à equipe original estão no final deste documento.
 
-
 Este projeto **Conexão Solidária** tem como objetivo criar uma plataforma de comunicação entre doadores e instituições, com suporte a um chatbot multicanal e integração com AWS. A plataforma utiliza Django para o backend e frontend, Docker e EC2 para a execução do chatbot, e diversas soluções AWS para melhorar a experiência do usuário.
 
 ---
@@ -38,11 +37,14 @@ Este projeto **Conexão Solidária** tem como objetivo criar uma plataforma de c
 - [📂 Estrutura de Diretórios](#estrutura)
 - [📅 Metodologia de Desenvolvimento](#metodologia)
 - [😿 Principais Dificuldades](#dificuldades)
+- [🧪 Como Testar](#testar)
+- [🤝 Como Contribuir](#contribuir)
 - [📜 Termos de Uso](#termos)
 
 ---
 
 <a id="funcionalidades"></a>
+
 ## **✨ Funcionalidades, Arquitetura e Fluxo de trabalho ⚙️**
 
 ---
@@ -65,10 +67,12 @@ O projeto adota uma arquitetura serverless na AWS, complementada por contêinere
 6. **Escalabilidade e Containerização**: A aplicação web é executada em **Docker** para ambientes consistentes e escalada na **Amazon EC2** para maior capacidade conforme necessário.
 7. **Diagrama da Arquitetura**
 
+![Diagrama da Arquitetura](assets/img/architecture.png)
 
 ---
 
 <a id="como-rodar"></a>
+
 ## **📦 Como Rodar a Aplicação**
 
 A ordem de deploy deste projeto é estritamente sequencial, pois o Frontend e o Chatbot dependem das URLs geradas pela API Serverless.
@@ -76,6 +80,7 @@ A ordem de deploy deste projeto é estritamente sequencial, pois o Frontend e o 
 ### **1. Requisitos e Clonagem**
 
 Certifique-se de ter os seguintes pré-requisitos instalados:
+
 - [Python 3.9+](https://www.python.org/downloads/)
 - [Docker](https://www.docker.com/products/docker-desktop) (para rodar a aplicação web isoladamente)
 - [AWS CLI](https://aws.amazon.com/cli/)
@@ -103,12 +108,13 @@ Antes de realizar os deploys, a arquitetura requer a configuração de parâmetr
 
 1. **E-mail de Alertas Financeiros (AWS SSM):**
    Crie um parâmetro no *Parameter Store* para receber os alarmes de custos do projeto.
+
    ```bash
    aws ssm put-parameter --name "/conexao-solidaria/budget/email" --value "seu-email@exemplo.com" --type String
    ```
-
 2. **Credenciais do Twilio (AWS Secrets Manager):**
    O chatbot faz o *fetch* das chaves do Twilio dinamicamente para não as expor no código. Crie o segredo:
+
    ```bash
    aws secretsmanager create-secret \
        --name "conexao-solidaria/twilio" \
@@ -136,6 +142,7 @@ serverless deploy
 O Chatbot requer suas próprias dependências Python. É fundamental isolá-las usando um ambiente virtual (venv).
 
 1. Entre na pasta do chatbot, crie o ambiente virtual e ative-o:
+
 ```bash
 cd chatbot/backend
 python -m venv venv
@@ -146,11 +153,13 @@ source venv/bin/activate
 ```
 
 2. Instale as dependências:
+
 ```bash
 pip install -r requirements.txt
 ```
 
 3. Realize o deploy:
+
 ```bash
 serverless deploy
 ```
@@ -162,11 +171,13 @@ serverless deploy
 O Frontend atua como um BFF e precisa saber onde estão as APIs recém-deployadas.
 
 1. Navegue até a pasta `website`:
+
 ```bash
 cd website
 ```
 
 2. Crie um arquivo `.env` na raiz do `website` contendo as URLs geradas nos passos 2 e 3. Exemplo:
+
 ```env
 GET_INSTITUTIONS="https://<URL_API>/api/v1/institutions"
 GET_INSTITUTION="https://<URL_API>/api/v1/institutions/{cnpj}"
@@ -176,6 +187,7 @@ CHATBOT_API_URL="https://<URL_CHATBOT>"
 ```
 
 3. Crie um ambiente virtual e instale as dependências (para execução local):
+
 ```bash
 python -m venv venv
 # Ative o venv (Windows): .\venv\Scripts\activate
@@ -184,9 +196,11 @@ pip install -r requirements.txt
 ```
 
 4. Execute o servidor localmente:
+
 ```bash
 python manage.py runserver
 ```
+
 Acesse: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 ---
@@ -201,6 +215,7 @@ docker run -d -p 8000:8000 conexao-solidaria
 ```
 
 Para produção no EC2:
+
 1. Suba uma instância EC2 (Ubuntu/Amazon Linux 2)
 2. Instale o Docker e faça upload da sua imagem.
 3. Garanta que o Security Group permita tráfego na porta desejada (ex: 8000 ou 80) e execute o contêiner.
@@ -211,36 +226,41 @@ Para produção no EC2:
 
 - **Frontend:** Abra a aba "Instituições" e garanta que os cards foram carregados do DynamoDB pela API Serverless.
 - **Chatbot:** Envie uma mensagem ("Oi") para o número de WhatsApp configurado no Twilio e garanta que o Amazon Lex respondeu corretamente.
---- 
 
+---
 
 <a id="tecnologias"></a>
+
 ## **💻 Tecnologias Utilizadas**
 
-- **Amazon Bedrock**  
-- **Amazon DynamoDB**  
-- **Amazon Lex**  
-- **Amazon Polly**  
-- **Amazon Rekognition**  
+- **Amazon Bedrock**
+- **Amazon DynamoDB**
+- **Amazon Lex**
+- **Amazon Polly**
+- **Amazon Rekognition**
 - **Amazon S3**
-- **Amazon EC2**  
-- **API ViaCEP**  
-- **AWS Lambda**  
+- **Amazon EC2**
+- **API ViaCEP**
+- **AWS Lambda**
 - **Django**
-- **Docker**  
-- **Python**  
+- **Docker**
+- **Python**
 - **Twilio**
-
 
 ---
 
 <a id="banco-de-dados"></a>
+
 ## **🗄️ Banco de Dados**
 
-A estrutura de armazenamento das Instituições em **DynamoDB** 
+A estrutura de armazenamento das Instituições é baseada no **Amazon DynamoDB**, garantindo alta disponibilidade e escalabilidade.
+
+![Design do Banco de Dados](assets/img/database.png)
+
 ---
 
 <a id="estrutura"></a>
+
 ## **📂 Estrutura de Diretórios**
 
 Este repositório contém o código-fonte do projeto **Conexão Solidária**, com a divisão entre backend, integração com AWS, e o frontend da aplicação. Abaixo está a estrutura principal do repositório:
@@ -251,111 +271,39 @@ conexao-solidaria/
 │   └── workflows/
 │       └── ci.yml                       # Pipeline de CI/CD (GitHub Actions)
 ├── assets/
-│   └── img/
-│       ├── architecture.png             # Imagem representando a arquitetura do projeto
-│       └── database.png                 # Imagem representando o design do banco de dados
-├── chatbot/                             # Diretório principal do chatbot
-│   ├── backend/                         # Backend do chatbot
-│   │   ├── handlers/                    # Manipuladores para as interações do chatbot
-│   │   │   ├── __init__.py              
-│   │   │   ├── health.py                # Verificação de saúde do serviço
-│   │   │   ├── lex.py                   # Manipulação de integração com o Amazon Lex
-│   │   │   └── twilio.py                # Manipulação de integração com o Twilio
-│   │   ├── intents/                     # Intenções definidas para o chatbot
-│   │   │   ├── __init__.py              
-│   │   │   ├── list.py                  # Intenção de listagem
-│   │   │   ├── register.py              # Intenção de registro
-│   │   │   └── tips.py                  # Intenção de dicas
-│   │   ├── services/                    # Serviços auxiliares para o chatbot
-│   │   │   ├── __init__.py              
-│   │   │   ├── api.py                   # Serviço para chamada de APIs externas
-│   │   │   ├── aws.py                   # Integração com serviços AWS
-│   │   │   ├── lex.py                   # Serviço para integração com o Amazon Lex
-│   │   │   ├── s3.py                    # Serviço para integração com o Amazon S3
-│   │   │   └── via_cep_api.py           # Serviço para integração com a API ViaCEP
-│   │   ├── utils/                       # Funções utilitárias e auxiliares
-│   │   │   ├── __init__.py              
-│   │   │   ├── content_type.py          # Funções relacionadas ao tipo de conteúdo
-│   │   │   ├── decode.py                # Função para decodificação de dados
-│   │   │   ├── download_media.py        # Função para download de mídia
-│   │   │   ├── get_twilio_phone.py      # Função para obtenção do número de telefone do Twilio
-│   │   │   ├── responses.py             # Funções para manipulação de respostas do chatbot
-│   │   │   └── slots.py                 # Funções para manipulação de slots do chatbot
-│   │   ├── requirements.txt             # Dependências Python do projeto
-│   │   ├── serverless.yml               # Arquivo de configuração do Serverless
-│   │   └── __init__.py                  
-├── serverless/                          # Configurações do Serverless Framework
-│   ├── api/                             # Diretório de APIs do Serverless
-│   │   ├── v1/                          # Versão 1 da API
-│   │   │   └── __init__.py          
-│   │   └── __init__.py              
-│   ├── core/                            # Lógica central e configurações
-│   │   ├── config.py                    # Arquivo de configurações
-│   │   ├── exceptions.py                # Exceções personalizadas
-│   │   ├── security.py                  # Middleware Anti-Bypass WAF (X-Origin-Verify)
-│   │   └── __init__.py              
-│   ├── domain/                          # Lógica de negócio
-│   │   ├── services/
-│   │   │   ├── institution.py           # Serviço para gerenciar instituições
-│   │   │   └── __init__.py          
-│   │   └── __init__.py              
-│   ├── infra/                           # Serviços de infraestrutura (AWS)
-│   │   ├── aws/                         # Módulos específicos para integração com AWS
-│   │   │   ├── bedrock.py               # Integração com o Amazon Bedrock
-│   │   │   ├── polly.py                 # Integração com o Amazon Polly
-│   │   │   ├── rekognition.py           # Integração com o Amazon Rekognition
-│   │   │   ├── s3.py                    # Integração com o Amazon S3
-│   │   │   └── __init__.py         
-│   │   └── __init__.py              
-│   ├── models/                          
-│   │   ├── institutions.py              # Modelo de dados para instituições
-│   │   └── __init__.py              
-│   ├── schemas/                         
-│   │   ├── bedrock.py                   # Esquema de validação para o Amazon Bedrock
-│   │   ├── base.py                      # Esquema de validação base
-│   │   ├── institutions.py              # Esquema de validação para instituições
-│   │   ├── rekognition.py               # Esquema de validação para o Amazon Rekognition
-│   │   └── __init__.py              
-│   ├── utils/                           # Funções utilitárias
-│   │   ├── build.py                     # Script para compilar o projeto
-│   │   └── __init__.py                  
-│   ├── tests/
-│   │   └── k6_load_test.js              # Script de Teste de Carga e Segurança (WAF)
-│   ├── requirements.txt                 # Dependências Python do backend
-│   └── serverless.yml                   # Configuração principal do Serverless para o backend
-├── website/                             # Diretório principal do website
-│   ├── app/                             # Aplicativo principal Django do website
-│   │   ├── templates/                   # Templates HTML para o website
-│   │   │   └── base.html                # Template base HTML
-│   │   ├── __init__.py                 
-│   │   ├── asgi.py                      # Configuração ASGI para deploy
-│   │   ├── settings.py                  # Configurações do Django
-│   │   ├── urls.py                      # URLs principais do website
-│   │   └── wsgi.py                      # Configuração WSGI para deploy
-│   ├── institutions/                    # Aplicativo Django para instituições
-│   │   ├── templates/                   # Templates específicos de instituições
-│   │   │   ├── detail_institution.html  # Detalhes de uma instituição
-│   │   │   ├── institutions.html        # Listagem de instituições
-│   │   │   └── terms_of_use.html        # Página de Termos de Uso
-│   │   ├── __init__.py              
-│   │   ├── admin.py                     # Configuração de administração do Django
-│   │   ├── apps.py                      # Configuração do aplicativo Django
-│   │   ├── models.py                    # Modelos de dados das instituições
-│   │   ├── tests.py                     # Testes do aplicativo de instituições
-│   │   ├── urls.py                      # URLs específicas do aplicativo instituições
-│   │   └── views.py                     # Views do aplicativo de instituições
-│   ├── static/                          # Arquivos estáticos do website
-│       ├── assets/                      # Arquivos de mídia e imagens
-│       │   └── img/
-│       │       ├── img1.png             # Imagem de exemplo 1
-│       │       └── solidarity.png       # Imagem de solidariedade
-│       └── css/                         
-│           ├── base.css                 # Estilos básicos
-│           ├── detail_institution.css   # Estilos para detalhe de instituições
-│           ├── institutions.css         # Estilos para listagem de instituições
-│           └── terms_of_use.css         # Estilos para página de Termos de Uso
-├── .gitignore                           # Arquivo para ignorar arquivos/desnecessários no Git
+│   └── img/                             # Imagens referentes a diagramas de arquitetura e BD
+├── chatbot/                             # Serviço principal do Chatbot
+│   ├── backend/                         # Core do backend (Domain-Driven Design)
+│   │   ├── domain/                      # Adaptadores, interfaces e regras de negócio
+│   │   ├── handlers/                    # Funções Lambda (Lex, Twilio, Health)
+│   │   ├── infrastructure/              # Integrações externas (AWS, APIs)
+│   │   ├── intents/                     # Manipuladores de intenções do Lex
+│   │   ├── tests/                       # Testes automatizados
+│   │   └── utils/                       # Funções utilitárias diversas
+│   └── bot/                             # Interfaces ou simuladores do Bot
+│       ├── v1/
+│       └── v2/
+├── docs/                                # Documentações adicionais e de arquitetura
+├── serverless/                          # Configurações do Serverless Framework e Backend da API
+│   ├── api/                             # Controladores e rotas (handlers API Gateway)
+│   ├── core/                            # Lógica central, segurança e configurações
+│   ├── domain/                          # Regras de negócio e serviços
+│   ├── infra/                           # Integração AWS, modelos (DynamoDB) e validações
+│   ├── scripts/                         # Automações e utilitários
+│   ├── tests/                           # Testes de carga e performance
+│   └── utils/                           # Funções utilitárias globais
+├── website/                             # Aplicação Frontend em Django
+│   ├── app/                             # Configurações centrais do Django
+│   ├── bot/                             # Funcionalidades extras atreladas ao Chatbot
+│   ├── institutions/                    # App principal para gerenciamento de instituições
+│   ├── static/                          # Arquivos CSS, JS e imagens
+│   ├── tests/                           # Testes de software do frontend
+│   └── utils/                           # Funções utilitárias do Django
+├── .editorconfig                        # Configurações de padronização de editor
+├── .gitignore                           # Arquivo para ignorar artefatos desnecessários
 ├── .pre-commit-config.yaml              # Configuração de hooks de pré-commit
+├── ARCHITECTURE_EVOLUTION.md            # Histórico de evolução da arquitetura
+├── CONTRIBUTING.md                      # Guia de contribuição do projeto
 ├── package-lock.json                    # Controle estrito de versões do NPM
 ├── package.json                         # Dependências e scripts do Node.js
 ├── postman_collection.json              # Coleção de rotas para teste da API
@@ -365,6 +313,7 @@ conexao-solidaria/
 ---
 
 <a id="metodologia"></a>
+
 ## **📅 Metodologia de Desenvolvimento**
 
 Adotamos a metodologia **Ágil**, com **Sprints** curtas, **Daily Meetings** e **Code Reviews** para garantir a qualidade e agilidade no desenvolvimento.
@@ -372,16 +321,36 @@ Adotamos a metodologia **Ágil**, com **Sprints** curtas, **Daily Meetings** e *
 ---
 
 <a id="dificuldades"></a>
+
 ## **😿 Principais Dificuldades**
 
 1. **Integração de múltiplos serviços AWS**: A configuração de vários serviços como **Lex**, **Rekognition** e **Polly** envolveu um desafio técnico considerável.
 2. **Moderação de conteúdo**: Encontrar a melhor combinação de serviços para moderação eficiente de imagens e textos foi complexo.
 3. **Gerenciamento de estado do chatbot**: Manter a continuidade das conversas no **Amazon Lex** foi um desafio técnico.
 
+---
+
+<a id="testar"></a>
+
+## **🧪 Como Testar**
+
+Para garantir a confiabilidade da aplicação, o projeto conta com testes unitários e de carga.
+
+- **Testes da API e Frontend**: Execute os testes do Django navegando até a pasta `website` e rodando `python manage.py test`.
+- **Testes de Carga e WAF**: Existe um script de teste de carga feito em K6 na pasta `serverless/tests/k6_load_test.js` para validar a segurança e resiliência da infraestrutura Serverless sob demanda.
+
+---
+
+<a id="contribuir"></a>
+
+## **🤝 Como Contribuir**
+
+Ficamos felizes com contribuições! Se você deseja reportar um problema, sugerir melhorias ou enviar *Pull Requests*, leia nosso [Guia de Contribuição](CONTRIBUTING.md) completo para entender os padrões de commit, arquitetura e fluxo de desenvolvimento.
 
 ---
 
 <a id="termos"></a>
+
 ## **📜 Termos de Uso**
 
 Os **Termos de Uso** podem ser acessados em [termos de uso](https://conexao-solidaria-termos.s3.amazonaws.com/termos.html).
@@ -392,10 +361,9 @@ Os **Termos de Uso** podem ser acessados em [termos de uso](https://conexao-soli
 
 O projeto base foi construído de forma colaborativa durante o bootcamp da Compass UOL pelos seguintes desenvolvedores:
 
-| [<img loading="lazy" src="https://avatars.githubusercontent.com/u/97261564?v=4" width="100" alt="Gusttavo Felipe">](https://github.com/gusttavofelipe) <br>[Gusttavo Felipe](https://github.com/gusttavofelipe) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/95103547?v=4" width="100" alt="Monique da Silva Borges">](https://github.com/niqueborges) <br>[Monique da Silva Borges](https://github.com/niqueborges) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/154631421?v=4" width="100" alt="Pedro Nunes">](https://github.com/PedroNunesBH) <br>[Pedro Nunes](https://github.com/PedroNunesBH) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/167145673?v=4" width="100" alt="Roger Dev">](https://github.com/Rogerdev02) <br>[Roger Dev](https://github.com/Rogerdev02) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/114765722?v=4" width="100" alt="Silvio CMJ">](https://github.com/SilvioCMJ) <br>[Silvio CMJ](https://github.com/SilvioCMJ) |
-|:---:|:---:|:---:|:---:|:---:|
+| [](https://github.com/gusttavofelipe) [Gusttavo Felipe](https://github.com/gusttavofelipe) | [](https://github.com/niqueborges) [Monique da Silva Borges](https://github.com/niqueborges) | [](https://github.com/PedroNunesBH) [Pedro Nunes](https://github.com/PedroNunesBH) | [](https://github.com/Rogerdev02) [Roger Dev](https://github.com/Rogerdev02) | [](https://github.com/SilvioCMJ) [Silvio CMJ](https://github.com/SilvioCMJ) |
+| :--------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------: | :------------------------------------------------------------------------: | :-----------------------------------------------------------------------: |
 
 ---
 
 Este projeto continuou sendo evoluído de forma solo seguindo padrões avançados de arquitetura serverless.
-

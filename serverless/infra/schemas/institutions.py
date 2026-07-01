@@ -114,7 +114,7 @@ class UpdateInstitution(BaseSchema):
         description="Updated postal code (CEP) of the institution's address",
         examples=["87654321"],
     )
-    address: str = Field(
+    address: Optional[str] = Field(
         default=None,
         description="The street address, street name and number if applicable.",
         examples=["Rua das Flores, 123", "Avenida Paulista, 1500"],
@@ -124,12 +124,12 @@ class UpdateInstitution(BaseSchema):
         description="Updated address number of the institution",
         examples=[250],
     )
-    city: str = Field(
+    city: Optional[str] = Field(
         default=None,
         description="The city where the address is located.",
         examples=["São Paulo", "Rio de Janeiro"],
     )
-    neighborhood: str = Field(
+    neighborhood: Optional[str] = Field(
         default=None,
         description="The neighborhood or district within the city.",
         examples=["Centro", "Copacabana"],
@@ -165,16 +165,25 @@ class UpdateInstitution(BaseSchema):
 
 
 class InstitutionResponse(CreateInstitution):
-    """Schema to return a single institution"""
+    """Schema to return a single institution publicly"""
 
     id: str = Field(description="Unique identifier of the institution")
-    token: str = Field(description="Authentication token for the institution")
     verified: bool = Field(
         description="Indicates if the institution is verified", examples=[True]
     )
 
 
-class ListInstitutionReponse(BaseSchema):
+class InstitutionPrivateResponse(InstitutionResponse):
+    """Schema to return a single institution privately (e.g. after creation), including the write token"""
+
+    token: str = Field(description="Authentication token for the institution")
+
+
+class ListInstitutionResponse(BaseSchema):
     """Schema for returning a list of institutions"""
 
     institutions: list[InstitutionResponse]
+    last_evaluated_key: Optional[str] = Field(
+        default=None,
+        description="Key used for pagination to fetch the next page",
+    )
