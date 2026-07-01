@@ -125,13 +125,18 @@ Antes de realizar os deploys, a arquitetura requer a configuração de parâmetr
 
 ### **3. Deploy da Infraestrutura e API (Serverless)**
 
-Este passo cria o DynamoDB, S3, Lambdas da API, WAF Global e a distribuição CloudFront.
+No diretório base do repositório, acesse a pasta `serverless`, configure o ambiente (criando seu arquivo `.env` a partir do modelo `.env.example`), instale os plugins do Serverless e faça o deploy da infraestrutura da API:
 
 ```bash
-cd serverless
+cd serverless/
+cp .env.example .env
+# Preencha seu .env com as variáveis requisitadas
+
 npm install
 serverless deploy
 ```
+
+> **Nota**: Para os detalhes completos dos endpoints, payload de dados, autenticação e limits da API, consulte a **[Documentação da API Serverless](docs/api.md)**.
 
 **Importante:** Ao final do processo, o terminal exibirá os **endpoints e outputs**. O sistema possui um bloqueio (*Anti-Bypass*) contra acessos diretos à API Gateway. Portanto, **NÃO** use o endpoint cru. Copie o valor de **`CloudFrontDomainName`** (ex: `d123456.cloudfront.net`), pois ele será a URL base `https://d123456.cloudfront.net` nos próximos passos.
 

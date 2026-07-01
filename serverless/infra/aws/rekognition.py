@@ -1,7 +1,9 @@
 import boto3
 from core.config import settings
 from botocore.exceptions import ClientError
+from aws_lambda_powertools import Logger
 
+logger = Logger()
 
 class Rekognition:
     def __init__(self) -> None:
@@ -21,7 +23,7 @@ class Rekognition:
             return response.get("ModerationLabels", [])
         except ClientError as exc:
             # Handle ClientError error from the API call
-            print(f"Error obtaining the detect moderation labels's response: {exc}")
+            logger.error(f"Error obtaining the detect moderation labels's response: {exc}")
             raise
 
     def scan_for_inappropriate_content(self, bucket: str, image_key: str) -> dict:

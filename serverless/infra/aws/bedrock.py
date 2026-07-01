@@ -1,7 +1,9 @@
 import boto3
 from botocore.exceptions import ClientError
+from aws_lambda_powertools import Logger
 from core.config import settings
 
+logger = Logger()
 
 class Bedrock:
     """A class to interact with the Bedrock API for generating suggestions."""
@@ -46,7 +48,7 @@ class Bedrock:
             response_text = self._extract_response_text(response=response)
         except ClientError as exc:
             # Handle ClientError error from the API call
-            print(f"Error obtaining the model's response: {exc}")
+            logger.error(f"Error obtaining the model's response: {exc}")
             raise
 
         return {"suggestion": response_text}
