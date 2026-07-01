@@ -31,40 +31,13 @@ class ConversationOrchestrator:
             return self.bedrock.process(message)
             
         if lex_context.intent_name == "WelcomeIntent":
-            text = message.lower().strip()
+            flow = WelcomeFlow()
+            result = flow.process_welcome(message=message, session_id=session_id, lex_engine=self.lex)
+            if isinstance(result, str):
+                return result
+            # Se não retornou string, retornou o novo lex_context mapeado para fulfillment!
+            lex_context = result
             
-            # Correção de Roteamento Pós-Menu:
-            # Como limpamos a sessão após o "sim", o Lex recebe "1", "2" ou "3" sem contexto.
-            # O NLP do Lex acaba mapeando números soltos erroneamente de volta para WelcomeIntent.
-            # Aqui, nós interceptamos os números do menu e injetamos a frase correta para o Lex!
-            if text in ["1", "2", "3"]:
-                menu_map = {
-                    "1": "Quero verificar as instituições cadastradas",
-                    "2": "Quero cadastrar uma instituição",
-                    "3": "Quero dicas de doação"
-                }
-                logger.info(f"Interceptando opção '{text}' do menu e re-roteando o Lex.")
-                # Limpa a sessão do Lex para evitar que a opção do menu suje a intenção anterior
-                self.lex.clear_session(session_id)
-                # Re-analisa a mensagem com a frase perfeita para o Lex ativar a intent correta
-                lex_context = self.lex.analyze(menu_map[text], session_id)
-            else:
-                import re
-                if re.search(r'\b(sim|concordo|ok|aceito|li)\b', text):
-                    # Limpa a sessão do Lex para ele não ficar preso no slot FilterBoolean
-                    self.lex.clear_session(session_id)
-                    return (
-                        "Ótimo! Agora que você está ciente dos termos, escolha uma das opções abaixo para continuarmos:\n"
-                        "1. Verificar instituições.\n"
-                        "2. Cadastrar uma instituição.\n"
-                        "3. Pedir dicas.\n"
-                        "É só responder com o número da opção que você prefere!"
-                    )
-                return (
-                    "Olá! Seja bem-vindo! Antes de começarmos, dê uma olhada em nossos Termos de Uso "
-                    "acessando a aba 'Termos de Uso' no nosso site.\n\n"
-                    "Para prosseguirmos, você está ciente e aceita nossos Termos? (Responda 'sim')"
-                )
         if lex_context.ready_for_fulfillment:
             logger.info(f"Fulfillment acionado para a intent: {lex_context.intent_name}")
             

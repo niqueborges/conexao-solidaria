@@ -8,6 +8,39 @@ tracer = Tracer()
 
 class WelcomeFlow:
     @tracer.capture_method
+    def process_welcome(self, message: str, session_id: str, lex_engine) -> str:
+        text = message.lower().strip()
+        
+        # Correção de Roteamento Pós-Menu:
+        if text in ["1", "2", "3"]:
+            menu_map = {
+                "1": "Quero verificar as instituições cadastradas",
+                "2": "Quero cadastrar uma instituição",
+                "3": "Quero dicas de doação"
+            }
+            logger.info(f"Interceptando opção '{text}' do menu e re-roteando o Lex.")
+            lex_engine.clear_session(session_id)
+            lex_context = lex_engine.analyze(menu_map[text], session_id)
+            return lex_context
+            
+        import re
+        if re.search(r'\b(sim|concordo|ok|aceito|li)\b', text):
+            lex_engine.clear_session(session_id)
+            return (
+                "Ótimo! Agora que você está ciente dos termos, escolha uma das opções abaixo para continuarmos:\n"
+                "1. Verificar instituições.\n"
+                "2. Cadastrar uma instituição.\n"
+                "3. Pedir dicas.\n"
+                "É só responder com o número da opção que você prefere!"
+            )
+            
+        return (
+            "Olá! Seja bem-vindo! Antes de começarmos, dê uma olhada em nossos Termos de Uso "
+            "acessando a aba 'Termos de Uso' no nosso site.\n\n"
+            "Para prosseguirmos, você está ciente e aceita nossos Termos? (Responda 'sim')"
+        )
+
+    @tracer.capture_method
     def validate_step(self, field_values: dict) -> ValidationResult:
         filter_boolean = field_values.get("FilterBoolean")
         available_intents = field_values.get("AvailableIntents")
