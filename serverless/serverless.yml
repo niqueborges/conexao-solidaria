@@ -64,12 +64,6 @@ functions:
           method: get
           path: /api/v1/institutions
 
-  query:
-    handler: api/v1/handlers.institution.query
-    events:
-      - httpApi:
-          method: get
-          path: /api/v1/institutions/filter
 
   retrieve:
     handler: api/v1/handlers.institution.retrieve
