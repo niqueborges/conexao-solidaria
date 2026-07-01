@@ -3,6 +3,9 @@ from django.views.generic import TemplateView, View
 from django.shortcuts import render
 from utils.http import fetch_data
 from app import settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class HomeView(TemplateView):
@@ -68,7 +71,7 @@ class FilterInstitutionView(View):
             institutions = fetched.get("institutions", [])
         except Exception as e:
             institutions = []
-            print(f"Error fetching data: {e}")
+            logger.error(f"Error fetching data: {e}")
 
         verified_institutions = [
             institution for institution in institutions if institution.get("verified")
