@@ -129,7 +129,7 @@ class RegistrationFlow:
                 "confirmation_audio": confirmation_audio_url,
                 "about": request.description,
                 "site": request.site,
-                "image": request.image_path if request.image_path.strip().lower() not in ["não", "nao", "no"] else "https://conexao-solidaria.s3.amazonaws.com/default-institution.png",
+                "image": request.image_path if request.image_path and request.image_path.strip().lower() not in ["não", "nao", "no"] else "https://conexao-solidaria.s3.amazonaws.com/default-institution.png",
             }
 
             self.repository.create(institution_data)
