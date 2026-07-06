@@ -1,8 +1,8 @@
 distlib==0.3.9
-filelock==3.16.1
+filelock==3.20.3
 frozenlist==1.4.1
 identify==2.6.1
-idna==3.10
+idna==3.15
 isort==5.13.2
 jmespath==1.0.1
 multidict==6.1.0
@@ -13,27 +13,27 @@ propcache==0.2.0
 pydantic==2.9.2
 pydantic-settings==2.5.2
 pydantic_core==2.23.4
-PyJWT==2.9.0
+PyJWT==2.13.0
 pynamodb==6.0.1
 python-dateutil==2.9.0.post0
-python-dotenv==1.0.1
+python-dotenv==1.2.2
 pytz==2024.2
 PyYAML==6.0.2
-requests==2.32.3
+requests==2.33.0
 s3transfer==0.10.3
 six==1.16.0
 types-awscrt==0.22.0
 types-s3transfer==0.10.3
 typing_extensions==4.12.2
-urllib3==1.26.20
-virtualenv==20.26.6
+urllib3==2.7.0
+virtualenv==20.36.1
 yarl==1.15.5
 aws-lambda-powertools==3.2.0
 boto3==1.35.40
 botocore==1.35.40
 
 # Test dependencies
-pytest==8.3.3
+pytest==9.0.3
 pytest-mock==3.14.0
 moto==5.0.21
 flake8==7.1.1
