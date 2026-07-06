@@ -1,6 +1,6 @@
 # Conexão Solidária (Refatorado)
 
-[![CI Pipeline](https://github.com/niqueborges/conexao-solidaria/actions/workflows/ci.yml/badge.svg)](https://github.com/niqueborges/conexao-solidaria/actions/workflows/ci.yml)
+[![CI/CD Pipeline](https://github.com/niqueborges/conexao-solidaria/actions/workflows/main.yml/badge.svg)](https://github.com/niqueborges/conexao-solidaria/actions/workflows/main.yml)
 
 ---
 
