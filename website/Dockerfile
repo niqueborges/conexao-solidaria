@@ -1,30 +1,31 @@
-# Use uma imagem base com Python
-FROM python:3.11-slim
-
-# Defina o diretório de trabalho no container
+# syntax=docker/dockerfile:1
+FROM python:3.11-slim AS build
 WORKDIR /app
 
-# Instale dependências do sistema
-RUN apt-get update && apt-get install -y gcc && apt-get clean
+# Instale ferramentas de build e construa as rodas (wheels) do python
+RUN apt-get update && apt-get install -y --no-install-recommends gcc && rm -rf /var/lib/apt/lists/*
+COPY requirements.txt .
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip wheel --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
-# Copie os arquivos de requisitos para o container e instale as dependências
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copie todo o código do projeto para o container
-COPY . /app/
+FROM python:3.11-slim AS runtime
+WORKDIR /app
 
 # Cria usuário não-root
 RUN useradd -m appuser
 
-# Coleta os arquivos estáticos
+# Copia e instala as dependências pré-compiladas
+COPY --from=build /usr/src/app/wheels /wheels
+COPY --from=build /app/requirements.txt .
+RUN pip install --no-cache /wheels/* && rm -rf /wheels
+
+# Copia o código com propriedade correta
+COPY --chown=appuser:appuser . .
+
+# Coleta arquivos estáticos
 RUN python manage.py collectstatic --noinput
 
-# Define o usuário para rodar a aplicação
 USER appuser
-
-# Exponha a porta 8000
 EXPOSE 8000
 
-# Comando para rodar o Gunicorn no container
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app.wsgi:application"]

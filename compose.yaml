@@ -1,0 +1,47 @@
+services:
+  website:
+    build:
+      context: ./website
+    ports:
+      - "8000:8000"
+    environment:
+      - CHATBOT_API_URL=http://chatbot-api:3001
+    volumes:
+      - ./website:/app
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  serverless-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.serverless
+    ports:
+      - "3000:3000"
+    working_dir: /workspace/serverless
+    command: npx serverless offline --host 0.0.0.0 --httpPort 3000
+    volumes:
+      - .:/workspace
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  chatbot-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.serverless
+    ports:
+      - "3001:3001"
+    working_dir: /workspace/chatbot/backend
+    command: npx serverless offline --host 0.0.0.0 --httpPort 3001
+    volumes:
+      - .:/workspace
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
