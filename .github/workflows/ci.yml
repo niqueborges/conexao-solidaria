@@ -77,6 +77,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Run Pytest
+        env:
+          REGION_NAME: "us-east-1"
+          TABLE_NAME: "test-table"
+          BILLING_MODE: "PAY_PER_REQUEST"
+          MODEL_ID: "test-model"
         run: PYTHONPATH=. pytest --cov=. --cov-fail-under=80 --cov-report=term-missing tests/
       - name: Install Serverless & Plugins
         run: |
