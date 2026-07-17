@@ -2,7 +2,7 @@ from django.urls import reverse
 
 
 def test_home_view(client):
-    response = client.get(reverse("home"))
+    response = client.get(reverse("home"), secure=True)
     assert response.status_code == 200
 
 
@@ -20,7 +20,7 @@ def test_institution_list_view_with_mock(client, mock_fetch_data):
         ]
     }
 
-    response = client.get(reverse("institutions"))
+    response = client.get(reverse("institutions"), secure=True)
     assert response.status_code == 200
     assert b"Mock Inst" in response.content
 
@@ -34,6 +34,11 @@ def test_detail_institution_view_with_mock(client, mock_fetch_data):
         "verified": True,
     }
 
-    response = client.get(reverse("institution", kwargs={"cnpj": "123"}))
+    response = client.get(reverse("institution", kwargs={"cnpj": "123"}), secure=True)
     assert response.status_code == 200
     assert b"Mock Details" in response.content
+
+
+def test_chatbot_get_view(client):
+    response = client.get(reverse("chatbot"), secure=True)
+    assert response.status_code == 200
