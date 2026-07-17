@@ -6,6 +6,7 @@ from domain.services.validators import DomainValidators
 logger = Logger()
 tracer = Tracer()
 
+
 class ListFlow:
     def __init__(self):
         self.base_url = os.getenv("INSTITUTIONS_BASE_URL")
@@ -14,15 +15,15 @@ class ListFlow:
     def validate_step(self, field_values: dict) -> ValidationResult:
         filter_boolean = field_values.get("FilterBoolean")
         filter_type = field_values.get("FilterType")
-        
+
         # Enforce Required Slots with explicit domain messages (Bypassing Lex bad prompts)
         if filter_boolean is None:
             return ValidationResult(
-                is_valid=False, 
+                is_valid=False,
                 elicit_slot="FilterBoolean",
-                error_message="Para te ajudar melhor, você gostaria de aplicar um filtro para encontrar as instituições corretas? (Sim ou Não)"
+                error_message="Para te ajudar melhor, você gostaria de aplicar um filtro para encontrar as instituições corretas? (Sim ou Não)",
             )
-            
+
         rules = {
             "FilterBoolean": DomainValidators.validate_boolean_sim_nao,
             "FilterType": DomainValidators.validate_filter_type,
@@ -34,47 +35,51 @@ class ListFlow:
             "FilterBoolean": "Por favor, responda apenas com Sim ou Não para aceitar os Termos de Uso.",
             "FilterType": "Por favor, responda se quer filtrar por Estado ou Região.",
             "Region": "Região inválida. Tente novamente.",
-            "States": "Estado inválido. Tente novamente."
+            "States": "Estado inválido. Tente novamente.",
         }
 
         for field_name, value in field_values.items():
             if value is None:
                 continue
-                
+
             validator = rules.get(field_name)
             if validator and not validator(value):
                 return ValidationResult(
-                    is_valid=False, 
+                    is_valid=False,
                     elicit_slot=field_name,
-                    error_message=error_messages.get(field_name, "Valor inválido.")
+                    error_message=error_messages.get(field_name, "Valor inválido."),
                 )
-                
+
         if filter_boolean.lower() == "sim":
             if filter_type is None:
                 return ValidationResult(
                     is_valid=False,
                     elicit_slot="FilterType",
-                    error_message="Você prefere filtrar por 'Estado' ou 'Região'?"
+                    error_message="Você prefere filtrar por 'Estado' ou 'Região'?",
                 )
-            
+
             if filter_type.lower() == "estado":
                 if field_values.get("States") is None:
                     return ValidationResult(
                         is_valid=False,
                         elicit_slot="States",
-                        error_message="Qual o estado brasileiro desejado?"
+                        error_message="Qual o estado brasileiro desejado?",
                     )
                 else:
-                    return ValidationResult(is_valid=True, is_ready_for_fulfillment=True)
+                    return ValidationResult(
+                        is_valid=True, is_ready_for_fulfillment=True
+                    )
             elif filter_type.lower() == "região":
                 if field_values.get("Region") is None:
                     return ValidationResult(
                         is_valid=False,
                         elicit_slot="Region",
-                        error_message="Qual a região do Brasil desejada?"
+                        error_message="Qual a região do Brasil desejada?",
                     )
                 else:
-                    return ValidationResult(is_valid=True, is_ready_for_fulfillment=True)
+                    return ValidationResult(
+                        is_valid=True, is_ready_for_fulfillment=True
+                    )
         elif filter_boolean.lower() == "não":
             return ValidationResult(is_valid=True, is_ready_for_fulfillment=True)
 
@@ -84,7 +89,7 @@ class ListFlow:
     def execute_list(self, request: ListInstitutionRequest) -> str:
         if request.filter_boolean and request.filter_boolean.lower() == "não":
             return f"Acesse o nosso link para visualizar todas as instituições: {self.base_url}/"
-        
+
         filter_type = request.filter_type
         if filter_type:
             if filter_type.lower() == "estado":
@@ -95,7 +100,7 @@ class ListFlow:
                 filter_type = "region"
                 region = request.region or ""
                 link = f"{self.base_url}/filter/{filter_type.lower()}/{region.lower()}"
-            
+
             return f"Para visualizar por {filter_type} acesse nosso link: {link}"
-        
+
         return f"Acesse o nosso link para visualizar todas as instituições: {self.base_url}/"

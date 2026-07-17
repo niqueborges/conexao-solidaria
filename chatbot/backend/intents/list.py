@@ -2,6 +2,7 @@ from utils.responses import LexResponses
 from domain.adapters.lex_mapper import LexMapper
 from domain.services.list_flow import ListFlow
 
+
 class ListIntent:
     """
     Class responsible for handling events related to the
@@ -18,12 +19,14 @@ class ListIntent:
         """
         slots = self.event["sessionState"]["intent"]["slots"]
         flat_slots = LexMapper.extract_flat_slots(slots)
-        
+
         result = self.flow.validate_step(flat_slots)
-        
+
         if not result.is_valid:
-            return LexResponses.elicit_slot(self.event, result.elicit_slot, result.error_message)
-            
+            return LexResponses.elicit_slot(
+                self.event, result.elicit_slot, result.error_message
+            )
+
         if result.is_ready_for_fulfillment:
             # Pula os slots restantes e fecha a intenção
             return {
@@ -36,5 +39,5 @@ class ListIntent:
                     },
                 }
             }
-            
+
         return LexResponses.delegate(self.event)

@@ -7,6 +7,7 @@ from bot.lex import Chat
 from utils.http import get_client_ip
 from django.shortcuts import render
 
+
 class ChatBotView(View):
     async def get(self, request: HttpRequest, *args, **kwargs):
         """Handles GET requests to render the chatbot page."""
@@ -17,10 +18,11 @@ class ChatBotView(View):
 
         message = request.POST.get("message", "").strip()
         image = request.FILES.get("image", None)
-        
+
         session_id = request.COOKIES.get("session_id")
         if not session_id:
             import uuid
+
             session_id = str(uuid.uuid4())
 
         image_key = None
@@ -34,7 +36,7 @@ class ChatBotView(View):
                     await client.put(
                         url,
                         content=image.read(),
-                        headers={"Content-Type": image.content_type}
+                        headers={"Content-Type": image.content_type},
                     )
                 image_key = f"{session_id}-image.jpg"
 

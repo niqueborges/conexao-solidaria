@@ -30,7 +30,7 @@ def create(event: dict, context: LambdaContext) -> dict[str, Any]:
         return build_http_response(
             status_code=400, body={"ValidationError": exc.errors(include_url=False)}
         )
-    
+
     service = InstitutionService(repository=PynamoDBInstitutionRepository())
     try:
         institution = service.create(data=data)
@@ -49,17 +49,21 @@ def list_items(event: dict, context: LambdaContext) -> list[dict[str, Any]]:
     limit = query_params.get("limit")
     if limit:
         limit = int(limit)
-    
+
     last_evaluated_key = query_params.get("last_evaluated_key")
     if last_evaluated_key:
         try:
             last_evaluated_key = json.loads(last_evaluated_key)
         except json.JSONDecodeError:
-            return build_http_response(status_code=400, body={"detail": "Invalid last_evaluated_key format"})
+            return build_http_response(
+                status_code=400, body={"detail": "Invalid last_evaluated_key format"}
+            )
 
     service = InstitutionService(repository=PynamoDBInstitutionRepository())
     try:
-        institutions = service.get_all(limit=limit, last_evaluated_key=last_evaluated_key)
+        institutions = service.get_all(
+            limit=limit, last_evaluated_key=last_evaluated_key
+        )
     except InstitutionNotFoundException as exc:
         return build_http_response(status_code=500, body={"detail": exc.message})
 
@@ -92,21 +96,28 @@ def query(event: dict, context: LambdaContext) -> dict[str, Any]:
     query_params = event.get("queryStringParameters") or {}
     region = query_params.get("region")
     state = query_params.get("state")
-    
+
     limit = query_params.get("limit")
     if limit:
         limit = int(limit)
-    
+
     last_evaluated_key = query_params.get("last_evaluated_key")
     if last_evaluated_key:
         try:
             last_evaluated_key = json.loads(last_evaluated_key)
         except json.JSONDecodeError:
-            return build_http_response(status_code=400, body={"detail": "Invalid last_evaluated_key format"})
+            return build_http_response(
+                status_code=400, body={"detail": "Invalid last_evaluated_key format"}
+            )
 
     service = InstitutionService(repository=PynamoDBInstitutionRepository())
     try:
-        institutions = service.query(region=region, state=state, limit=limit, last_evaluated_key=last_evaluated_key)
+        institutions = service.query(
+            region=region,
+            state=state,
+            limit=limit,
+            last_evaluated_key=last_evaluated_key,
+        )
     except InstitutionNotFoundException as exc:
         return build_http_response(status_code=404, body={"detail": exc.message})
 
@@ -130,7 +141,7 @@ def update(event: dict, context: LambdaContext) -> dict[str, Any]:
         return build_http_response(
             status_code=400, body={"ValidationError": exc.errors(include_url=False)}
         )
-        
+
     service = InstitutionService(repository=PynamoDBInstitutionRepository())
     try:
         institution = service.update(cnpj=cnpj, data=data)

@@ -10,7 +10,9 @@ class StateIndex(GlobalSecondaryIndex):
         read_capacity_units = 0
         write_capacity_units = 0
         projection = AllProjection()
+
     state = UnicodeAttribute(hash_key=True)
+
 
 class RegionIndex(GlobalSecondaryIndex):
     class Meta:
@@ -18,6 +20,7 @@ class RegionIndex(GlobalSecondaryIndex):
         read_capacity_units = 0
         write_capacity_units = 0
         projection = AllProjection()
+
     region = UnicodeAttribute(hash_key=True)
 
 
@@ -47,6 +50,6 @@ class InstitutionModel(Model):
     about = UnicodeAttribute(null=False)
     verified = BooleanAttribute(default=False, null=False)
     site = UnicodeAttribute(null=False)
-    
+
     state_index = StateIndex()
     region_index = RegionIndex()

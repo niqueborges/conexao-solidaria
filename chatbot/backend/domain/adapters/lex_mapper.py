@@ -1,6 +1,7 @@
 from typing import Dict, Any
 from domain.schemas import RegistrationRequest, ListInstitutionRequest
 
+
 class LexMapper:
     @staticmethod
     def extract_flat_slots(slots: dict) -> Dict[str, Any]:
@@ -16,7 +17,7 @@ class LexMapper:
             if slot_data and slot_data.get("value"):
                 val = slot_data["value"].get("interpretedValue")
                 orig = slot_data["value"].get("originalValue")
-                
+
                 if val and str(val).lower() != "null":
                     flat_slots[slot_name] = val
                 else:

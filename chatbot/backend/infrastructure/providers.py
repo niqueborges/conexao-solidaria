@@ -18,6 +18,7 @@ from aws_lambda_powertools import Logger, Tracer
 logger = Logger()
 tracer = Tracer()
 
+
 class ApiGatewayInstitutionRepository(InstitutionRepository):
     def __init__(self):
         self.api_client = ApiClient(os.getenv("BASE_URL"))
@@ -26,6 +27,7 @@ class ApiGatewayInstitutionRepository(InstitutionRepository):
     @tracer.capture_method
     def create(self, institution_data: dict) -> None:
         self.amazon_services.create_institution(institution_data)
+
 
 class ViaCepProvider(AddressProvider):
     def __init__(self):
@@ -38,6 +40,7 @@ class ViaCepProvider(AddressProvider):
         if address_data:
             return self.via_cep.format_cep_response(address_data)
         return None
+
 
 class RekognitionModerationService(ImageModerationService):
     def __init__(self):
@@ -52,6 +55,7 @@ class RekognitionModerationService(ImageModerationService):
         )
         return rek_resp.status_code == 204
 
+
 class PollySpeechService(SpeechService):
     def __init__(self):
         self.bucket_name = os.getenv("S3_BUCKET_NAME")
@@ -61,5 +65,3 @@ class PollySpeechService(SpeechService):
         audio_bytes = generate_audio_as_bytes(text)
         media_key = upload_file_to_s3(audio_bytes, "audio")
         return f"https://{self.bucket_name}.s3.amazonaws.com/{media_key}"
-
-

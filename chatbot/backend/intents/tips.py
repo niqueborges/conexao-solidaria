@@ -7,6 +7,7 @@ from infrastructure.engines import BedrockEngine
 
 logger = Logger()
 
+
 class TipsIntent:
     """
     Class responsible for handling events related to the TipsIntent intent.
@@ -19,10 +20,10 @@ class TipsIntent:
     def process_dialog_hook(self) -> LexResponses:
         slots = self.event["sessionState"]["intent"]["slots"]
         flat_slots = LexMapper.extract_flat_slots(slots)
-        
+
         result = self.flow.validate_step(flat_slots)
-        
+
         if not result.is_valid:
             return LexResponses.elicit_slot(self.event, result.elicit_slot)
-            
+
         return LexResponses.delegate(self.event)

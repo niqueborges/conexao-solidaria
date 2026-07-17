@@ -5,6 +5,7 @@ from core.config import settings
 
 logger = Logger()
 
+
 class Bedrock:
     """A class to interact with the Bedrock API for generating suggestions."""
 

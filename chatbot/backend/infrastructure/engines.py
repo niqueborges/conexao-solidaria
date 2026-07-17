@@ -9,6 +9,7 @@ from infrastructure.aws import AmazonServices
 logger = Logger()
 tracer = Tracer()
 
+
 class BedrockEngine(ConversationEngine):
     def __init__(self):
         self.api_client = ApiClient(os.getenv("BASE_URL"))
@@ -19,6 +20,7 @@ class BedrockEngine(ConversationEngine):
         data = {"topic": prompt}
         response = self.amazon_services.post_bedrock(data)
         return response.get("suggestion", "Desculpe, não consegui obter uma resposta.")
+
 
 class LexEngine:
     def __init__(self):
@@ -50,15 +52,19 @@ class LexEngine:
             intent = session_state.get("intent", {})
             intent_name = intent.get("name")
             slots = intent.get("slots", {})
-            state = intent.get("state") # Failed, Fulfilled, InProgress, ReadyForFulfillment
-            
-            ready_for_fulfillment = (state == "ReadyForFulfillment" or state == "Fulfilled")
+            state = intent.get(
+                "state"
+            )  # Failed, Fulfilled, InProgress, ReadyForFulfillment
+
+            ready_for_fulfillment = (
+                state == "ReadyForFulfillment" or state == "Fulfilled"
+            )
 
             return ConversationContext(
                 intent_name=intent_name,
                 slots=slots,
                 message=bot_message,
-                ready_for_fulfillment=ready_for_fulfillment
+                ready_for_fulfillment=ready_for_fulfillment,
             )
 
         except Exception as e:
@@ -67,7 +73,7 @@ class LexEngine:
                 intent_name="FallbackIntent",
                 slots={},
                 message="Erro ao processar a mensagem no Lex.",
-                ready_for_fulfillment=False
+                ready_for_fulfillment=False,
             )
 
     def clear_session(self, session_id: str):
@@ -76,7 +82,7 @@ class LexEngine:
                 botId=self.bot_id,
                 botAliasId=self.alias_id,
                 localeId=self.locale_id,
-                sessionId=session_id
+                sessionId=session_id,
             )
             logger.info(f"Sessão {session_id} limpa no Lex.")
         except Exception as e:

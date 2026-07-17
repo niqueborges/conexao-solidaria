@@ -16,6 +16,7 @@ logger = Logger()
 tracer = Tracer()
 lex_engine = LexEngine()
 
+
 @logger.inject_lambda_context
 @tracer.capture_lambda_handler
 def handler(event, context):
@@ -23,12 +24,14 @@ def handler(event, context):
     slots = event.get("slots", {})
     session_id = event.get("session_id")
     original_message = event.get("original_message")
-    
+
     response_text = ""
-    
+
     if intent_name == "WelcomeIntent":
         flow = WelcomeFlow()
-        result = flow.process_welcome(message=original_message, session_id=session_id, lex_engine=lex_engine)
+        result = flow.process_welcome(
+            message=original_message, session_id=session_id, lex_engine=lex_engine
+        )
         if isinstance(result, str):
             response_text = result
         else:
@@ -43,14 +46,15 @@ def handler(event, context):
         )
         request = LexMapper.to_registration_request(slots)
         response_text = flow.execute_registration(request)
-        
+
     elif intent_name == "ListRegisteredInstitutionsIntent":
         flow = ListFlow()
         request = LexMapper.to_list_request(slots)
         response_text = flow.execute_list(request)
-        
+
     elif intent_name == "TipsIntent":
         from infrastructure.engines import BedrockEngine
+
         flow = TipsFlow(engine=BedrockEngine())
         flat_slots = LexMapper.extract_flat_slots(slots)
         tip_type = flat_slots.get("TipType")
@@ -62,5 +66,5 @@ def handler(event, context):
     return {
         "response_message": response_text,
         "session_id": session_id,
-        "bot_number": event.get("bot_number", "")
+        "bot_number": event.get("bot_number", ""),
     }

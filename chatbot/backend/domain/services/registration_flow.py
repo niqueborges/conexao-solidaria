@@ -1,11 +1,17 @@
 from aws_lambda_powertools import Logger, Tracer
 from domain.schemas import ValidationResult, RegistrationRequest
 from domain.services.validators import DomainValidators
-from domain.interfaces import InstitutionRepository, AddressProvider, ImageModerationService, SpeechService
+from domain.interfaces import (
+    InstitutionRepository,
+    AddressProvider,
+    ImageModerationService,
+    SpeechService,
+)
 import re
 
 logger = Logger()
 tracer = Tracer()
+
 
 class RegistrationFlow:
     def __init__(
@@ -39,7 +45,7 @@ class RegistrationFlow:
         for field_name, value in field_values.items():
             if value is None:
                 continue
-                
+
             # Normalização Automática
             if field_name in ["CNPJ", "InstitutionCep", "InstitutionPhone"]:
                 value = re.sub(r"\D", "", value)
@@ -58,20 +64,26 @@ class RegistrationFlow:
 
             validator = rules.get(field_name)
             if validator and not validator(value):
-                return ValidationResult(is_valid=False, elicit_slot=field_name, updated_fields=updated_fields)
+                return ValidationResult(
+                    is_valid=False,
+                    elicit_slot=field_name,
+                    updated_fields=updated_fields,
+                )
 
             if field_name == "ImagePath":
                 if value.strip().lower() not in ["não", "nao", "no"]:
                     is_safe = self.moderation_service.is_safe(value)
                     if not is_safe:
                         msg = "A imagem enviada não é adequada ou não passou na moderação. Por favor, envie outra imagem, ou digite 'não' para pular esta etapa."
-                        return ValidationResult(is_valid=False, elicit_slot=field_name, error_message=msg)
+                        return ValidationResult(
+                            is_valid=False, elicit_slot=field_name, error_message=msg
+                        )
 
         # 3. Address Lookup & Enrichment
         cep = field_values.get("InstitutionCep")
         if cep and field_values.get("InstitutionState") is None:
             address_data = self.address_provider.get_address(cep)
-            
+
             if address_data:
                 street, neighborhood, city, state, region = address_data
                 updated_fields = {
@@ -95,11 +107,13 @@ class RegistrationFlow:
             "InstitutionPhone",
             "InstitutionSite",
             "InstitutionDescription",
-            "ImagePath"
+            "ImagePath",
         ]
         for slot in order:
             if field_values.get(slot) is None:
-                return ValidationResult(is_valid=False, elicit_slot=slot, updated_fields=updated_fields)
+                return ValidationResult(
+                    is_valid=False, elicit_slot=slot, updated_fields=updated_fields
+                )
 
         return ValidationResult(is_valid=True, updated_fields=updated_fields)
 
@@ -112,7 +126,9 @@ class RegistrationFlow:
                 "Agradecemos pelo seu registro."
             )
 
-            confirmation_audio_url = self.speech_service.generate_audio_url(response_message)
+            confirmation_audio_url = self.speech_service.generate_audio_url(
+                response_message
+            )
 
             institution_data = {
                 "cnpj": request.cnpj,
@@ -129,7 +145,12 @@ class RegistrationFlow:
                 "confirmation_audio": confirmation_audio_url,
                 "about": request.description,
                 "site": request.site,
-                "image": request.image_path if request.image_path and request.image_path.strip().lower() not in ["não", "nao", "no"] else "https://conexao-solidaria.s3.amazonaws.com/default-institution.png",
+                "image": (
+                    request.image_path
+                    if request.image_path
+                    and request.image_path.strip().lower() not in ["não", "nao", "no"]
+                    else "https://conexao-solidaria.s3.amazonaws.com/default-institution.png"
+                ),
             }
 
             self.repository.create(institution_data)

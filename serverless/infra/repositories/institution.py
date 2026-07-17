@@ -2,9 +2,13 @@ import json
 from uuid import uuid4
 from typing import Optional, Any, Tuple
 from pynamodb.exceptions import DoesNotExist, PutError
-from core.exceptions import InstitutionAlreadyExistsException, InstitutionNotFoundException
+from core.exceptions import (
+    InstitutionAlreadyExistsException,
+    InstitutionNotFoundException,
+)
 from infra.models.institutions import InstitutionModel
 from infra.schemas.institutions import CreateInstitution, UpdateInstitution
+
 
 class PynamoDBInstitutionRepository:
     """Repository implementation using PynamoDB."""
@@ -37,10 +41,14 @@ class PynamoDBInstitutionRepository:
             raise InstitutionAlreadyExistsException(
                 message=f"Institution with cnpj '{data.cnpj}' already exists."
             )
-            
+
         return institution.attribute_values
 
-    def get_all(self, limit: Optional[int] = None, last_evaluated_key: Optional[dict[str, Any]] = None) -> Tuple[list[dict[str, Any]], Optional[dict[str, Any]]]:
+    def get_all(
+        self,
+        limit: Optional[int] = None,
+        last_evaluated_key: Optional[dict[str, Any]] = None,
+    ) -> Tuple[list[dict[str, Any]], Optional[dict[str, Any]]]:
         scan_kwargs = {}
         if limit is not None:
             scan_kwargs["limit"] = limit
@@ -48,7 +56,7 @@ class PynamoDBInstitutionRepository:
             scan_kwargs["last_evaluated_key"] = last_evaluated_key
 
         result_iterator = InstitutionModel.scan(**scan_kwargs)
-        
+
         institutions = []
         for _ in range(limit or 1000):
             try:
@@ -56,8 +64,12 @@ class PynamoDBInstitutionRepository:
             except StopIteration:
                 break
 
-        last_key = result_iterator.last_evaluated_key if result_iterator.last_evaluated_key else None
-        
+        last_key = (
+            result_iterator.last_evaluated_key
+            if result_iterator.last_evaluated_key
+            else None
+        )
+
         return [inst.attribute_values for inst in institutions], last_key
 
     def get_by_cnpj(self, cnpj: str) -> dict[str, Any]:
@@ -69,7 +81,13 @@ class PynamoDBInstitutionRepository:
                 message=f"Institution with cnpj '{cnpj}' does not exist."
             )
 
-    def query(self, region: Optional[str] = None, state: Optional[str] = None, limit: Optional[int] = None, last_evaluated_key: Optional[dict[str, Any]] = None) -> Tuple[list[dict[str, Any]], Optional[dict[str, Any]]]:
+    def query(
+        self,
+        region: Optional[str] = None,
+        state: Optional[str] = None,
+        limit: Optional[int] = None,
+        last_evaluated_key: Optional[dict[str, Any]] = None,
+    ) -> Tuple[list[dict[str, Any]], Optional[dict[str, Any]]]:
         query_kwargs = {}
         if limit is not None:
             query_kwargs["limit"] = limit
@@ -78,7 +96,9 @@ class PynamoDBInstitutionRepository:
 
         if state and region:
             query_it = InstitutionModel.state_index.query(
-                state, filter_condition=(InstitutionModel.region == region), **query_kwargs
+                state,
+                filter_condition=(InstitutionModel.region == region),
+                **query_kwargs,
             )
         elif state:
             query_it = InstitutionModel.state_index.query(state, **query_kwargs)
@@ -106,9 +126,9 @@ class PynamoDBInstitutionRepository:
                 for field, value in data.model_dump(exclude_unset=True).items()
             ]
             institution.update(actions=updates)
-            
+
             return institution.attribute_values
-            
+
         except DoesNotExist:
             raise InstitutionNotFoundException(
                 message=f"Institution with cnpj '{cnpj}' does not exist."

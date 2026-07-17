@@ -2,6 +2,7 @@ from utils.build import build_http_response
 
 from core.security import verify_origin
 
+
 @verify_origin
 def health(event, context):
     return build_http_response(

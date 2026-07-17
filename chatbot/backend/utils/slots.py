@@ -5,6 +5,7 @@ def get_slot_value(slots: dict, slot_name: str) -> str:
         return slot["value"].get("interpretedValue")
     return None
 
+
 def update_multiple_slot_values(event: dict, slots_values: dict) -> None:
     """
     Updates multiple slot values in the event with the required format.

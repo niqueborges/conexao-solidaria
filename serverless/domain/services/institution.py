@@ -27,16 +27,20 @@ class InstitutionService:
         return institution_out.model_dump()
 
     def get_all(
-        self, limit: Optional[int] = None, last_evaluated_key: Optional[Dict[str, Any]] = None
+        self,
+        limit: Optional[int] = None,
+        last_evaluated_key: Optional[Dict[str, Any]] = None,
     ) -> ListInstitutionResponse:
         """Retrieves all institution records from the database."""
-        institutions, last_key = self.repository.get_all(limit=limit, last_evaluated_key=last_evaluated_key)
+        institutions, last_key = self.repository.get_all(
+            limit=limit, last_evaluated_key=last_evaluated_key
+        )
 
         last_evaluated_key_out = json.dumps(last_key) if last_key else None
 
         if not institutions:
             raise InstitutionNotFoundException(message="No institutions found.")
-            
+
         institutions_out = [
             InstitutionResponse(**institution).model_dump()
             for institution in institutions
@@ -60,7 +64,10 @@ class InstitutionService:
     ) -> ListInstitutionResponse:
         """Retrieve institutions by region and/or state parameters."""
         institutions, last_key = self.repository.query(
-            region=region, state=state, limit=limit, last_evaluated_key=last_evaluated_key
+            region=region,
+            state=state,
+            limit=limit,
+            last_evaluated_key=last_evaluated_key,
         )
 
         last_evaluated_key_out = json.dumps(last_key) if last_key else None
@@ -69,7 +76,7 @@ class InstitutionService:
             raise InstitutionNotFoundException(
                 message="No institutions found matching the specified criteria."
             )
-            
+
         institutions_out = [
             InstitutionResponse(**item).model_dump() for item in institutions
         ]

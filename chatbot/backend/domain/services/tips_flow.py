@@ -6,6 +6,7 @@ from domain.interfaces import ConversationEngine
 logger = Logger()
 tracer = Tracer()
 
+
 class TipsFlow:
     tips_list = [
         "Qual instituição escolher?",
@@ -26,7 +27,7 @@ class TipsFlow:
         for field_name, value in field_values.items():
             if value is None:
                 continue
-                
+
             validator = rules.get(field_name)
             if validator and not validator(value):
                 return ValidationResult(is_valid=False, elicit_slot=field_name)
@@ -37,7 +38,7 @@ class TipsFlow:
     def execute_tips(self, tip_type: str) -> str:
         if not tip_type or not tip_type.isdigit():
             return "Ocorreu um erro ao tentar obter uma dica."
-            
+
         tip_index = int(tip_type) - 1
         if tip_index < 0 or tip_index >= len(self.tips_list):
             return "Opção de dica inválida."

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass
 class ValidationResult:
     is_valid: bool
@@ -9,6 +10,7 @@ class ValidationResult:
     elicit_slot: Optional[str] = None
     updated_fields: Optional[dict] = None
     is_ready_for_fulfillment: bool = False
+
 
 @dataclass
 class RegistrationRequest:
@@ -27,12 +29,14 @@ class RegistrationRequest:
     site: Optional[str] = None
     image_path: Optional[str] = None
 
+
 @dataclass
 class ListInstitutionRequest:
     filter_boolean: Optional[str] = None
     filter_type: Optional[str] = None
     region: Optional[str] = None
     state: Optional[str] = None
+
 
 @dataclass
 class ConversationContext:

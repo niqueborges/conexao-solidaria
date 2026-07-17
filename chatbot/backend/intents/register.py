@@ -13,6 +13,7 @@ from infrastructure.providers import (
 
 logger = Logger()
 
+
 class RegisterIntent:
     """
     Class responsible for handling events related to the RegisterIntent intent.
@@ -34,15 +35,15 @@ class RegisterIntent:
         """
         slots = self.event["sessionState"]["intent"]["slots"]
         flat_slots = LexMapper.extract_flat_slots(slots)
-        
+
         result = self.flow.validate_step(flat_slots)
-        
+
         if result.updated_fields:
             update_multiple_slot_values(self.event, result.updated_fields)
 
         if not result.is_valid:
-            return LexResponses.elicit_slot(self.event, result.elicit_slot, result.error_message)
-            
+            return LexResponses.elicit_slot(
+                self.event, result.elicit_slot, result.error_message
+            )
+
         return LexResponses.delegate(self.event)
-
-

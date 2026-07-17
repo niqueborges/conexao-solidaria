@@ -1,15 +1,16 @@
 import boto3
 import uuid
 
+
 def seed_institutions():
-    dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-    table = dynamodb.Table('institutions-dev')
+    dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
+    table = dynamodb.Table("institutions-dev")
 
     # Delete existing items first
     scan = table.scan()
     with table.batch_writer() as batch:
-        for each in scan.get('Items', []):
-            batch.delete_item(Key={'cnpj': each['cnpj']})
+        for each in scan.get("Items", []):
+            batch.delete_item(Key={"cnpj": each["cnpj"]})
     print("Old items deleted.")
 
     institutions = [
@@ -30,7 +31,7 @@ def seed_institutions():
             "confirmation_audio": "https://s3.amazonaws.com/bucket/audio1.mp3",
             "image": "https://s3.amazonaws.com/bucket/image1.jpg",
             "verified": True,
-            "token": str(uuid.uuid4())
+            "token": str(uuid.uuid4()),
         },
         {
             "cnpj": "22222222000122",
@@ -49,7 +50,7 @@ def seed_institutions():
             "confirmation_audio": "https://s3.amazonaws.com/bucket/audio2.mp3",
             "image": "https://s3.amazonaws.com/bucket/image2.jpg",
             "verified": True,
-            "token": str(uuid.uuid4())
+            "token": str(uuid.uuid4()),
         },
         {
             "cnpj": "33333333000133",
@@ -68,7 +69,7 @@ def seed_institutions():
             "confirmation_audio": "https://s3.amazonaws.com/bucket/audio3.mp3",
             "image": "https://s3.amazonaws.com/bucket/image3.jpg",
             "verified": True,
-            "token": str(uuid.uuid4())
+            "token": str(uuid.uuid4()),
         },
         {
             "cnpj": "44444444000144",
@@ -87,7 +88,7 @@ def seed_institutions():
             "confirmation_audio": "https://s3.amazonaws.com/bucket/audio4.mp3",
             "image": "https://s3.amazonaws.com/bucket/image4.jpg",
             "verified": True,
-            "token": str(uuid.uuid4())
+            "token": str(uuid.uuid4()),
         },
         {
             "cnpj": "55555555000155",
@@ -106,14 +107,15 @@ def seed_institutions():
             "confirmation_audio": "https://s3.amazonaws.com/bucket/audio5.mp3",
             "image": "https://s3.amazonaws.com/bucket/image5.jpg",
             "verified": True,
-            "token": str(uuid.uuid4())
-        }
+            "token": str(uuid.uuid4()),
+        },
     ]
 
     for inst in institutions:
-        inst['id'] = str(uuid.uuid4())
+        inst["id"] = str(uuid.uuid4())
         print(f"Inserindo: {inst['name']}")
         table.put_item(Item=inst)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     seed_institutions()
