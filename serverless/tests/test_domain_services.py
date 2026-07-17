@@ -2,6 +2,7 @@ import pytest
 from domain.services.institution import InstitutionService
 from infra.schemas.institutions import CreateInstitution
 from core.exceptions import InstitutionAlreadyExistsException
+from infra.repositories.institution import PynamoDBInstitutionRepository
 
 
 def test_create_institution_success():
@@ -23,7 +24,9 @@ def test_create_institution_success():
         site="http://www.test.com",
     )
 
-    response = InstitutionService.create(data)
+    repository = PynamoDBInstitutionRepository()
+    service = InstitutionService(repository=repository)
+    response = service.create(data)
     assert response["cnpj"] == "12345678901234"
     assert response["name"] == "Test Institution"
     assert "id" in response
@@ -49,10 +52,12 @@ def test_create_institution_already_exists():
         site="http://www.test.com",
     )
 
-    InstitutionService.create(data)
+    repository = PynamoDBInstitutionRepository()
+    service = InstitutionService(repository=repository)
+    service.create(data)
 
     with pytest.raises(InstitutionAlreadyExistsException):
-        InstitutionService.create(data)
+        service.create(data)
 
 
 def test_get_institution_success():
@@ -73,7 +78,9 @@ def test_get_institution_success():
         about="About us",
         site="http://www.test.com",
     )
-    InstitutionService.create(data)
+    repository = PynamoDBInstitutionRepository()
+    service = InstitutionService(repository=repository)
+    service.create(data)
 
-    response = InstitutionService.get("12345678901234")
+    response = service.get("12345678901234")
     assert response["name"] == "Test Institution"
