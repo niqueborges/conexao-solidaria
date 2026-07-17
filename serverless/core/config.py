@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     REGION_NAME: str = ""
     TABLE_NAME: str = ""
     BILLING_MODE: str = ""
-    MODEL_ID: str = ""
+    MODEL_ID: str = "anthropic.claude-3-haiku-20240307-v1:0"
 
     model_config = SettingsConfigDict(env_file=".env")
 
