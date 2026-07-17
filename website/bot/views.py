@@ -1,10 +1,8 @@
-import re
 import httpx
 from django.http import JsonResponse
 from django.views import View
 from django.http import HttpRequest
 from bot.lex import Chat
-from utils.http import get_client_ip
 from django.shortcuts import render
 
 

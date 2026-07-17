@@ -1,5 +1,4 @@
 import requests
-import os
 from requests.exceptions import RequestException
 from utils.secrets import get_twilio_credentials
 

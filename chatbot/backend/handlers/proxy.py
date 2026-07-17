@@ -1,8 +1,6 @@
-import os
 import json
 import boto3
 from aws_lambda_powertools import Logger
-from botocore.exceptions import ClientError
 from infrastructure.orchestrator import ConversationOrchestrator
 
 logger = Logger()

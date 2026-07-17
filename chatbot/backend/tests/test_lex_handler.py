@@ -1,4 +1,3 @@
-import pytest
 from handlers.lex import lex
 
 

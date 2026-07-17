@@ -6,7 +6,6 @@ from domain.interfaces import (
     AddressProvider,
     ImageModerationService,
     SpeechService,
-    ConversationEngine,
 )
 from infrastructure.api import ApiClient
 from infrastructure.via_cep_api import ViaCepService

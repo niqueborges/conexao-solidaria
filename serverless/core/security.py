@@ -20,7 +20,7 @@ def verify_origin(handler, event, context):
         waf_token = parameters.get_parameter(
             "/conexao-solidaria/waf-token", max_age=300, decrypt=True
         )
-    except Exception as e:
+    except Exception:
         return build_http_response(
             status_code=500, body={"error": "WAF token not configured or accessible."}
         )

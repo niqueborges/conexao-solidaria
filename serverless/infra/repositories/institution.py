@@ -1,4 +1,3 @@
-import json
 from uuid import uuid4
 from typing import Optional, Any, Tuple
 from pynamodb.exceptions import DoesNotExist, PutError

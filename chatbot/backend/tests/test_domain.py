@@ -1,6 +1,5 @@
-import pytest
 from typing import Optional, Tuple
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
 
 # Mock powertools early to avoid aws_xray_sdk import errors
 import sys

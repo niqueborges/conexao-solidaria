@@ -1,4 +1,4 @@
-from typing import Protocol, Optional, Dict, Tuple
+from typing import Protocol, Optional, Tuple
 
 
 class InstitutionRepository(Protocol):
