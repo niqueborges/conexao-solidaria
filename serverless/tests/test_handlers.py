@@ -2,6 +2,7 @@ import os
 import json
 from api.v1.handlers.health import health
 
+
 def test_health_handler():
     os.environ["IS_OFFLINE"] = "true"
     event = {}
