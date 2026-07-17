@@ -1,6 +1,6 @@
 # Conexão Solidária (Refatorado)
 
-[![CI/CD Pipeline](https://github.com/niqueborges/conexao-solidaria/actions/workflows/main.yml/badge.svg)](https://github.com/niqueborges/conexao-solidaria/actions/workflows/main.yml)
+[![CI/CD Pipeline](<[![CI Pipeline](https://github.com/niqueborges/conexao-solidaria/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/niqueborges/conexao-solidaria/actions/workflows/ci.yml)>)](https://github.com/niqueborges/conexao-solidaria/actions/workflows/main.yml)
 
 ---
 
@@ -368,7 +368,7 @@ Os **Termos de Uso** podem ser acessados em [termos de uso](https://conexao-soli
 
 O projeto base foi construído de forma colaborativa durante o bootcamp da Compass UOL pelos seguintes desenvolvedores:
 
-| [](https://github.com/gusttavofelipe) [Gusttavo Felipe](https://github.com/gusttavofelipe) | [](https://github.com/niqueborges) [Monique da Silva Borges](https://github.com/niqueborges) | [](https://github.com/PedroNunesBH) [Pedro Nunes](https://github.com/PedroNunesBH) | [](https://github.com/Rogerdev02) [Roger Dev](https://github.com/Rogerdev02) | [](https://github.com/SilvioCMJ) [Silvio CMJ](https://github.com/SilvioCMJ) |
+| [](https://github.com/gusttavofelipe)[Gusttavo Felipe](https://github.com/gusttavofelipe) | [](https://github.com/niqueborges)[Monique da Silva Borges](https://github.com/niqueborges) | [](https://github.com/PedroNunesBH)[Pedro Nunes](https://github.com/PedroNunesBH) | [](https://github.com/Rogerdev02)[Roger Dev](https://github.com/Rogerdev02) | [](https://github.com/SilvioCMJ)[Silvio CMJ](https://github.com/SilvioCMJ) |
 | :--------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------: | :------------------------------------------------------------------------: | :-----------------------------------------------------------------------: |
 
 ---
