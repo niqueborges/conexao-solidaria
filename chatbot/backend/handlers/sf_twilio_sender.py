@@ -1,6 +1,7 @@
 import os
 from twilio.rest import Client
 from aws_lambda_powertools import Logger, Tracer
+from aws_lambda_powertools.utilities import parameters
 
 logger = Logger()
 tracer = Tracer()
@@ -19,8 +20,14 @@ def handler(event, context):
         logger.warning("No message to send.")
         return {"status": "skipped"}
 
-    twilio_account_sid = os.environ.get("TWILIO_ACCOUNT_SID")
-    twilio_auth_token = os.environ.get("TWILIO_AUTH_TOKEN")
+    try:
+        secret = parameters.get_secret("conexao-solidaria/twilio", transform="json")
+        twilio_account_sid = secret.get("TWILIO_ACCOUNT_SID")
+        twilio_auth_token = secret.get("TWILIO_AUTH_TOKEN")
+    except Exception as e:
+        logger.error(f"Erro ao obter segredo: {e}")
+        twilio_account_sid = None
+        twilio_auth_token = None
 
     if not twilio_account_sid or not twilio_auth_token:
         logger.error("Credenciais Twilio ausentes.")

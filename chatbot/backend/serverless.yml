@@ -21,7 +21,7 @@ provider:
             - lex:RecognizeText
             - lex:RecognizeUtterance
             - lex:DeleteSession
-          Resource: "*"
+          Resource: "arn:aws:lex:${opt:region, 'us-east-1'}:${env:AWS_ACCOUNT_ID, '*'}:bot-alias/*"
         - Effect: Allow
           Action:
             - s3:PutObject
@@ -54,8 +54,6 @@ provider:
           Resource: "arn:aws:states:*:*:stateMachine:ConversationOrchestratorSM-*"
 
   environment:
-    TWILIO_AUTH_TOKEN: ${env:TWILIO_AUTH_TOKEN, ''}
-    TWILIO_ACCOUNT_SID: ${env:TWILIO_ACCOUNT_SID, ''}
     TWILIO_SQS_QUEUE_URL: !Ref TwilioMessageQueue
     IDEMPOTENCY_TABLE_NAME: !Ref TwilioIdempotencyTable
     STATE_MACHINE_ARN: "arn:aws:states:${opt:region, 'us-east-1'}:${env:AWS_ACCOUNT_ID, '*'}:stateMachine:ConversationOrchestratorSM-${opt:stage, 'dev'}"

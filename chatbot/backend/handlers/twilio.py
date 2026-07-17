@@ -14,6 +14,7 @@ from aws_lambda_powertools.utilities.idempotency import (
     DynamoDBPersistenceLayer,
     idempotent_function,
 )
+from aws_lambda_powertools.utilities import parameters
 
 logger = Logger()
 tracer = Tracer()
@@ -26,7 +27,11 @@ persistence_layer = DynamoDBPersistenceLayer(
 
 
 def validate_twilio_request(event, params):
-    auth_token = os.environ.get("TWILIO_AUTH_TOKEN", "")
+    try:
+        secret = parameters.get_secret("conexao-solidaria/twilio", transform="json")
+        auth_token = secret.get("TWILIO_AUTH_TOKEN", "")
+    except Exception:
+        auth_token = ""
     validator = RequestValidator(auth_token)
 
     headers = {k.lower(): v for k, v in event.get("headers", {}).items()}
