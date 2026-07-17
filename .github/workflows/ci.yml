@@ -88,7 +88,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: serverless/package-lock.json
+          cache-dependency-path: package-lock.json
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
@@ -107,6 +107,7 @@ jobs:
           MODEL_ID: "test-model"
         run: PYTHONPATH=. pytest --cov=. --cov-fail-under=50 --cov-report=term-missing tests/
       - name: Install Serverless & Plugins
+        working-directory: .
         run: |
           npm install -g serverless@3
           npm ci

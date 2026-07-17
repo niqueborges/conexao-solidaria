@@ -168,4 +168,3 @@ cython_debug/
 node_modules
 
 # npm
-package-lock.json
