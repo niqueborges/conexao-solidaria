@@ -23,7 +23,12 @@ RUN pip install --no-cache /wheels/* && rm -rf /wheels
 COPY --chown=appuser:appuser . .
 
 # Coleta arquivos estáticos
-RUN python manage.py collectstatic --noinput
+RUN SECRET_KEY=dummy \
+    GET_INSTITUTIONS=dummy \
+    GET_INSTITUTION=dummy \
+    GET_INSTITUTIONS_BY_STATE=dummy \
+    GET_INSTITUTIONS_BY_REGION=dummy \
+    python manage.py collectstatic --noinput
 
 USER appuser
 EXPOSE 8000
