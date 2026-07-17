@@ -17,10 +17,10 @@ def test_create_institution_success():
         address_number=123,
         city="São Paulo",
         neighborhood="Centro",
-        confirmation_audio="audio.mp3",
-        image="image.png",
+        confirmation_audio="http://example.com/audio.mp3",
+        image="http://example.com/image.png",
         about="About us",
-        site="www.test.com",
+        site="http://www.test.com",
     )
 
     response = InstitutionService.create(data)
@@ -43,10 +43,10 @@ def test_create_institution_already_exists():
         address_number=123,
         city="São Paulo",
         neighborhood="Centro",
-        confirmation_audio="audio.mp3",
-        image="image.png",
+        confirmation_audio="http://example.com/audio.mp3",
+        image="http://example.com/image.png",
         about="About us",
-        site="www.test.com",
+        site="http://www.test.com",
     )
 
     InstitutionService.create(data)
@@ -68,10 +68,10 @@ def test_get_institution_success():
         address_number=123,
         city="São Paulo",
         neighborhood="Centro",
-        confirmation_audio="audio.mp3",
-        image="image.png",
+        confirmation_audio="http://example.com/audio.mp3",
+        image="http://example.com/image.png",
         about="About us",
-        site="www.test.com",
+        site="http://www.test.com",
     )
     InstitutionService.create(data)
 
