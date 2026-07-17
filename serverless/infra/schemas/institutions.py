@@ -167,6 +167,8 @@ class UpdateInstitution(BaseSchema):
 class InstitutionResponse(CreateInstitution):
     """Schema to return a single institution publicly"""
 
+    model_config = {"extra": "ignore"}
+
     id: str = Field(description="Unique identifier of the institution")
     verified: bool = Field(
         description="Indicates if the institution is verified", examples=[True]
