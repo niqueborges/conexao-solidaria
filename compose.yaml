@@ -6,6 +6,7 @@ services:
       - "8000:8000"
     environment:
       - CHATBOT_API_URL=http://chatbot-api:3001
+      - DEBUG=True
     volumes:
       - ./website:/app
     deploy:
