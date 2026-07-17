@@ -1,4 +1,3 @@
-import os
 from twilio.rest import Client
 from aws_lambda_powertools import Logger, Tracer
 from aws_lambda_powertools.utilities import parameters
