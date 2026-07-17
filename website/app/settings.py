@@ -34,6 +34,13 @@ DEBUG = env.bool("DEBUG", default=False)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
 
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True
+    if "*" in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.remove("*")
+
 
 # Application definition
 
