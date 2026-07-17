@@ -85,10 +85,11 @@ def test_get_institution_success():
     response = service.get("12345678901234")
     assert response["name"] == "Test Institution"
 
+
 def test_get_all_institutions():
     repository = PynamoDBInstitutionRepository()
     service = InstitutionService(repository=repository)
-    
+
     data = CreateInstitution(
         cnpj="99999999999999",
         name="All Institution",
@@ -107,15 +108,16 @@ def test_get_all_institutions():
         site="http://www.test.com",
     )
     service.create(data)
-    
+
     response = service.get_all()
     assert "institutions" in response
     assert len(response["institutions"]) > 0
 
+
 def test_query_institutions():
     repository = PynamoDBInstitutionRepository()
     service = InstitutionService(repository=repository)
-    
+
     data = CreateInstitution(
         cnpj="88888888888888",
         name="Query Institution",
@@ -134,15 +136,16 @@ def test_query_institutions():
         site="http://www.test.com",
     )
     service.create(data)
-    
+
     response = service.query(region="Norte", state="AM")
     assert "institutions" in response
     assert len(response["institutions"]) > 0
 
+
 def test_update_institution():
     repository = PynamoDBInstitutionRepository()
     service = InstitutionService(repository=repository)
-    
+
     data = CreateInstitution(
         cnpj="77777777777777",
         name="Old Name",
@@ -161,15 +164,16 @@ def test_update_institution():
         site="http://www.test.com",
     )
     service.create(data)
-    
+
     update_data = UpdateInstitution(name="New Name")
     response = service.update("77777777777777", update_data)
     assert response["name"] == "New Name"
 
+
 def test_delete_institution():
     repository = PynamoDBInstitutionRepository()
     service = InstitutionService(repository=repository)
-    
+
     data = CreateInstitution(
         cnpj="66666666666666",
         name="Delete Me",
@@ -188,6 +192,6 @@ def test_delete_institution():
         site="http://www.test.com",
     )
     service.create(data)
-    
+
     result = service.delete("66666666666666")
     assert result is True
