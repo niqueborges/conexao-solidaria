@@ -31,9 +31,34 @@ provider:
           Action:
             - secretsmanager:GetSecretValue
           Resource: arn:aws:secretsmanager:${opt:region, 'us-east-1'}:${env:AWS_ACCOUNT_ID, '*'}:secret:conexao-solidaria/twilio*
+        - Effect: Allow
+          Action:
+            - sqs:SendMessage
+          Resource:
+            Fn::GetAtt:
+              - TwilioMessageQueue
+              - Arn
+        - Effect: Allow
+          Action:
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            Fn::GetAtt:
+              - TwilioIdempotencyTable
+              - Arn
+        - Effect: Allow
+          Action:
+            - states:StartExecution
+          Resource: "arn:aws:states:*:*:stateMachine:ConversationOrchestratorSM-*"
 
   environment:
     TWILIO_AUTH_TOKEN: ${env:TWILIO_AUTH_TOKEN, ''}
+    TWILIO_ACCOUNT_SID: ${env:TWILIO_ACCOUNT_SID, ''}
+    TWILIO_SQS_QUEUE_URL: !Ref TwilioMessageQueue
+    IDEMPOTENCY_TABLE_NAME: !Ref TwilioIdempotencyTable
+    STATE_MACHINE_ARN: "arn:aws:states:${opt:region, 'us-east-1'}:${env:AWS_ACCOUNT_ID, '*'}:stateMachine:ConversationOrchestratorSM-${opt:stage, 'dev'}"
   apiGateway:
     apiKeys:
       - chatbotWebClientKey
@@ -54,13 +79,26 @@ functions:
           path: /
           method: post
 
-  twilio:
-    handler: handlers/twilio.twilio
-    timeout: 15
+  twilio_webhook:
+    handler: handlers/twilio.twilio_webhook
+    timeout: 5
     events:
       - http:
           path: /twilio
           method: post
+
+  twilio_worker:
+    handler: handlers/twilio.twilio_worker
+    timeout: 30
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - TwilioMessageQueue
+              - Arn
+          batchSize: 5
+          maximumBatchingWindow: 5
+          functionResponseType: ReportBatchItemFailures
 
   upload_url:
     handler: handlers/upload.get_upload_url
@@ -79,6 +117,55 @@ functions:
           method: post
           private: true
 
+  sf_lex_router:
+    handler: handlers/sf_lex_router.handler
+  sf_domain_executor:
+    handler: handlers/sf_domain_executor.handler
+    timeout: 29
+  sf_bedrock_fallback:
+    handler: handlers/sf_bedrock_fallback.handler
+    timeout: 29
+  sf_twilio_sender:
+    handler: handlers/sf_twilio_sender.handler
+
+stepFunctions:
+  stateMachines:
+    ConversationOrchestratorSM:
+      name: ConversationOrchestratorSM-${opt:stage, 'dev'}
+      definition:
+        StartAt: LexRouter
+        States:
+          LexRouter:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [sf_lex_router, Arn]
+            Next: IntentChoice
+          IntentChoice:
+            Type: Choice
+            Choices:
+              - Variable: "$.intent_name"
+                StringEquals: "FallbackIntent"
+                Next: BedrockFallback
+              - Variable: "$.ready_for_fulfillment"
+                BooleanEquals: true
+                Next: DomainExecutor
+            Default: SendTwilioMessage
+          BedrockFallback:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [sf_bedrock_fallback, Arn]
+            Next: SendTwilioMessage
+          DomainExecutor:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [sf_domain_executor, Arn]
+            Next: SendTwilioMessage
+          SendTwilioMessage:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [sf_twilio_sender, Arn]
+            End: true
+
 package:
   patterns:
     - '!venv/**'
@@ -92,8 +179,43 @@ plugins:
   - serverless-offline
   - serverless-python-requirements
   - serverless-dotenv-plugin
+  - serverless-step-functions
 
 custom:
   pythonRequirements:
     dockerizePip: non-linux
     fileName: requirements.txt
+
+resources:
+  Resources:
+    TwilioMessageQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: twilio-messages-${opt:stage, 'dev'}
+        VisibilityTimeout: 90
+        RedrivePolicy:
+          deadLetterTargetArn:
+            Fn::GetAtt:
+              - TwilioMessageDLQ
+              - Arn
+          maxReceiveCount: 3
+
+    TwilioMessageDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: twilio-messages-dlq-${opt:stage, 'dev'}
+
+    TwilioIdempotencyTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: twilio-idempotency-${opt:stage, 'dev'}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        TimeToLiveSpecification:
+          AttributeName: expiration
+          Enabled: true
